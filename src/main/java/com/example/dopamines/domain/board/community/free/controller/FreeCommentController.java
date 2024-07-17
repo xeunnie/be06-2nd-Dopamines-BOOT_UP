@@ -26,8 +26,9 @@ public class FreeCommentController {
     @RequestMapping(method = RequestMethod.POST, value = "/create")
     public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeCommentReq req){
         User user = customUserDetails.getUser();
-        String result = freeCommentService.create(user,req);
-        return ResponseEntity.ok(new BaseResponse<>(result));
+        String response = freeCommentService.create(user,req);
+
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/read")

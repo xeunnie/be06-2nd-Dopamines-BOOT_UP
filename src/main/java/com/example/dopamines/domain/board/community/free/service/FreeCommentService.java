@@ -82,6 +82,7 @@ public class FreeCommentService {
     public String delete(User user, Long idx) {
         FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         FreeBoard freeBoard = freeBoardRepository.findById(freeComment.getFreeBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+
         if (freeComment.getUser().getIdx() != user.getIdx()){
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }

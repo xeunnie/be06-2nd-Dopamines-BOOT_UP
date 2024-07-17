@@ -8,5 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class FreeCommentReq {
+    private Long idx;
     private String content;
 }

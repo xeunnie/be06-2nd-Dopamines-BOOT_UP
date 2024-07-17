@@ -2,6 +2,7 @@ package com.example.dopamines.domain.board.community.free.model.response;
 
 import com.example.dopamines.domain.user.model.entity.User;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 

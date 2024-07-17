@@ -5,8 +5,12 @@ import com.example.dopamines.domain.board.community.free.model.request.UpdateFre
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
 import com.example.dopamines.domain.board.community.free.service.FreeBoardService;
+import com.example.dopamines.domain.user.model.entity.User;
+import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,15 +25,18 @@ public class FreeBoardController {
     private final FreeBoardService freeBoardService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<FreeBoardRes> create(@RequestBody FreeBoardReq req){
-        FreeBoardRes response = freeBoardService.create(req);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeBoardReq req){
+        User user = customUserDetails.getUser();
+        String result = freeBoardService.create(user,req);
+        return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/read")
-    public ResponseEntity<FreeBoardReadRes> read(Long idx){
-        FreeBoardReadRes response = freeBoardService.read(idx);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+        User user = customUserDetails.getUser();
+        FreeBoardReadRes response = freeBoardService.read(user,idx);
+
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/read-all")

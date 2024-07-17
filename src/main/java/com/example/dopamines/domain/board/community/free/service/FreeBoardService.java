@@ -6,6 +6,8 @@ import com.example.dopamines.domain.board.community.free.model.request.UpdateFre
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
 import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
+import com.example.dopamines.domain.user.model.entity.User;
+import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND;
 
@@ -27,29 +30,34 @@ public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
 
     @Transactional
-    public FreeBoardRes create(FreeBoardReq req) {
+    public String create(User user, FreeBoardReq req) {
+
+        if(req.getTitle() == null){
+            throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
+        }
+        if(req.getContent() == null){
+            throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
+        }
         FreeBoard freeBoard = freeBoardRepository.save(FreeBoard.builder()
                 .title(req.getTitle())
                 .content(req.getContent())
+                .user(user)
                 .image(req.getImage())
                 .createdAt(LocalDateTime.now())
                 .build()
         );
 
-        return FreeBoardRes.builder()
-                .idx(freeBoard.getIdx())
-                .content(freeBoard.getContent())
-                .build();
+        return "자유 게시판 게시글 등록";
     }
 
-    public FreeBoardReadRes read(Long idx) {
+    public FreeBoardReadRes read(User user,Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         return FreeBoardReadRes.builder()
                 .idx(freeBoard.getIdx())
                 .title(freeBoard.getTitle())
                 .content(freeBoard.getContent())
-                .author(freeBoard.getUser())
+                .author(freeBoard.getUser().getNickname())
                 .image(freeBoard.getImage())
                 .created_at(LocalDateTime.now())
                 .build();

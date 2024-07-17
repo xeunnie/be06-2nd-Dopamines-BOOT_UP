@@ -1,5 +1,6 @@
 package com.example.dopamines.global.security.filter;
 
+import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.security.CustomUserDetails;
 import com.example.dopamines.global.security.JwtUtil;
 import jakarta.servlet.FilterChain;

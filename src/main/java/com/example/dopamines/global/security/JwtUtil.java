@@ -1,5 +1,6 @@
 package com.example.dopamines.global.security;
 
+import com.example.dopamines.domain.user.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
 import java.nio.charset.StandardCharsets;

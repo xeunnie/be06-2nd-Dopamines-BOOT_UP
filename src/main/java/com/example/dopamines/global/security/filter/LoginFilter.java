@@ -1,5 +1,6 @@
 package com.example.dopamines.global.security.filter;
 
+import com.example.dopamines.domain.user.model.request.UserLoginRequest;
 import com.example.dopamines.global.security.CustomUserDetails;
 import com.example.dopamines.global.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;

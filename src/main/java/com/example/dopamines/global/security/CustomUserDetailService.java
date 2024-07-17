@@ -1,5 +1,7 @@
 package com.example.dopamines.global.security;
 
+import com.example.dopamines.domain.user.model.entity.User;
+import com.example.dopamines.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -6,6 +6,8 @@ import com.example.dopamines.domain.user.model.request.UserSignupRequest;
 import com.example.dopamines.domain.user.model.response.UserSignupResponse;
 import com.example.dopamines.domain.user.repository.TeamRepository;
 import com.example.dopamines.domain.user.repository.UserRepository;
+import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,12 +41,12 @@ public class UserService {
                 .phoneNumber(request.getPhoneNumber())
                 .createdAt(localDateTime)
                 .updatedAt(localDateTime)
-                .role("ROLE_USER")
+                .role("ROLE_TEMPORARY_USER")
                 .build();
         User result = userRepository.save(user);
 
         if(result == null){
-            return null;
+            throw new BaseException(BaseResponseStatus.USER_INVALID_SINGUP_REQUEST);
         }
         return new UserSignupResponse().toDto(result);
     }

@@ -71,6 +71,7 @@ public class FreeBoardService {
         for(FreeBoard freeBoard : result.getContent()){
             freeBoardResList.add(FreeBoardRes.builder()
                     .idx(freeBoard.getIdx())
+                    .title(freeBoard.getTitle())
                     .content(freeBoard.getContent())
                     .build());
         }

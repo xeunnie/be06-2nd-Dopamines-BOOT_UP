@@ -40,9 +40,10 @@ public class FreeBoardController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/read-all")
-    public ResponseEntity<List<FreeBoardRes>> readAll(Integer page, Integer size){
+    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
+        User user = customUserDetails.getUser();
         List<FreeBoardRes> response = freeBoardService.readAll(page,size);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")

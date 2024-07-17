@@ -44,6 +44,7 @@ public class FreeCommentService {
         return "자유 게시판 댓글 등록";
     }
 
+    // TODO :  대댓글 조회까지 한번에 처리
     // TODO : 댓글 좋아요까지 구현 후 성능 테스트
     public List<FreeCommentReadRes> read(User user,Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));

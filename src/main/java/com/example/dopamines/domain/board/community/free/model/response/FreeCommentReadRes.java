@@ -1,10 +1,11 @@
 package com.example.dopamines.domain.board.community.free.model.response;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-
+@Getter
 @Builder
 public class FreeCommentReadRes {
     private Long idx;

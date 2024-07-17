@@ -36,7 +36,7 @@ public class FreeCommentService {
         }
 
         freeCommentRepository.save(FreeComment.builder()
-                .freeBoard(freeBoard) // TODO : DB에 board_idx 저장 안됨
+                .freeBoard(freeBoard)
                 .content(req.getContent())
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -47,7 +47,7 @@ public class FreeCommentService {
     }
 
     // TODO : 댓글 작성에 board_idx 저장 처리 후 댓글 조회 성능 테스트
-    public List<FreeCommentReadRes> read(Long idx) {
+    public List<FreeCommentReadRes> read(User user,Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
         List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
         for(FreeComment freeComment : freeBoard.getComments()){
@@ -55,6 +55,7 @@ public class FreeCommentService {
                     .idx(freeComment.getIdx())
                     .freeBoardIdx(freeBoard.getIdx())
                     .content(freeComment.getContent())
+                    .author(user.getNickname())
                     .createdAt(freeComment.getCreatedAt())
                     .likeCount(freeComment.getLikes().size())
                     .build());

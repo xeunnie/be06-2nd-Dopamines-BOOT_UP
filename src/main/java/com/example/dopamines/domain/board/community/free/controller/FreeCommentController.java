@@ -34,7 +34,7 @@ public class FreeCommentController {
     @RequestMapping(method = RequestMethod.GET, value = "/read")
     public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        List<FreeCommentReadRes> response = freeCommentService.read(idx);
+        List<FreeCommentReadRes> response = freeCommentService.read(user,idx);
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }

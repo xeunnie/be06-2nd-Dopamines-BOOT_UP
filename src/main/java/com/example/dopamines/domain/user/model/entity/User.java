@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -49,10 +51,13 @@ public class User {
 
     private Integer courseNum;
 
+    @ManyToOne
+    @JoinColumn(name = "team_idx")
+    private Team team;
+
     // Todo : 자동생성으로 바꾸기
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 
     @Builder
     public User(Long idx, String email, String password, String name, String nickname, String role,
@@ -79,5 +84,15 @@ public class User {
         this.enabled = enabled;
     }
 
+    public void setCourseNum(Integer courseNum) {
+        this.courseNum = courseNum;
+    }
 
+    public void setSocialLogined(boolean socialLogined) {
+        this.socialLogined = socialLogined;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 }

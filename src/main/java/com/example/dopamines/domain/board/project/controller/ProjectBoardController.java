@@ -85,7 +85,7 @@ public class ProjectBoardController {
         if(!req.getSourceUrl().isEmpty()) {
              response = projectBoardService.update(req, req.getSourceUrl());
         } else {
-            List<String> savedFileName = cloudFileUploadService.uploadImages(files);
+            List<String> savedFileName = cloudFileUploadService.uploadImages(files, "PROJECT"); // TODO : "PROJECT" 지우기
             response = projectBoardService.update(req, savedFileName.get(0));
         }
 

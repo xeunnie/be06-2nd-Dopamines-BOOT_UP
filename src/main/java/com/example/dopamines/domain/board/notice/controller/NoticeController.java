@@ -25,8 +25,8 @@ public class NoticeController {
 
     // 공지사항 생성
     @PostMapping
-    public ResponseEntity<BaseResponse<Notice>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
-        Notice createdNotice = noticeService.saveNotice(noticeRequestDto).toEntity();
+    public ResponseEntity<BaseResponse<BaseResponse<NoticeResponseDto>>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
+        BaseResponse<NoticeResponseDto> createdNotice = noticeService.saveNotice(noticeRequestDto);
         return ResponseEntity.ok(new BaseResponse<>(createdNotice));
     }
 

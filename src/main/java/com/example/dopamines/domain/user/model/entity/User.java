@@ -19,7 +19,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
-
     @NotNull
     private String email;
 
@@ -73,10 +72,22 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.socialLogined = false;
-//        this.status = status;     //사용 의도 미정
-//        this.courseNum = courseNum; // 관리자 등록 미정
+        this.status = true;
+        this.courseNum = null;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    //Todo : Q)자체 로직으로 ADMIN 계정인지 확인할 지 고민
+    public void activeHanwhaUser(Integer courseNum){
+        this.status = true;
+        this.courseNum = courseNum;
+        this.role = "ROLE_USER";
+    }
+
+    //Todo : Q)자체 로직으로 ADMIN 계정인지 확인할 지 고민
+    public void setToBlackList(){
+        this.status = false;
     }
 
     // 이메일 검증

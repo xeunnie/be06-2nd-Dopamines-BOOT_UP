@@ -38,4 +38,12 @@ public class FreeCommentController {
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/update")
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeCommentReq req){
+        User user = customUserDetails.getUser();
+        String response = freeCommentService.update(user,req); // !!!!
+
+        return ResponseEntity.ok(new BaseResponse<>(response));
+    }
 }

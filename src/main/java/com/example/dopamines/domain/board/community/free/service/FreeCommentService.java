@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.dopamines.global.common.BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND;
-import static com.example.dopamines.global.common.BaseResponseStatus.COMMUNITY_CONTENT_NOT_FOUND;
+import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +45,7 @@ public class FreeCommentService {
         return "자유 게시판 댓글 등록";
     }
 
-    // TODO : 댓글 작성에 board_idx 저장 처리 후 댓글 조회 성능 테스트
+    // TODO : 댓글 좋아요까지 구현 후 성능 테스트
     public List<FreeCommentReadRes> read(User user,Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
         List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
@@ -64,6 +63,11 @@ public class FreeCommentService {
         return freeCommentReadResList;
     }
 
+    public String update(User user, FreeCommentReq req) {
+        FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        if(freeBoard.getUser().getIdx()!= user.getIdx()){
+            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        }
 
-
+    }
 }

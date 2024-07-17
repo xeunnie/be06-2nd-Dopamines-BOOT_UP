@@ -1,6 +1,7 @@
 package com.example.dopamines.global.security;
 
 
+import com.example.dopamines.domain.user.service.OAuth2Service;
 import com.example.dopamines.global.auth.OAuth2AuthenticaitonSuccessHandler;
 import com.example.dopamines.global.security.filter.JwtFilter;
 import com.example.dopamines.global.security.filter.LoginFilter;

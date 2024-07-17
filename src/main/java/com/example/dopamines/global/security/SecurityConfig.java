@@ -59,8 +59,11 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((auth) ->
                 auth
-                        .requestMatchers("/user/role-user").hasRole("USER")
-                        .requestMatchers("/user/role-admin").hasRole("ADMIN")
+                        .requestMatchers("/test/role-user").hasRole("USER")
+                        .requestMatchers("/test/role-temporary").hasRole("TEMPORARY_USER")
+                        .requestMatchers("/test/role-admin").hasRole("ADMIN")
+                        .requestMatchers("/admin/assign","/admin/user/black").hasRole("ADMIN")
+                        .requestMatchers("/admin/signup").permitAll()
                         .anyRequest().permitAll()
         );
 

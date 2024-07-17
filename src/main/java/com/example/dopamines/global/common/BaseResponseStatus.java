@@ -33,6 +33,7 @@ public enum BaseResponseStatus {
     COMMUNITY_BOARD_NOT_FOUND(false, 4000, "해당하는 게시글을 찾을 수 없습니다."),
     COMMUNITY_TITLE_NOT_FOUND(false,4001, "제목을 작성해주세요."),
     COMMUNITY_CONTENT_NOT_FOUND(false,4002, "내용을 작성해주세요."),
+    COMMUNITY_USER_NOT_AUTHOR(false,4003, "작성자만이 권한이 있습니다."),
 
     /**
      * 4200 : MARKET 에러 - 송연

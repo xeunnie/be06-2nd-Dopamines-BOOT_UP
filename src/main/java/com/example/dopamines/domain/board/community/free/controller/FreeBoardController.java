@@ -53,9 +53,10 @@ public class FreeBoardController {
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<String> delete(Long idx){
-        freeBoardService.delete(idx);
-        return ResponseEntity.ok(idx+"번의 게시글이 삭제되었습니다.");
+    @RequestMapping(method = RequestMethod.GET, value = "/delete")
+    public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+        User user = customUserDetails.getUser();
+        String response = freeBoardService.delete(user,idx);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 }

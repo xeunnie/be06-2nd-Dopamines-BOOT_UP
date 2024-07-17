@@ -99,9 +99,13 @@ public class FreeBoardService {
 
     }
 
-    public void delete(Long idx) {
+    public String delete(User user,Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        if(!freeBoard.getUser().getIdx().equals(user.getIdx())){
+            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        }
         freeBoardRepository.delete(freeBoard);
+        return  "게시글 삭제";
     }
 
 

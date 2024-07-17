@@ -26,11 +26,5 @@ public class FreeLikeController {
 
     }
 
-    // TODO : user 정보 연결 시, delete 필요 없을거 같음 - 참고 day13 실습
-    @RequestMapping(method = RequestMethod.GET, value = "/delete")
-    public ResponseEntity<FreeLikeRes> delete(Long idx){
-        FreeLikeRes res = freeLikeService.delete(idx);
-        return ResponseEntity.ok(res);
-    }
 
 }

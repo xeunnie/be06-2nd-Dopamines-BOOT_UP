@@ -49,6 +49,8 @@ public enum BaseResponseStatus {
      * 4600 : NOTICE 에러 - 승은
      */
     NOTICE_ERROR_CONVENTION(false, 4600, "에러 예시"),
+    NOTICE_NOT_FOUND(false, 4601, "해당하는 게시글을 찾을 수 없습니다."),
+    NOTICE_NOT_AUTHORIZED(false, 4602, "해당 게시글에 대한 권한이 없습니다."),
 
 
     /**

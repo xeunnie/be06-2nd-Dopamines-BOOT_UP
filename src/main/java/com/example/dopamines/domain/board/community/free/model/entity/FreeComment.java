@@ -1,0 +1,39 @@
+package com.example.dopamines.domain.board.community.free.model.entity;
+
+import com.example.dopamines.domain.user.model.entity.User;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FreeComment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idx;
+
+    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User user;
+
+    private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_idx")
+    private FreeBoard freeBoard;
+
+    @OneToMany(mappedBy = "freeComment")
+    private List<FreeCommentLike> likes;
+
+    @OneToMany(mappedBy = "freeComment")
+    private List<FreeRecomment> freeRecomments;
+
+}

@@ -103,6 +103,7 @@ public class FreeBoardService {
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
         freeBoardRepository.delete(freeBoard);
+        // TODO : 게시글 삭제 시, 해당 게시글의 댓글, 댓글좋아요, 대댓글, 대댓글좋아요 삭제
         return  "게시글 삭제";
     }
 

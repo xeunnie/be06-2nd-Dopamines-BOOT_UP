@@ -1,5 +1,6 @@
 package com.example.dopamines.global.security;
 
+import com.example.dopamines.domain.user.model.entity.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;

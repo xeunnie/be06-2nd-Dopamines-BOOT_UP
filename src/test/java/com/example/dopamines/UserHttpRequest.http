@@ -1,0 +1,44 @@
+### 유저 회원가입 테스트
+POST http://localhost:8080/user/signup
+Content-Type: application/json
+
+{
+  "email": "ehdgusjdbswl@naver.com",
+  "password": "qwer1234",
+  "name": "유송연",
+  "nickname": "익명1",
+  "phoneNumber": "010-1111-2222",
+  "address": "보라매로87"
+}
+
+### 유저 로그인 테스트 ( JWT 토큰 받아오기 )
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "ehdgusjdbswl@naver.com",
+  "password": "qwer1234"
+}
+
+### 유저 권한확인 ROLE_USER
+POST http://localhost:8080/user/role-user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZHgiOjEsImVtYWlsIjoiZWhkZ3VzamRic3dsQG5hdmVyLmNvbSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjEwNDMzMTksImV4cCI6MTcyMTA0MzkxOX0.NAhr_OgNWuS3EkesOi6oNoCnM49TBkAdq1Pk04R6YBo
+
+{
+  "email": "test@test.com",
+  "password": "qwer1234"
+}
+
+### 유저 권한확인 ROLE_ADMIN
+POST http://localhost:8080/user/role-admin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZHgiOjEsImVtYWlsIjoiZWhkZ3VzamRic3dsQG5hdmVyLmNvbSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjEwNDMzMTksImV4cCI6MTcyMTA0MzkxOX0.NAhr_OgNWuS3EkesOi6oNoCnM49TBkAdq1Pk04R6YBo
+
+{
+  "email": "test@test.com",
+  "password": "qwer1234"
+}
+
+###
+GET http://localhost:8080/user/test

@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class FreeCommentReq {
-    private Long idx;
+    private Long idx; // freeBoardIdx
     private String content;
 }

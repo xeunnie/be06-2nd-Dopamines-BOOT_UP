@@ -1,5 +1,6 @@
 package com.example.dopamines.global.auth;
 
+import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.security.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

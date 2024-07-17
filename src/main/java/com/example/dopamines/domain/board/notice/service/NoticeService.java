@@ -4,17 +4,19 @@ import com.example.dopamines.domain.board.notice.model.entity.Notice;
 import com.example.dopamines.domain.board.notice.model.request.NoticeRequestDto;
 import com.example.dopamines.domain.board.notice.model.response.NoticeResponseDto;
 import com.example.dopamines.domain.board.notice.repository.NoticeRepository;
+import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import com.example.dopamines.global.infra.s3.CloudFileUploadService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,55 +26,20 @@ public class NoticeService {
     private final CloudFileUploadService fileUploadService;
 
     @Transactional
-    public NoticeResponseDto saveNotice(NoticeRequestDto noticeRequestDto) {
-        Notice notice = noticeRequestDto.toEntity();
-        Notice savedNotice = noticeRepository.save(notice);
-        return new NoticeResponseDto(
-                savedNotice.getId(),
-                savedNotice.getTitle(),
-                savedNotice.getContent(),
-                savedNotice.getDate(),
-                savedNotice.getCategory(),
-                savedNotice.isPrivate(),
-                savedNotice.getImageUrls()
-        );
+    public BaseResponse<NoticeResponseDto> saveNotice(NoticeRequestDto noticeRequestDto) {
+        try {
+            Notice notice = noticeRequestDto.toEntity();
+            Notice savedNotice = noticeRepository.save(notice);
+            return new BaseResponse<>(new NoticeResponseDto(savedNotice));
+        } catch (Exception e) {
+            return new BaseResponse<>(false, BaseResponseStatus.NOTICE_SAVE_FAILED.getMessage(), BaseResponseStatus.NOTICE_SAVE_FAILED.getCode(), null);
+        }
     }
 
     public NoticeResponseDto getNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Notice not found"));
-        return new NoticeResponseDto(
-                notice.getId(),
-                notice.getTitle(),
-                notice.getContent(),
-                notice.getDate(),
-                notice.getCategory(),
-                notice.isPrivate(),
-                notice.getImageUrls()
-        );
-    }
-
-    public NoticeResponseDto updateNotice(Long id, NoticeRequestDto noticeDetails) {
-        Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Notice not found"));
-        notice.setTitle(noticeDetails.getTitle());
-        notice.setContent(noticeDetails.getContent());
-        notice.setCategory(noticeDetails.getCategory());
-        notice.setPrivate(noticeDetails.isPrivate());
-        Notice savedNotice = noticeRepository.save(notice);
-        return new NoticeResponseDto(
-                savedNotice.getId(),
-                savedNotice.getTitle(),
-                savedNotice.getContent(),
-                savedNotice.getDate(),
-                savedNotice.getCategory(),
-                savedNotice.isPrivate(),
-                savedNotice.getImageUrls()
-        );
-    }
-
-    public void deleteNotice(Long id) {
-        noticeRepository.deleteById(id);
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
+        return new NoticeResponseDto(notice);
     }
 
     public List<Notice> getAllNotices() {
@@ -93,5 +60,28 @@ public class NoticeService {
 
     public Page<Notice> getAllPrivateNotices(Pageable pageable) {
         return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable);
+    }
+
+    @Transactional
+    public NoticeResponseDto updateNotice(Long id, NoticeRequestDto noticeDetails) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
+        notice.setTitle(noticeDetails.getTitle());
+        notice.setContent(noticeDetails.getContent());
+        notice.setCategory(noticeDetails.getCategory());
+        notice.setPrivate(noticeDetails.isPrivate());
+        Notice savedNotice = noticeRepository.save(notice);
+        return new NoticeResponseDto(savedNotice);
+    }
+
+    public void deleteNotice(Long id) {
+        try {
+            noticeRepository.deleteById(id);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.NOTICE_DELETE_FAILED);
+        }
+
     }
 }

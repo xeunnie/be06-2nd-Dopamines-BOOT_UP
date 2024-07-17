@@ -10,4 +10,5 @@ import lombok.Setter;
 public class FreeLikeRes {
     private Long idx;
     private Long boardIdx;
+    private Long userIdx;
 }

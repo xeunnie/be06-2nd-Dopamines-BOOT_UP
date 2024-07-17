@@ -37,6 +37,7 @@ public enum BaseResponseStatus {
      * 4200 : MARKET 에러 - 송연
      */
     MARKET_ERROR_CONVENTION(false, 4200, "해당하는 게시글을 찾을 수 없습니다,"),
+    MARKET_ERROR_USER_NOT_FOUND(false, 4201, "해당하는 유저를 찾을 수 없습니다."),
 
 
     /**

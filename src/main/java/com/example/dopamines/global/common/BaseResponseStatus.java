@@ -49,9 +49,22 @@ public enum BaseResponseStatus {
      * 4600 : NOTICE 에러 - 승은
      */
     NOTICE_ERROR_CONVENTION(false, 4600, "에러 예시"),
-    NOTICE_NOT_FOUND(false, 4601, "해당하는 게시글을 찾을 수 없습니다."),
-    NOTICE_NOT_AUTHORIZED(false, 4602, "해당 게시글에 대한 권한이 없습니다."),
 
+    //CRUD
+    NOTICE_SAVE_FAILED(false, 4601, "게시글 저장에 실패하였습니다."),
+    NOTICE_NOT_FOUND(false, 4601, "해당하는 게시글을 찾을 수 없습니다."),
+    NOTICE_UPDATE_FAILED(false, 4602, "게시글 수정에 실패하였습니다."),
+    NOTICE_DELETE_FAILED(false, 4603, "게시글 삭제에 실패하였습니다."),
+
+    NOTICE_IS_NOT_EXIST(false, 4604, "해당 게시글이 존재하지 않습니다."),
+    NOTICE_IS_NOT_AUTHORIZED(false, 4605, "해당 게시글에 대한 권한이 없습니다."),
+    NOTICE_IS_NOT_PUBLIC(false, 4606, "해당 게시글은 비공개 상태입니다."),
+
+    NOTICE_EMPTY_TITLE(false, 4604, "제목을 입력해주세요."),
+    NOTICE_EMPTY_CONTENT(false, 4605, "내용을 입력해주세요."),
+    NOTICE_EMPTY_CATEGORY(false, 4606, "카테고리를 입력해주세요."),
+    NOTICE_EMPTY_DATE(false, 4607, "날짜를 입력해주세요."),
+    NOTICE_EMPTY_PUBLIC(false, 4608, "공개 여부를 입력해주세요."),
 
     /**
      * 5000 : STUDY 에러 - 시현

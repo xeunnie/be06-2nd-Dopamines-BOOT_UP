@@ -1,7 +1,7 @@
 package com.example.dopamines.domain.board.community.free.controller;
 
 import com.example.dopamines.domain.board.community.free.model.request.FreeBoardReq;
-import com.example.dopamines.domain.board.community.free.model.request.UpdateFreeBoardReq;
+import com.example.dopamines.domain.board.community.free.model.request.FreeBoardUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
 import com.example.dopamines.domain.board.community.free.service.FreeBoardService;
@@ -47,7 +47,7 @@ public class FreeBoardController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UpdateFreeBoardReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeBoardUpdateReq req){
         User user = customUserDetails.getUser();
         FreeBoardRes response = freeBoardService.update(user,req);
         return ResponseEntity.ok(new BaseResponse<>(response));

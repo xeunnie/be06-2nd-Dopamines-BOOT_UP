@@ -2,12 +2,11 @@ package com.example.dopamines.domain.board.community.free.service;
 
 import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
 import com.example.dopamines.domain.board.community.free.model.request.FreeBoardReq;
-import com.example.dopamines.domain.board.community.free.model.request.UpdateFreeBoardReq;
+import com.example.dopamines.domain.board.community.free.model.request.FreeBoardUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
 import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
 import com.example.dopamines.domain.user.model.entity.User;
-import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
@@ -78,7 +76,7 @@ public class FreeBoardService {
         return freeBoardResList;
     }
 
-    public FreeBoardRes update(User user,UpdateFreeBoardReq req) {
+    public FreeBoardRes update(User user, FreeBoardUpdateReq req) {
         FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if(freeBoard.getUser().getIdx()!= user.getIdx()){

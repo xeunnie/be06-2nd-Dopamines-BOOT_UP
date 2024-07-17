@@ -16,11 +16,13 @@ import org.mapstruct.factory.Mappers;
 public interface ChatMessageMapper {
     ChatMessageMapper INSTANCE = Mappers.getMapper(ChatMessageMapper.class);
 
-//    @Mappings({
-//            @Mapping(target = "idx", ignore = true),
-//            @Mapping(target = "createdAt", expression = "java(LocalDate.now())")
-//    })
-//    ChatMessage toEntity(Request req, User sender, ChatRoom chatRoom);
+    @Mappings({
+            @Mapping(target = "idx", ignore = true),
+            @Mapping(target = "sender", source = "sender"),
+            @Mapping(target = "createdAt", expression = "java(LocalDate.now())")
+    })
+    ChatMessage toEntity(Request req, User sender, ChatRoom chatRoom);
+
 
     ChatMessageDTO.Response toDto(ChatMessage entity, String senderName);
 }

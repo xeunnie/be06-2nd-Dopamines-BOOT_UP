@@ -66,8 +66,6 @@ public class ChatRoomService {
         participatedChatRoomRepository.save(senderRoom);
         participatedChatRoomRepository.save(receiverRoom);
 
-        //TODO: receiver에게 알림
-
         return chatRoomMapper.toDto(chatRoom);
     }
 

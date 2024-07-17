@@ -37,7 +37,7 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-
+        config.addAllowedOrigin("http://127.0.0.1:5500"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:8080"); // 허용할 출처
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)

@@ -55,9 +55,10 @@ public class User {
 
 
     @Builder
-    public User(String email, String password, String name, String nickname, String role,
+    public User(Long idx, String email, String password, String name, String nickname, String role,
                 String phoneNumber, String address,
                 LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.idx = idx;
         this.email = email;
         this.password = password;
         this.name = name;

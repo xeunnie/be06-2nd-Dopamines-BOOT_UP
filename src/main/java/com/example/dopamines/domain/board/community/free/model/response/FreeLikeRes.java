@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class FreeLikeRes {
+    // TODO :  사용할지 안할지 결정
     private Long idx;
     private Long boardIdx;
     private Long userIdx;

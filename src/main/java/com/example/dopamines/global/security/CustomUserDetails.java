@@ -12,13 +12,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetails implements UserDetails {
     private final User user;
 
+    //여러가지 role 을 보유했을 때, 확인 작업
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
         collection.add(new GrantedAuthority(){
             @Override
             public String getAuthority() {
-                return "ROLE_USER";
+                return user.getRole();
             }
         });
         return collection;
@@ -34,10 +35,13 @@ public class CustomUserDetails implements UserDetails {
         return user.getEmail();
     }
 
-    //이메일 인증 실패하면 로그인 및 jwt 발급 실패
+    //이메일 인증 실패하거나,회원 정지 상태면 로그인 및 jwt 발급 실패
     @Override
     public boolean isEnabled() {
-        return user.isEnabled();
+        if(user.isEnabled() && user.isStatus()) {
+            return user.isEnabled();
+        }
+        return false;
     }
 
     public Long getIdx() {return user.getIdx();}

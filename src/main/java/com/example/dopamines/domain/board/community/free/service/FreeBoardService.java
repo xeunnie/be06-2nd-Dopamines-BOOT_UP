@@ -50,7 +50,7 @@ public class FreeBoardService {
         return "자유 게시판 게시글 등록";
     }
 
-    public FreeBoardReadRes read(User user,Long idx) {
+    public FreeBoardReadRes read(Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         return FreeBoardReadRes.builder()
@@ -78,9 +78,12 @@ public class FreeBoardService {
         return freeBoardResList;
     }
 
-    public FreeBoardRes update(UpdateFreeBoardReq req) {
+    public FreeBoardRes update(User user,UpdateFreeBoardReq req) {
         FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
+        if(freeBoard.getUser().getIdx()!= user.getIdx()){
+            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        }
         freeBoard.setTitle(req.getTitle());
         freeBoard.setContent(req.getContent());
         freeBoard.setImage(req.getImage());
@@ -90,6 +93,7 @@ public class FreeBoardService {
 
         return FreeBoardRes.builder()
                 .idx(freeBoard.getIdx())
+                .title(freeBoard.getContent())
                 .content(freeBoard.getContent())
                 .build();
 

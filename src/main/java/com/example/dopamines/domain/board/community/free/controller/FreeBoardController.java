@@ -34,7 +34,7 @@ public class FreeBoardController {
     @RequestMapping(method = RequestMethod.GET, value = "/read")
     public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        FreeBoardReadRes response = freeBoardService.read(user,idx);
+        FreeBoardReadRes response = freeBoardService.read(idx);
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
@@ -47,9 +47,10 @@ public class FreeBoardController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<FreeBoardRes> update(@RequestBody UpdateFreeBoardReq req){
-        FreeBoardRes response = freeBoardService.update(req);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UpdateFreeBoardReq req){
+        User user = customUserDetails.getUser();
+        FreeBoardRes response = freeBoardService.update(user,req);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")

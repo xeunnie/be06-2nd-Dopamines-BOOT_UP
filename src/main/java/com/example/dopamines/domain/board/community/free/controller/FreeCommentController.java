@@ -8,4 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/comment")
 @RequiredArgsConstructor
 public class FreeCommentController {
+    //private final FreeCommentService freeCommentService;
 }

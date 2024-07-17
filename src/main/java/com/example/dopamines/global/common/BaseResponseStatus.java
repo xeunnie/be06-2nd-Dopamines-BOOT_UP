@@ -30,7 +30,7 @@ public enum BaseResponseStatus {
     /**
      * 4000 : COMMUNITY 에러 - 수빈
      */
-    COMMUNITY_ERROR_CONVENTION(false, 4000, "해당하는 게시글을 찾을 수 없습니다,"),
+    COMMUNITY_BOARD_NOT_FOUND(false, 4000, "해당하는 게시글을 찾을 수 없습니다,"),
 
 
     /**

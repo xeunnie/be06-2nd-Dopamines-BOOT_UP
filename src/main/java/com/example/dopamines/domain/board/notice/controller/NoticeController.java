@@ -26,7 +26,7 @@ public class NoticeController {
     private NoticeService noticeService;
 
     @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
+//    @CheckAdmin("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BaseResponse<Notice>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
         Notice createdNotice = noticeService.saveNotice(noticeRequestDto).toEntity();
@@ -34,7 +34,7 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
+//    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<NoticeResponseDto>> getNotice(@PathVariable Long id) {
         Optional<NoticeResponseDto> noticeOptional = Optional.ofNullable(noticeService.getNotice(id));
         if (noticeOptional.isPresent()) {
@@ -47,7 +47,7 @@ public class NoticeController {
     }
 
     @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
+//    @CheckAdmin("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
@@ -55,7 +55,7 @@ public class NoticeController {
     }
 
     @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
+//    @CheckAdmin("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Notice>> updateNotice(@PathVariable Long id, @RequestBody NoticeRequestDto noticeRequestDto) {
         Notice updatedNotice = noticeService.updateNotice(id, noticeRequestDto).toEntity();
@@ -63,7 +63,7 @@ public class NoticeController {
     }
 
     @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
+//    @CheckAdmin("hasRole('ADMIN')")
     @GetMapping("/private")
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPrivateNotices(Pageable pageable) {
         Page<Notice> notices = noticeService.getAllPrivateNotices(pageable);
@@ -71,21 +71,21 @@ public class NoticeController {
     }
 
     @GetMapping("/public")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
+//    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPublicNotices(Pageable pageable) {
         Page<Notice> notices = noticeService.getAllPublicNotices(pageable);
         return ResponseEntity.ok(new BaseResponse<>(notices));
     }
 
     @GetMapping("/category")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
+//    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<Page<Notice>>> getNoticesByCategory(@RequestParam String category, Pageable pageable) {
         Page<Notice> notices = noticeService.getNoticesByCategory(category, pageable);
         return ResponseEntity.ok(new BaseResponse<>(notices));
     }
 
     @GetMapping("/date")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
+//    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<Page<Notice>>> getNoticesByDateRange(@RequestParam String startDate, @RequestParam String endDate, Pageable pageable) {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);

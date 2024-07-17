@@ -32,4 +32,12 @@ public class FreeLikeController {
 
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/recomment")
+    public ResponseEntity<BaseResponse<?>> createRecommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+        User user = customUserDetails.getUser();
+        String result = freeLikeService.createRecommentLike(user,idx);
+
+        return ResponseEntity.ok(new BaseResponse<>(result));
+    }
 }

@@ -1,13 +1,7 @@
 package com.example.dopamines.domain.board.community.free.service;
 
-import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
-import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
-import com.example.dopamines.domain.board.community.free.model.entity.FreeCommentLike;
-import com.example.dopamines.domain.board.community.free.model.entity.FreeLike;
-import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
-import com.example.dopamines.domain.board.community.free.repository.FreeCommentLikeRepository;
-import com.example.dopamines.domain.board.community.free.repository.FreeCommentRepository;
-import com.example.dopamines.domain.board.community.free.repository.FreeLikeRepository;
+import com.example.dopamines.domain.board.community.free.model.entity.*;
+import com.example.dopamines.domain.board.community.free.repository.*;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.example.dopamines.global.common.BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND;
-import static com.example.dopamines.global.common.BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND;
+import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +18,8 @@ public class FreeLikeService {
     private final FreeBoardRepository freeBoardRepository;
     private final FreeCommentLikeRepository freeCommentLikeRepository;
     private final FreeCommentRepository freeCommentRepository;
+    private final FreeRecommentRepository freeRecommentRepository;
+    private final FreeRecommentLikeRepository freeRecommentLikeRepository;
 
 
     public String createFreeBoardLike(User user, Long idx) {
@@ -63,5 +58,24 @@ public class FreeLikeService {
                 .build();
         freeCommentLikeRepository.save(freeCommentLike);
         return "자유 게시글 댓글 좋아요 등록";
+    }
+
+    public String createRecommentLike(User user, Long idx) {
+        Optional<FreeRecommentLike> result = freeRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
+        FreeRecommentLike freeRecommentLike;
+
+        if(result.isPresent()){ // 이미 좋아요한 경우
+            freeRecommentLike= result.get();
+            freeRecommentLikeRepository.delete(freeRecommentLike);
+            return "자유 게시글 대댓글 좋아요 취소";
+        }
+
+        FreeRecomment freeRecomment = freeRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+        freeRecommentLike = FreeRecommentLike.builder()
+                .user(user)
+                .freeRecomment(freeRecomment)
+                .build();
+        freeRecommentLikeRepository.save(freeRecommentLike);
+        return "자유 게시글 대댓글 좋아요 등록";
     }
 }

@@ -6,8 +6,6 @@ import com.example.dopamines.domain.board.notice.model.response.NoticeResponseDt
 import com.example.dopamines.domain.board.notice.service.NoticeService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
-import com.example.dopamines.global.common.annotation.CheckAdmin;
-import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +23,15 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
-    @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
+    // 공지사항 생성
     @PostMapping
     public ResponseEntity<BaseResponse<Notice>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
         Notice createdNotice = noticeService.saveNotice(noticeRequestDto).toEntity();
         return ResponseEntity.ok(new BaseResponse<>(createdNotice));
     }
 
+    // 공지사항 조회
     @GetMapping("/{id}")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<NoticeResponseDto>> getNotice(@PathVariable Long id) {
         Optional<NoticeResponseDto> noticeOptional = Optional.ofNullable(noticeService.getNotice(id));
         if (noticeOptional.isPresent()) {
@@ -46,24 +43,6 @@ public class NoticeController {
         }
     }
 
-    @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deleteNotice(@PathVariable Long id) {
-        noticeService.deleteNotice(id);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.NOTICE_ERROR_CONVENTION));
-    }
-
-    @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<Notice>> updateNotice(@PathVariable Long id, @RequestBody NoticeRequestDto noticeRequestDto) {
-        Notice updatedNotice = noticeService.updateNotice(id, noticeRequestDto).toEntity();
-        return ResponseEntity.ok(new BaseResponse<>(updatedNotice));
-    }
-
-    @CheckAuthentication
-    @CheckAdmin("hasRole('ADMIN')")
     @GetMapping("/private")
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPrivateNotices(Pageable pageable) {
         Page<Notice> notices = noticeService.getAllPrivateNotices(pageable);
@@ -71,25 +50,37 @@ public class NoticeController {
     }
 
     @GetMapping("/public")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPublicNotices(Pageable pageable) {
         Page<Notice> notices = noticeService.getAllPublicNotices(pageable);
         return ResponseEntity.ok(new BaseResponse<>(notices));
     }
 
     @GetMapping("/category")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<Page<Notice>>> getNoticesByCategory(@RequestParam String category, Pageable pageable) {
         Page<Notice> notices = noticeService.getNoticesByCategory(category, pageable);
         return ResponseEntity.ok(new BaseResponse<>(notices));
     }
 
     @GetMapping("/date")
-    @CheckAdmin("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<BaseResponse<Page<Notice>>> getNoticesByDateRange(@RequestParam String startDate, @RequestParam String endDate, Pageable pageable) {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);
         Page<Notice> notices = noticeService.getNoticesByDateRange(start, end, pageable);
         return ResponseEntity.ok(new BaseResponse<>(notices));
     }
+
+    // 공지사항 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<Notice>> updateNotice(@PathVariable Long id, @RequestBody NoticeRequestDto noticeRequestDto) {
+        Notice updatedNotice = noticeService.updateNotice(id, noticeRequestDto).toEntity();
+        return ResponseEntity.ok(new BaseResponse<>(updatedNotice));
+    }
+
+    // 공지사항 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteNotice(@PathVariable Long id) {
+        noticeService.deleteNotice(id);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.NOTICE_ERROR_CONVENTION));
+    }
+
 }

@@ -1,14 +1,13 @@
 package com.example.dopamines.domain.chat.controller;
 
+import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO;
 import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO;
 import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.Response;
-import com.example.dopamines.domain.chat.model.entity.ChatMessage;
 import com.example.dopamines.domain.chat.service.ChatRoomService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import com.example.dopamines.global.security.CustomUserDetails;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,10 +45,9 @@ public class ChatRoomController {
 
     // 채팅방 메시지들을 받아오는 기능
     @GetMapping("/rooms/{roomId}/messages")
-    public List<ChatMessage> getMessages(@PathVariable String roomId) {
-
-
-        return chatRooms.getOrDefault(roomId, new ArrayList<>());
+    public ResponseEntity<BaseResponse<List<ChatMessageDTO.Response>>> getMessages(@PathVariable String roomId) {
+        List<ChatMessageDTO.Response> messages = chatRoomService.getAllMessage(roomId);
+        return ResponseEntity.ok(new BaseResponse<>(messages));
     }
 
     //TODO: 채팅방 삭제 or 나가기 기능

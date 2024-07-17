@@ -2,11 +2,15 @@
 
 import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_ERROR_USER_NOT_FOUND;
 
+import com.example.dopamines.domain.chat.mapper.ChatMessageMapper;
 import com.example.dopamines.domain.chat.mapper.ChatRoomMapper;
+import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO;
 import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO;
-import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.*;
+import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.Response;
+import com.example.dopamines.domain.chat.model.entity.ChatMessage;
 import com.example.dopamines.domain.chat.model.entity.ChatRoom;
 import com.example.dopamines.domain.chat.model.entity.ParticipatedChatRoom;
+import com.example.dopamines.domain.chat.repository.ChatMessageRepository;
 import com.example.dopamines.domain.chat.repository.ChatRoomRepository;
 import com.example.dopamines.domain.chat.repository.ParticipatedChatRoomRepository;
 import com.example.dopamines.domain.user.model.entity.User;
@@ -19,16 +23,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class      ChatRoomService {
+public class ChatRoomService {
     private final ParticipatedChatRoomRepository participatedChatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomMapper chatRoomMapper;
     private final UserRepository userRepository;
 
-    public List<Response> findAll(User user) {
+    private final ChatRoomMapper chatRoomMapper;
+
+    private final ChatMessageMapper chatMessageMapper;
+
+    public List<ChatRoomDTO.Response> findAll(User user) {
         List<ParticipatedChatRoom> chatRooms = participatedChatRoomRepository.findAllByUser(user);
-        List<Response> dto = chatRooms.stream().map((room) ->
-                Response.builder()
+        List<ChatRoomDTO.Response> dto = chatRooms.stream().map((room) ->
+                ChatRoomDTO.Response.builder()
                         .idx(room.getChatRoom().getIdx())
                         .name(room.getChatRoom().getName())
                         .build()
@@ -38,7 +46,7 @@ public class      ChatRoomService {
     }
 
 
-    public Response create(Request req, User sender) {
+    public ChatRoomDTO.Response create(ChatRoomDTO.Request req, User sender) {
         // chat room 생성 -> uuid
         User receiver = userRepository.findById(req.getReceiverIdx()).orElseThrow(()->new BaseException(MARKET_ERROR_USER_NOT_FOUND));
         ChatRoom chatRoom = chatRoomMapper.toEntity(req.getName());
@@ -61,5 +69,13 @@ public class      ChatRoomService {
         //TODO: receiver에게 알림
 
         return chatRoomMapper.toDto(chatRoom);
+    }
+
+    public List<ChatMessageDTO.Response> getAllMessage(String roomId) {
+        List<ChatMessage> messages = chatMessageRepository.findAllById(roomId);
+        List<ChatMessageDTO.Response> responses = messages.stream().map(
+                (message) -> chatMessageMapper.toDto(message, message.getSender().getName())
+        ).collect(Collectors.toList());
+        return responses;
     }
 }

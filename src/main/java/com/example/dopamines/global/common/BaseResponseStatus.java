@@ -11,12 +11,17 @@ public enum BaseResponseStatus {
      * 1000 : 요청 성공
      */
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
+    USER_ACCESS_SUCCESS(true,1001,"계정 활성화에 성공하였습니다."),
 
 
     /**
      * 3000 : USER 에러 - 동현
      */
     USER_NOT_FOUND(false, 3000, "해당하는 회원을 찾을 수 없습니다."),
+    USER_INVALID_SINGUP_REQUEST(false, 3001, "회원가입 요청이 정상적이지 않습니다."),
+    USER_INVALID_MAIL_INFO(false,3002,"메일 저장 정보가 정상적이지 않습니다."),
+    USER_UNABLE_USER_ACCESS(false,3003,"이메일 혹은, 요청값을 확인해주세요."),
+
     UNAUTHORIZED_ACCESS(false, 3001, "접근 권한이 없습니다."),
     USER_NOT_AUTHENTICATED(false, 3001, "로그인이 필요합니다."),
 

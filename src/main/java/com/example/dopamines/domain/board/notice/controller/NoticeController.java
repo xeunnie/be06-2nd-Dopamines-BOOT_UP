@@ -80,6 +80,6 @@ public class NoticeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.NOTICE_ERROR_CONVENTION));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }
 }

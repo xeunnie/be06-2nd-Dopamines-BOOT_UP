@@ -4,6 +4,7 @@ import com.example.dopamines.domain.board.notice.model.entity.Notice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +20,9 @@ public class NoticeResponseDto {
     private String category;
     private boolean isPrivate;
     private List<String> imageUrls;
+
+    public NoticeResponseDto(Notice savedNotice) {
+    }
 
     public Notice toEntity() {
         return Notice.builder()

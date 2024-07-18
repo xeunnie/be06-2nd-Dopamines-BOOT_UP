@@ -10,6 +10,7 @@ public enum BaseResponseStatus {
     /**
      * 1000 : 요청 성공
      */
+    SUCCESS(true, 1000, "요청에 성공하였습니다."),
     SUCCESS_OK(true, 1000, "요청에 성공하였습니다."),
     SUCCESS_CREATED(true, 1001, "생성에 성공하였습니다."),
     SUCCESS_ACCEPTED(true, 1002, "수락에 성공하였습니다."), //업데이트 성공

@@ -1,4 +1,4 @@
-package com.example.dopamines.domain.board.community.free.model.entity;
+package com.example.dopamines.domain.board.community.open.model.entity;
 
 import com.example.dopamines.domain.user.model.entity.User;
 import jakarta.persistence.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FreeBoard {
+public class OpenBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -25,14 +25,13 @@ public class FreeBoard {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ElementCollection
-    private List<String> imageUrlList;
+    private String image;
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "freeBoard")
-    List<FreeLike> likes;
+    @OneToMany(mappedBy = "openBoard")
+    List<OpenLike> likes;
 
-    @OneToMany(mappedBy = "freeBoard")
-    private List<FreeComment> comments;
+    @OneToMany(mappedBy = "openBoard")
+    private List<OpenComment> comments;
 }

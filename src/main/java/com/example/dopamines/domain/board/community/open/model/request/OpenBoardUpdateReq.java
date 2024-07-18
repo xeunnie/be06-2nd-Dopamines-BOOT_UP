@@ -1,4 +1,4 @@
-package com.example.dopamines.domain.board.community.free.model.request;
+package com.example.dopamines.domain.board.community.open.model.request;
 
 import lombok.*;
 
@@ -7,8 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FreeBoardUpdateReq {
+public class OpenBoardUpdateReq {
     private Long idx;
     private String title;
     private String content;
+    private String image;
 }

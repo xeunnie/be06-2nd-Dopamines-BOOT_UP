@@ -2,6 +2,7 @@ package com.example.dopamines.global.common;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.SUCCESS;
 
+import com.example.dopamines.domain.board.notice.model.entity.Notice;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

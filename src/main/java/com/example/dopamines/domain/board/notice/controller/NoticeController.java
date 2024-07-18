@@ -6,7 +6,6 @@ import com.example.dopamines.domain.board.notice.model.response.NoticeResponseDt
 import com.example.dopamines.domain.board.notice.service.NoticeService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
-import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +25,8 @@ public class NoticeController {
 
     // 공지사항 생성
     @PostMapping
-    public ResponseEntity<BaseResponse<Notice>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
-        Notice createdNotice = noticeService.saveNotice(noticeRequestDto).toEntity();
+    public ResponseEntity<BaseResponse<BaseResponse<NoticeResponseDto>>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
+        BaseResponse<NoticeResponseDto> createdNotice = noticeService.saveNotice(noticeRequestDto);
         return ResponseEntity.ok(new BaseResponse<>(createdNotice));
     }
 

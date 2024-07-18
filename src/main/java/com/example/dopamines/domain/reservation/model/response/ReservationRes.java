@@ -4,7 +4,7 @@ import com.example.dopamines.domain.reservation.model.entity.Seat;
 import com.example.dopamines.domain.user.model.entity.User;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 public class ReservationRes {
     private Long idx;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private Long userIdx;
     private String userEmail;
 

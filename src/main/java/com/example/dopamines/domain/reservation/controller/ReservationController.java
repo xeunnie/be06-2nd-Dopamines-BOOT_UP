@@ -20,10 +20,10 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @PostMapping("/reservate")
-    public ResponseEntity<BaseResponse<ReservationRes>> reservate(@RequestBody ReservationReq req) {
+    @PostMapping("/reserve")
+    public ResponseEntity<BaseResponse<ReservationRes>> reserve(@RequestBody ReservationReq req) {
         try {
-            ReservationRes response = reservationService.reservate(req);
+            ReservationRes response = reservationService.reserve(req);
             return ResponseEntity.ok(new BaseResponse<>(response));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.
@@ -42,14 +42,13 @@ public class ReservationController {
 
     }
 
-    @GetMapping("/cancel")
-    public ResponseEntity<BaseResponse<String>> cancel(Long idx) {
+    @DeleteMapping("/cancel/{idx}")
+    public ResponseEntity<BaseResponse<String>> cancel(@PathVariable Long idx) {
         try {
             reservationService.cancel(idx);
             return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.
-                    BAD_REQUEST).body(new BaseResponse<>(BaseResponseStatus.RESERVATION_DELETE_FAILED));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(BaseResponseStatus.RESERVATION_DELETE_FAILED));
         }
     }
 }

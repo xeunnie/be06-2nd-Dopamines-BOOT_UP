@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReservationListRes {
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private String time;
     private String section;
 }

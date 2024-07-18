@@ -27,11 +27,12 @@ public class JwtUtil {
         this.customUserDetailService = new CustomUserDetailService(userRepository);
     }
 
-    public String createToken(Long idx, String email, String role) {
+    public String createToken(Long idx, String email, String role,String nickname) {
         return Jwts.builder()
                 .claim("idx",idx)
                 .claim("email",email)
                 .claim("role",role)
+                .claim("nickname",nickname)
                 .issuedAt(new Date(System.currentTimeMillis())) //생성시간
                 .expiration(new Date(System.currentTimeMillis()+ 200 * 60 * 1000))   //만료시간
                 .signWith(secretKey) //제일 중요 -> 우리만 알 수 있는 secretKey

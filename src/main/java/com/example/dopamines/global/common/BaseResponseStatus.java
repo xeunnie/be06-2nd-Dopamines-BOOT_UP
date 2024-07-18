@@ -60,7 +60,16 @@ public enum BaseResponseStatus {
     /**
      * 5000 : STUDY 에러 - 시현
      */
-    STUDY_ERROR_CONVENTION(false, 5000, "에러 예시"),
+    RESERVATION_ERROR_CONVENTION(false, 5000, "에러 예시"),
+
+    RESERVATION_CREATE_FAILED(false, 5001, "예약 신청에 실패하였습니다."),
+    RESERVATION_LOAD_FAILED(false, 5002, "예약 조회에 실패하였습니다."),
+//    RESERVATION_UPDATE_FAILED(false, 5003, "예약 수정에 실패하였습니다."),
+    RESERVATION_DELETE_FAILED(false, 5004, "예약삭제에 실패하였습니다."),
+
+    RESERVTION_SEAT_ALREADY_TAKEN(false,5005, "이미 선택된 좌석입니다."),
+    RESERVATION_NOT_ALLOWED_SEAT(false,5006, "예약이 불가능한 좌석입니다."),
+    RESERVATION_NOT_ALLOWED_TIME(false, 5007, "예약이 불가능한 시간대입니다."),
 
 
     /**

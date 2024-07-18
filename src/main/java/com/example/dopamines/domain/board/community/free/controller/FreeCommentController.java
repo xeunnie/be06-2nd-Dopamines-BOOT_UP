@@ -31,13 +31,14 @@ public class FreeCommentController {
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read")
-    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
-        User user = customUserDetails.getUser();
-        List<FreeCommentReadRes> response = freeCommentService.read(user,idx);
-
-        return ResponseEntity.ok(new BaseResponse<>(response));
-    }
+    // 내가 쓴 댓글 조회
+//    @RequestMapping(method = RequestMethod.GET, value = "/read")
+//    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+//        User user = customUserDetails.getUser();
+//        List<FreeCommentReadRes> response = freeCommentService.read(user);
+//
+//        return ResponseEntity.ok(new BaseResponse<>(response));
+//    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
     public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeCommentUpdateReq req){

@@ -26,7 +26,7 @@ public class AdministrationAspect {
         log.info("[ADMIN][ASPECT] check admin");
         // 관리자 권한 체크
         if (!isAdmin()) {
-            throw new BaseException(BaseResponseStatus.NOTICE_NOT_AUTHORIZED);
+            throw new BaseException(BaseResponseStatus.NOTICE_IS_NOT_AUTHORIZED);
         }
     }
 }

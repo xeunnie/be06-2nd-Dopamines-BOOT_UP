@@ -2,8 +2,10 @@ package com.example.dopamines.domain.board.community.free.controller;
 
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentUpdateReq;
+import com.example.dopamines.domain.board.community.free.model.request.FreeRecommentReq;
+import com.example.dopamines.domain.board.community.free.model.request.FreeRecommentUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
-import com.example.dopamines.domain.board.community.free.service.FreeCommentService;
+import com.example.dopamines.domain.board.community.free.service.FreeRecommentService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.security.CustomUserDetails;
@@ -18,31 +20,24 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/recomment")
 @RequiredArgsConstructor
-public class FreeCommentController {
-    private final FreeCommentService freeCommentService;
+public class FreeRecommentController {
+    private final FreeRecommentService freeRecommentService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeCommentReq req){
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeRecommentReq req){
         User user = customUserDetails.getUser();
-        String response = freeCommentService.create(user,req);
+        String response = freeRecommentService.create(user,req);
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read")
-    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
-        User user = customUserDetails.getUser();
-        List<FreeCommentReadRes> response = freeCommentService.read(user,idx);
-
-        return ResponseEntity.ok(new BaseResponse<>(response));
-    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeCommentUpdateReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeRecommentUpdateReq req){
         User user = customUserDetails.getUser();
-        String response = freeCommentService.update(user,req);
+        String response = freeRecommentService.update(user,req);
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
@@ -50,8 +45,9 @@ public class FreeCommentController {
     @RequestMapping(method = RequestMethod.GET, value = "/delete")
     public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails,Long idx){
         User user = customUserDetails.getUser();
-        String response = freeCommentService.delete(user,idx);
+        String response = freeRecommentService.delete(user,idx);
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 }
+

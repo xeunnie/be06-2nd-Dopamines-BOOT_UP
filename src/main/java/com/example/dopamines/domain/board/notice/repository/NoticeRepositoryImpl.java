@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import static com.example.dopamines.domain.board.notice.model.entity.QNotice.notice;
 
 @Repository
@@ -18,7 +20,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
 
     @Override
     public Page<Notice> findNoticesByCriteria(Boolean isPrivate, String category, int page, int size) {
-        BooleanExpression predicate = notice.isNotNull(); // Base condition, always true
+        BooleanExpression predicate = notice.isNotNull();
 
         if (isPrivate != null) {
             predicate = predicate.and(notice.isPrivate.eq(isPrivate));
@@ -40,5 +42,10 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .fetchCount();
 
         return new PageImpl<>(notices, PageRequest.of(page, size), total);
+    }
+
+    @Override
+    public Page<Notice> findNotices() {
+        return null;
     }
 }

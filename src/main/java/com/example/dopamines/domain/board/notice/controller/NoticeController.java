@@ -27,7 +27,7 @@ public class NoticeController {
     @PostMapping
     public ResponseEntity<BaseResponse<BaseResponse<NoticeResponseDto>>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
         BaseResponse<NoticeResponseDto> createdNotice = noticeService.saveNotice(noticeRequestDto);
-        return ResponseEntity.ok(new BaseResponse<>(createdNotice));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice));
     }
 
     // 공지사항 조회

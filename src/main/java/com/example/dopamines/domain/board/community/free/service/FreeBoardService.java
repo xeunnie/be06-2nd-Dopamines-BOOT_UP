@@ -32,7 +32,7 @@ public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
 
     @Transactional
-    public String create(User user, FreeBoardReq req) {
+    public String create(User user, FreeBoardReq req, List<String> imageUrlList) {
 
         if(req.getTitle() == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
@@ -44,7 +44,7 @@ public class FreeBoardService {
                 .title(req.getTitle())
                 .content(req.getContent())
                 .user(user)
-                .image(req.getImage())
+                .imageUrlList(imageUrlList)
                 .createdAt(LocalDateTime.now())
                 .build()
         );
@@ -86,7 +86,7 @@ public class FreeBoardService {
                 .title(freeBoard.getTitle())
                 .content(freeBoard.getContent())
                 .author(freeBoard.getUser().getNickname())
-                .image(freeBoard.getImage())
+//                .image(freeBoard.getImage())
                 .created_at(LocalDateTime.now())
                 .likeCount(freeBoard.getLikes().size())
                 .freeCommentList(freeCommentReadResList)
@@ -116,7 +116,7 @@ public class FreeBoardService {
         }
         freeBoard.setTitle(req.getTitle());
         freeBoard.setContent(req.getContent());
-        freeBoard.setImage(req.getImage());
+//        freeBoard.setImage(req.getImage());
         freeBoard.setCreatedAt(LocalDateTime.now());
 
         freeBoardRepository.save(freeBoard);

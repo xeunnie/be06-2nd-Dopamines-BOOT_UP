@@ -23,6 +23,10 @@ public enum BaseResponseStatus {
      * 3000 : USER 에러 - 동현
      */
     USER_NOT_FOUND(false, 3000, "해당하는 회원을 찾을 수 없습니다."),
+    USER_INVALID_SINGUP_REQUEST(false, 3001, "회원가입 요청이 정상적이지 않습니다."),
+    USER_INVALID_MAIL_INFO(false,3002,"메일 저장 정보가 정상적이지 않습니다."),
+    USER_UNABLE_USER_ACCESS(false,3003,"이메일 혹은, 요청값을 확인해주세요."),
+
     UNAUTHORIZED_ACCESS(false, 3001, "접근 권한이 없습니다."),
     USER_NOT_AUTHENTICATED(false, 3002, "로그인이 필요합니다."),
 
@@ -80,7 +84,6 @@ public enum BaseResponseStatus {
     /**
      * 4200 : MARKET_BOARD 에러 - 송연
      */
-    MARKET_ERROR_CONVENTION(false, 4200, "해당하는 게시글을 찾을 수 없습니다,"),
 
     // CRUD
     // CREATE
@@ -120,11 +123,11 @@ public enum BaseResponseStatus {
     CHATROOM_LOAD_FAILED(false, 4307, "채팅방 불러오기에 실패하였습니다."),
     CHATROOM_NOT_FOUND(false, 4308, "해당하는 채팅방을 찾을 수 없습니다."),
 
-
     /**
      * 4400 : PROJECT 에러 - 시현
      */
     PROJECT_ERROR_CONVENTION(false, 4400, "에러 예시"),
+    SEAT_NOT_FOUND(false, 4401, "해당하는 좌석을 찾을 수 없습니다."),
 
     // CRUD
     // CREATE
@@ -144,6 +147,7 @@ public enum BaseResponseStatus {
     /**
      * 4600 : NOTICE 에러 - 승은
      */
+
     //CRUD
     NOTICE_SAVE_FAILED(false, 4600, "게시글 저장에 실패하였습니다."),
     NOTICE_NOT_FOUND(false, 4601, "해당하는 게시글을 찾을 수 없습니다."),

@@ -4,6 +4,10 @@ import com.example.dopamines.domain.user.model.request.UserSignupRequest;
 import com.example.dopamines.domain.user.model.response.UserSignupResponse;
 import com.example.dopamines.domain.user.service.UserEmailService;
 import com.example.dopamines.domain.user.service.UserService;
+import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,29 +25,26 @@ public class UserController {
     private final UserEmailService emailService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserSignupResponse> singup(@RequestBody UserSignupRequest request){
+    public ResponseEntity<BaseResponse<?>> singup(@Valid @RequestBody UserSignupRequest request){
 
         UserSignupResponse signupResult = userService.signup(request);
 
-        if(signupResult == null){
-            return ResponseEntity.badRequest().body(null);
-        }
         // 인증을 할 uuid를 생성하고 일단 저장
         String getUuid = emailService.sendEmail(request);
         emailService.save(request,getUuid);
 
-        return ResponseEntity.ok(signupResult);
+        return ResponseEntity.ok(new BaseResponse<>(signupResult));
     }
 
     @GetMapping("/active")
-    public ResponseEntity<String> setActiveUser(String email, String uuid){
+    public ResponseEntity<BaseResponse<?>> setActiveUser(String email, String uuid){
         //요청 이메일 및 uuid와 서버 uuid 비교
-        boolean successVerifying = emailService.verifyUser(email, uuid);
-        if(successVerifying){
-            userService.setActiveOn(email);
-            return ResponseEntity.ok("계정 활성화 성공");
-        }
-        return ResponseEntity.badRequest().body("계정 활성화 실패");
+        emailService.verifyUser(email, uuid);
+//        if(successVerifying){
+        userService.setActiveOn(email);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_ACCESS_SUCCESS));
+//        }
+//        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
     }
 
     @GetMapping("/test")

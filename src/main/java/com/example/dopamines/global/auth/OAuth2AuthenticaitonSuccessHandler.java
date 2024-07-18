@@ -68,9 +68,11 @@ public class OAuth2AuthenticaitonSuccessHandler extends SimpleUrlAuthenticationS
         }
         Long idx = user.getIdx();
         String role = user.getRole();
+        //Todo : 임시 닉네임 -> 변경 필요
+        String nick = user.getNickname();
 
         //토큰 발급
-        String token = jwtUtil.createToken(idx,nickname,role);
+        String token = jwtUtil.createToken(idx,nickname,role,nick);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION,"Bearer " + token);

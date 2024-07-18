@@ -25,6 +25,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final CloudFileUploadService fileUploadService;
 
+    // 공지사항 생성
     @Transactional
     public BaseResponse<NoticeResponseDto> saveNotice(NoticeRequestDto noticeRequestDto) {
         try {
@@ -36,6 +37,7 @@ public class NoticeService {
         }
     }
 
+    // 공지사항 조회
     public NoticeResponseDto getNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
@@ -62,10 +64,29 @@ public class NoticeService {
         return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable);
     }
 
+
+    // 공지사항 수정
     @Transactional
     public NoticeResponseDto updateNotice(Long id, NoticeRequestDto noticeDetails) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
+        updateNoticeDetails(notice, noticeDetails);
+        Notice savedNotice = noticeRepository.save(notice);
+        return convertToNoticeResponseDto(savedNotice);
+    }
+
+    private NoticeResponseDto convertToNoticeResponseDto(Notice notice) {
+        return new NoticeResponseDto(
+                notice.getId(),
+                notice.getTitle(),
+                notice.getContent(),
+                notice.getDate(),
+                notice.getCategory(),
+                notice.isPrivate(),
+                notice.getImageUrls());
+    }
+
+    private void updateNoticeDetails(Notice notice, NoticeRequestDto noticeDetails) {
         notice.setTitle(noticeDetails.getTitle());
         notice.setContent(noticeDetails.getContent());
         notice.setCategory(noticeDetails.getCategory());
@@ -74,6 +95,8 @@ public class NoticeService {
         return new NoticeResponseDto(savedNotice);
     }
 
+
+    // 공지사항 삭제
     public void deleteNotice(Long id) {
         try {
             noticeRepository.deleteById(id);
@@ -82,6 +105,6 @@ public class NoticeService {
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.NOTICE_DELETE_FAILED);
         }
-
     }
+
 }

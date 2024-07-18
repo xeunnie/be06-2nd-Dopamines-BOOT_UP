@@ -86,7 +86,7 @@ public class NoticeService {
                 notice.getImageUrls());
     }
 
-    private void updateNoticeDetails(Notice notice, NoticeRequestDto noticeDetails) {
+    private NoticeResponseDto updateNoticeDetails(Notice notice, NoticeRequestDto noticeDetails) {
         notice.setTitle(noticeDetails.getTitle());
         notice.setContent(noticeDetails.getContent());
         notice.setCategory(noticeDetails.getCategory());

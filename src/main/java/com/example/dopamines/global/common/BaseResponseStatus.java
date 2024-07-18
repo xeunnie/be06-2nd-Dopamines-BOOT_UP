@@ -22,6 +22,8 @@ public enum BaseResponseStatus {
     /**
      * 3000 : USER 에러 - 동현
      */
+    USER_ACCESS_SUCCESS(true, 1000, "사용자 인증에 성공하였습니다."),
+    USER_ACCESS_FAIL(true, 1001, "사용자 인증에 실패하였습니다."),
     USER_NOT_FOUND(false, 3000, "해당하는 회원을 찾을 수 없습니다."),
     USER_INVALID_SINGUP_REQUEST(false, 3001, "회원가입 요청이 정상적이지 않습니다."),
     USER_INVALID_MAIL_INFO(false,3002,"메일 저장 정보가 정상적이지 않습니다."),
@@ -65,6 +67,11 @@ public enum BaseResponseStatus {
     /**
      * 4000 : COMMUNITY 에러 - 수빈
      */
+    COMMUNITY_COMMENT_NOT_FOUND(false, 4000, "해당하는 댓글을 찾을 수 없습니다."),
+    COMMUNITY_RECOMMENT_NOT_FOUND(false, 4001, "해당하는 대댓글을 찾을 수 없습니다."),
+    COMMUNITY_CONTENT_NOT_FOUND(false, 4002, "내용을 입력해주세요."),
+    COMMUNITY_USER_NOT_AUTHOR(false, 4003, "해당 게시글에 대한 권한이 없습니다."),
+    COMMUNITY_TITLE_NOT_FOUND(false, 4004, "제목을 입력해주세요."),
 
     //CRUD
     //create
@@ -84,6 +91,9 @@ public enum BaseResponseStatus {
     /**
      * 4200 : MARKET_BOARD 에러 - 송연
      */
+    MARKET_ERROR_CONVENTION(false, 4200, "에러 예시"),
+    MARKET_ERROR_USER_NOT_FOUND(false, 4201, "해당하는 회원을 찾을 수 없습니다."),
+    MARKET_ERROR_CHATROOM_NOT_FOUND(false, 4202, "해당하는 채팅방을 찾을 수 없습니다."),
 
     // CRUD
     // CREATE
@@ -167,6 +177,8 @@ public enum BaseResponseStatus {
     /**
      * 5000 : RESERVE 에러 - 시현
      */
+    RESERVATION_CREATE_FAILED(false, 5000, "예약 생성에 실패하였습니다."),
+    RESERVATION_DELETE_FAILED(false, 5001, "예약 삭제에 실패하였습니다."),
     // CRUD
     // CREATE
     RESERVE_SAVE_FAILED(false, 5000, "예약 저장에 실패하였습니다."),

@@ -48,9 +48,11 @@ public class FreeBoardController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeBoardUpdateReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreeBoardUpdateReq req,@RequestPart MultipartFile[] files){
         User user = customUserDetails.getUser();
-        FreeBoardRes response = freeBoardService.update(user,req);
+        String rootType ="FREEBOARD";
+        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
+        FreeBoardRes response = freeBoardService.update(user,req,urlLists);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 

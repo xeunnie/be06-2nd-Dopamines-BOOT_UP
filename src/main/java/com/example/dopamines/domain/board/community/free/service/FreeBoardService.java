@@ -86,7 +86,7 @@ public class FreeBoardService {
                 .title(freeBoard.getTitle())
                 .content(freeBoard.getContent())
                 .author(freeBoard.getUser().getNickname())
-//                .image(freeBoard.getImage())
+                .imageUrlList(freeBoard.getImageUrlList())
                 .created_at(LocalDateTime.now())
                 .likeCount(freeBoard.getLikes().size())
                 .freeCommentList(freeCommentReadResList)
@@ -108,7 +108,7 @@ public class FreeBoardService {
         return freeBoardResList;
     }
 
-    public FreeBoardRes update(User user, FreeBoardUpdateReq req) {
+    public FreeBoardRes update(User user, FreeBoardUpdateReq req,List<String> imageUrlList) {
         FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if(freeBoard.getUser().getIdx()!= user.getIdx()){
@@ -116,7 +116,7 @@ public class FreeBoardService {
         }
         freeBoard.setTitle(req.getTitle());
         freeBoard.setContent(req.getContent());
-//        freeBoard.setImage(req.getImage());
+        freeBoard.setImageUrlList(imageUrlList);
         freeBoard.setCreatedAt(LocalDateTime.now());
 
         freeBoardRepository.save(freeBoard);

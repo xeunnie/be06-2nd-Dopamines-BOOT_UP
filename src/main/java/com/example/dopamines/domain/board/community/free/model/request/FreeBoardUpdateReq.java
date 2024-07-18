@@ -11,5 +11,4 @@ public class FreeBoardUpdateReq {
     private Long idx;
     private String title;
     private String content;
-    private String image;
 }

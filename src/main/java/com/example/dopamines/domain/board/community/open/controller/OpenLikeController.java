@@ -1,6 +1,6 @@
-package com.example.dopamines.domain.board.community.free.controller;
+package com.example.dopamines.domain.board.community.open.controller;
 
-import com.example.dopamines.domain.board.community.free.service.FreeLikeService;
+import com.example.dopamines.domain.board.community.open.service.OpenLikeService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.security.CustomUserDetails;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/free/like")
+@RequestMapping("/open/like")
 @RequiredArgsConstructor
-public class FreeLikeController {
-    private final FreeLikeService freeLikeService;
+public class OpenLikeController {
+    private final OpenLikeService openLikeService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/free-board")
-    public ResponseEntity<BaseResponse<?>> createFreeBoardLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+    @RequestMapping(method = RequestMethod.GET, value = "/open-board")
+    public ResponseEntity<BaseResponse<?>> createOpenBoardLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        String result = freeLikeService.createFreeBoardLike(user,idx);
+        String result = openLikeService.createOpenBoardLike(user,idx);
 
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
@@ -28,7 +28,7 @@ public class FreeLikeController {
     @RequestMapping(method = RequestMethod.GET, value = "/comment")
     public ResponseEntity<BaseResponse<?>> createCommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        String result = freeLikeService.createCommentLike(user,idx);
+        String result = openLikeService.createCommentLike(user,idx);
 
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
@@ -36,7 +36,7 @@ public class FreeLikeController {
     @RequestMapping(method = RequestMethod.GET, value = "/recomment")
     public ResponseEntity<BaseResponse<?>> createRecommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        String result = freeLikeService.createRecommentLike(user,idx);
+        String result = openLikeService.createRecommentLike(user,idx);
 
         return ResponseEntity.ok(new BaseResponse<>(result));
     }

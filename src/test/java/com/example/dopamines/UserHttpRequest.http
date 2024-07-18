@@ -3,7 +3,7 @@ POST http://localhost:8080/user/signup
 Content-Type: application/json
 
 {
-  "email": "monsb879@naver.com",
+  "email": "tjtlgus4@naver.com",
   "password": "qwer1234",
   "name": "숩숩숩",
   "nickname": "익명1",
@@ -16,7 +16,7 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "email": "monsb879@naver.com",
+  "email": "tjtlgus4@naver.com",
   "password": "qwer1234"
 }
 

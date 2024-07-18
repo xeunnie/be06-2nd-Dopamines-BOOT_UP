@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/free/comment")
 @RequiredArgsConstructor
 public class FreeCommentController {
     private final FreeCommentService freeCommentService;

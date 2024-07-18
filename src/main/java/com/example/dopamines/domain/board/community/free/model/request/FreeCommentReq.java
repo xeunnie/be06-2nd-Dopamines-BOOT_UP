@@ -7,9 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateFreeBoardReq {
-    private Long idx;
-    private String title;
+public class FreeCommentReq {
+    private Long idx; // freeBoardIdx
     private String content;
-    private String image;
 }

@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class FreeBoardRes {
     private Long idx;
+    private String title;
     private String content;
 
 }

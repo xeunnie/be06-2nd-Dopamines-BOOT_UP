@@ -5,6 +5,8 @@ import com.example.dopamines.domain.user.model.entity.UserEmailVerify;
 import com.example.dopamines.domain.user.model.request.UserSignupRequest;
 import com.example.dopamines.domain.user.repository.UserEmailVerifyRepository;
 import com.example.dopamines.domain.user.repository.UserRepository;
+import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -44,14 +46,17 @@ public class UserEmailService {
                 .build();
 
         UserEmailVerify result = userEmailRepository.save(emailVerify);
+
+        if(result == null){
+            throw new BaseException(BaseResponseStatus.USER_INVALID_MAIL_INFO);
+        }
     }
 
-    public boolean verifyUser(String email, String uuid) {
+    public void verifyUser(String email, String uuid) {
         Optional<UserEmailVerify> getEmailVerifyUser = userEmailRepository.findByEmailAndUuid(email,uuid);
         //요청받은 이메일과 uuid 가 일치하면 계정 활성화
-        if(getEmailVerifyUser.isPresent()){
-            return true;
+        if(!getEmailVerifyUser.isPresent()){
+            throw new BaseException(BaseResponseStatus.USER_UNABLE_USER_ACCESS);
         }
-        return false;
     }
 }

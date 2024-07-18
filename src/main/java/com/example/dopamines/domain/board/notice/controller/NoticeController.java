@@ -82,5 +82,4 @@ public class NoticeController {
         noticeService.deleteNotice(id);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.NOTICE_ERROR_CONVENTION));
     }
-
 }

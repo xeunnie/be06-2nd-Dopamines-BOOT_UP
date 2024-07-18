@@ -1,10 +1,14 @@
 package com.example.dopamines.domain.board.community.free.service;
 
 import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
+import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
+import com.example.dopamines.domain.board.community.free.model.entity.FreeRecomment;
 import com.example.dopamines.domain.board.community.free.model.request.FreeBoardReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeBoardUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
+import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
+import com.example.dopamines.domain.board.community.free.model.response.FreeRecommentReadRes;
 import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
@@ -51,6 +55,32 @@ public class FreeBoardService {
     public FreeBoardReadRes read(Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
+        List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
+        for(FreeComment freeComment : freeBoard.getComments()){
+            List<FreeRecommentReadRes> freeRecommentReadResList = new ArrayList<>();
+            for(FreeRecomment freeRecomment : freeComment.getFreeRecomments()){
+                freeRecommentReadResList.add(FreeRecommentReadRes.builder()
+                        .idx(freeRecomment.getIdx())
+                        .freeBoardIdx(freeBoard.getIdx())
+                        .commentIdx(freeRecomment.getFreeComment().getIdx())
+                        .content(freeRecomment.getContent())
+                        .author(freeRecomment.getUser().getNickname())
+                        .createdAt(freeRecomment.getCreatedAt())
+                        .likeCount(freeRecomment.getLikes().size())
+                        .build());
+            }
+            freeCommentReadResList.add(FreeCommentReadRes.builder()
+                    .idx(freeComment.getIdx())
+                    .freeBoardIdx(freeBoard.getIdx())
+                    .content(freeComment.getContent())
+                    .author(freeComment.getUser().getNickname())
+                    .createdAt(freeComment.getCreatedAt())
+                    .likeCount(freeComment.getLikes().size())
+                    .recommentList(freeRecommentReadResList)
+                    .build());
+
+        }
+
         return FreeBoardReadRes.builder()
                 .idx(freeBoard.getIdx())
                 .title(freeBoard.getTitle())
@@ -58,6 +88,8 @@ public class FreeBoardService {
                 .author(freeBoard.getUser().getNickname())
                 .image(freeBoard.getImage())
                 .created_at(LocalDateTime.now())
+                .likeCount(freeBoard.getLikes().size())
+                .freeCommentList(freeCommentReadResList)
                 .build();
     }
 

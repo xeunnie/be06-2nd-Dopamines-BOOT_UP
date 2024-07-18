@@ -4,9 +4,9 @@ import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
 import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentUpdateReq;
-import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
 import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
 import com.example.dopamines.domain.board.community.free.repository.FreeCommentRepository;
+import com.example.dopamines.domain.board.community.free.repository.FreeRecommentRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,7 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 public class FreeCommentService {
     private final FreeCommentRepository freeCommentRepository;
     private final FreeBoardRepository freeBoardRepository;
+    private final FreeRecommentRepository freeRecommentRepository;
 
     @Transactional
     public String create(User user, FreeCommentReq req) {
@@ -44,24 +45,25 @@ public class FreeCommentService {
         return "자유 게시판 댓글 등록";
     }
 
+    // TODO : 내가 쓴 댓글, 대댓글 조회
     // TODO :  대댓글 조회까지 한번에 처리
     // TODO : 댓글 좋아요까지 구현 후 성능 테스트
-    public List<FreeCommentReadRes> read(User user,Long idx) {
-        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-        List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
-        for(FreeComment freeComment : freeBoard.getComments()){
-            freeCommentReadResList.add(FreeCommentReadRes.builder()
-                    .idx(freeComment.getIdx())
-                    .freeBoardIdx(freeBoard.getIdx())
-                    .content(freeComment.getContent())
-                    .author(user.getNickname())
-                    .createdAt(freeComment.getCreatedAt())
-                    .likeCount(freeComment.getLikes().size())
-                    .build());
-
-        }
-        return freeCommentReadResList;
-    }
+//    public List<FreeCommentReadRes> read(User user) {
+//        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+//        List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
+//        for(FreeComment freeComment : freeBoard.getComments()){
+//            freeCommentReadResList.add(FreeCommentReadRes.builder()
+//                    .idx(freeComment.getIdx())
+//                    .freeBoardIdx(freeBoard.getIdx())
+//                    .content(freeComment.getContent())
+//                    .author(user.getNickname())
+//                    .createdAt(freeComment.getCreatedAt())
+//                    .likeCount(freeComment.getLikes().size())
+//                    .build());
+//
+//        }
+//        return freeCommentReadResList;
+//    }
 
     public String update(User user, FreeCommentUpdateReq req) {
         FreeComment freeComment = freeCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));

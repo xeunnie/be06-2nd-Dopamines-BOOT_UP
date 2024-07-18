@@ -44,7 +44,8 @@ public class ChatRoomService {
     public List<ChatRoomDTO.Response> findAll(User user) {
         List<ParticipatedChatRoom> chatRooms = participatedChatRoomRepository.findAllByUser(user);
         List<ChatRoomDTO.Response> dto = chatRooms.stream().map((room) ->{
-            MarketPost post = marketPostRepository.findByIdWithImages(room.getChatRoom().getMarketPost().getIdx()).orElseThrow(()->new BaseException(MARKET_ERROR_CONVENTION));
+            Long postIdx = room.getChatRoom().getMarketPost().getIdx();
+            MarketPost post = marketPostRepository.findByIdWithImages(postIdx).orElseThrow(()->new BaseException(MARKET_ERROR_CONVENTION));
             String author = post.getUser().getName();
 
             return ChatRoomDTO.Response.builder()
@@ -63,8 +64,13 @@ public class ChatRoomService {
 
     public ChatRoomDTO.Response create(ChatRoomDTO.Request req, User sender) {
         // chat room 생성 -> uuid
-        User receiver = userRepository.findById(req.getReceiverIdx()).orElseThrow(()->new BaseException(MARKET_ERROR_USER_NOT_FOUND));
-        MarketPost marketPost = marketPostRepository.findById(req.getMarketPostIdx()).orElseThrow(()->new BaseException(POST_NOT_FOUND));
+        User receiver = User.builder()
+                .idx(sender.getIdx())
+                .build();
+
+        MarketPost marketPost = MarketPost.builder()
+                .idx(req.getMarketPostIdx())
+                .build();
 
         ChatRoom chatRoom = chatRoomMapper.toEntity(req.getName(), marketPost);
         chatRoomRepository.save(chatRoom);

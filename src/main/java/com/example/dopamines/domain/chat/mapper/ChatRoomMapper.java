@@ -1,6 +1,7 @@
 package com.example.dopamines.domain.chat.mapper;
 
 
+import com.example.dopamines.domain.board.market.model.entity.MarketPost;
 import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.Response;
 import com.example.dopamines.domain.chat.model.entity.ChatRoom;
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public interface ChatRoomMapper {
             @Mapping(target = "updatedAt", expression = "java(LocalDate.now())"),
             @Mapping(target = "status", constant = "true")
     })
-    ChatRoom toEntity(String name);
+    ChatRoom toEntity(String name, MarketPost marketPost);
 
 
     Response toDto(ChatRoom entity);

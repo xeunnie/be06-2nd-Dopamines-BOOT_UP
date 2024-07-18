@@ -1,5 +1,6 @@
 package com.example.dopamines.domain.chat.model.dto;
 
+import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

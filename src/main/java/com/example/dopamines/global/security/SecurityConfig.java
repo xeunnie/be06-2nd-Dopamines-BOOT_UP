@@ -43,6 +43,7 @@ public class SecurityConfig {
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)
         config.addAllowedHeader("*"); // 허용할 헤더
         config.setAllowCredentials(true); // 자격 증명 허용
+        config.addExposedHeader("Authorization"); // 노출할 헤더 추가
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

@@ -6,5 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface NoticeRepositoryCustom {
+    Page<Notice> findNoticesByCriteria(Boolean isPrivate, String category, int page, int size);
+
     Page<Notice> findNotices();
 }

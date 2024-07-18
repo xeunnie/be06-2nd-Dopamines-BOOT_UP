@@ -2,10 +2,11 @@ package com.example.dopamines.domain.board.community.free.service;
 
 import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
 import com.example.dopamines.domain.board.community.free.model.request.FreeBoardReq;
-import com.example.dopamines.domain.board.community.free.model.request.UpdateFreeBoardReq;
+import com.example.dopamines.domain.board.community.free.model.request.FreeBoardUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
 import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
+import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.dopamines.global.common.BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND;
+import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,19 +28,24 @@ public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
 
     @Transactional
-    public FreeBoardRes create(FreeBoardReq req) {
+    public String create(User user, FreeBoardReq req) {
+
+        if(req.getTitle() == null){
+            throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
+        }
+        if(req.getContent() == null){
+            throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
+        }
         FreeBoard freeBoard = freeBoardRepository.save(FreeBoard.builder()
                 .title(req.getTitle())
                 .content(req.getContent())
+                .user(user)
                 .image(req.getImage())
                 .createdAt(LocalDateTime.now())
                 .build()
         );
 
-        return FreeBoardRes.builder()
-                .idx(freeBoard.getIdx())
-                .content(freeBoard.getContent())
-                .build();
+        return "자유 게시판 게시글 등록";
     }
 
     public FreeBoardReadRes read(Long idx) {
@@ -49,7 +55,7 @@ public class FreeBoardService {
                 .idx(freeBoard.getIdx())
                 .title(freeBoard.getTitle())
                 .content(freeBoard.getContent())
-                .author(freeBoard.getUser())
+                .author(freeBoard.getUser().getNickname())
                 .image(freeBoard.getImage())
                 .created_at(LocalDateTime.now())
                 .build();
@@ -63,15 +69,19 @@ public class FreeBoardService {
         for(FreeBoard freeBoard : result.getContent()){
             freeBoardResList.add(FreeBoardRes.builder()
                     .idx(freeBoard.getIdx())
+                    .title(freeBoard.getTitle())
                     .content(freeBoard.getContent())
                     .build());
         }
         return freeBoardResList;
     }
 
-    public FreeBoardRes update(UpdateFreeBoardReq req) {
+    public FreeBoardRes update(User user, FreeBoardUpdateReq req) {
         FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
+        if(freeBoard.getUser().getIdx()!= user.getIdx()){
+            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        }
         freeBoard.setTitle(req.getTitle());
         freeBoard.setContent(req.getContent());
         freeBoard.setImage(req.getImage());
@@ -81,14 +91,20 @@ public class FreeBoardService {
 
         return FreeBoardRes.builder()
                 .idx(freeBoard.getIdx())
+                .title(freeBoard.getContent())
                 .content(freeBoard.getContent())
                 .build();
 
     }
 
-    public void delete(Long idx) {
+    public String delete(User user,Long idx) {
         FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        if(!freeBoard.getUser().getIdx().equals(user.getIdx())){
+            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        }
         freeBoardRepository.delete(freeBoard);
+        // TODO : 게시글 삭제 시, 해당 게시글의 댓글, 댓글좋아요, 대댓글, 대댓글좋아요 삭제
+        return  "게시글 삭제";
     }
 
 

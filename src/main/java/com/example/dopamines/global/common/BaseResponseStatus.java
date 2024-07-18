@@ -52,6 +52,7 @@ public enum BaseResponseStatus {
      * 4400 : PROJECT 에러 - 시현
      */
     PROJECT_ERROR_CONVENTION(false, 4400, "에러 예시"),
+    SEAT_NOT_FOUND(false, 4401, "해당하는 좌석을 찾을 수 없습니다."),
 
 
     /**

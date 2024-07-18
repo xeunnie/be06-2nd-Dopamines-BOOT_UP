@@ -7,6 +7,7 @@ import com.example.dopamines.domain.reservation.model.response.ReservationListRe
 import com.example.dopamines.domain.reservation.model.response.ReservationRes;
 import com.example.dopamines.domain.reservation.repository.ReservationRepository;
 import com.example.dopamines.domain.reservation.repository.SeatRepository;
+import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -33,13 +34,18 @@ public class ReservationService {
 
     }
 
-    public ReservationRes reservate(ReservationReq req){
+    public ReservationRes reserve(ReservationReq req) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        User user = userRepository.findById(req.getUserIdx())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+        Seat seat = seatRepository.findById(req.getSeatIdx())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.SEAT_NOT_FOUND));
 
         Reservation reservation = Reservation.builder()
-                .createdAt(LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+                .createdAt(localDateTime)
                 .status(true)
-                .user(userRepository.findById(req.getUserIdx()).get())
-                .seat(seatRepository.findById(req.getSeatIdx()).get())
+                .user(user)
+                .seat(seat)
                 .build();
 
         reservation = reservationRepository.save(reservation);
@@ -47,11 +53,11 @@ public class ReservationService {
         return ReservationRes.builder()
                 .idx(reservation.getIdx())
                 .createdAt(reservation.getCreatedAt())
-                .userIdx(reservation.getUser().getIdx())
-                .userEmail(reservation.getUser().getEmail())
-                .section(reservation.getSeat().getSection())
-                .seatIdx(reservation.getSeat().getIdx())
-                .time(reservation.getSeat().getTime())
+                .userIdx(user.getIdx())
+                .userEmail(user.getEmail())
+                .section(seat.getSection())
+                .seatIdx(seat.getIdx())
+                .time(seat.getTime())
                 .build();
     }
 

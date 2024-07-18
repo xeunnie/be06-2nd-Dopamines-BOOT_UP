@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +31,9 @@ public class NoticeService {
         try {
             Notice notice = noticeRequestDto.toEntity();
             Notice savedNotice = noticeRepository.save(notice);
-            return new BaseResponse<>(convertToNoticeResponseDto(savedNotice));
+            return new BaseResponse<>(new NoticeResponseDto(savedNotice));
         } catch (Exception e) {
-            throw new BaseException(BaseResponseStatus.NOTICE_SAVE_FAILED);
+            return new BaseResponse<>(false, BaseResponseStatus.NOTICE_SAVE_FAILED.getMessage(), BaseResponseStatus.NOTICE_SAVE_FAILED.getCode(), null);
         }
     }
 
@@ -42,7 +41,7 @@ public class NoticeService {
     public NoticeResponseDto getNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
-        return convertToNoticeResponseDto(notice);
+        return new NoticeResponseDto(notice);
     }
 
     public List<Notice> getAllNotices() {
@@ -64,6 +63,7 @@ public class NoticeService {
     public Page<Notice> getAllPrivateNotices(Pageable pageable) {
         return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable);
     }
+
 
     // 공지사항 수정
     @Transactional
@@ -91,6 +91,8 @@ public class NoticeService {
         notice.setContent(noticeDetails.getContent());
         notice.setCategory(noticeDetails.getCategory());
         notice.setPrivate(noticeDetails.isPrivate());
+        Notice savedNotice = noticeRepository.save(notice);
+        return new NoticeResponseDto(savedNotice);
     }
 
 
@@ -104,6 +106,5 @@ public class NoticeService {
             throw new BaseException(BaseResponseStatus.NOTICE_DELETE_FAILED);
         }
     }
-
 
 }

@@ -7,14 +7,13 @@ import com.example.dopamines.domain.board.community.free.model.response.FreeBoar
 import com.example.dopamines.domain.board.community.free.service.FreeBoardService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.infra.s3.CloudFileUploadService;
 import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,11 +22,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FreeBoardController {
     private final FreeBoardService freeBoardService;
-
+    private final CloudFileUploadService cloudFileUploadService;
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeBoardReq req){
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreeBoardReq req, @RequestPart MultipartFile[] files){
         User user = customUserDetails.getUser();
-        String result = freeBoardService.create(user,req);
+        String rootType ="FREEBOARD";
+        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
+        String result = freeBoardService.create(user, req, urlLists);
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
@@ -47,9 +48,11 @@ public class FreeBoardController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeBoardUpdateReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreeBoardUpdateReq req,@RequestPart MultipartFile[] files){
         User user = customUserDetails.getUser();
-        FreeBoardRes response = freeBoardService.update(user,req);
+        String rootType ="FREEBOARD";
+        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
+        FreeBoardRes response = freeBoardService.update(user,req,urlLists);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 

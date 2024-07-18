@@ -25,7 +25,8 @@ public class FreeBoard {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    private String image;
+    @ElementCollection
+    private List<String> imageUrlList;
 
     private LocalDateTime createdAt;
 

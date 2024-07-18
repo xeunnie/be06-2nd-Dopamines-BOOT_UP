@@ -2,6 +2,8 @@ package com.example.dopamines.domain.board.community.free.model.request;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -10,5 +12,4 @@ import lombok.*;
 public class FreeBoardReq {
     private String title;
     private String content;
-    private String image;
 }

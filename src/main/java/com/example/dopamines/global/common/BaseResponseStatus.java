@@ -64,11 +64,11 @@ public enum BaseResponseStatus {
     NOTICE_IS_NOT_AUTHORIZED(false, 4605, "해당 게시글에 대한 권한이 없습니다."),
     NOTICE_IS_NOT_PUBLIC(false, 4606, "해당 게시글은 비공개 상태입니다."),
 
-    NOTICE_EMPTY_TITLE(false, 4604, "제목을 입력해주세요."),
-    NOTICE_EMPTY_CONTENT(false, 4605, "내용을 입력해주세요."),
-    NOTICE_EMPTY_CATEGORY(false, 4606, "카테고리를 입력해주세요."),
-    NOTICE_EMPTY_DATE(false, 4607, "날짜를 입력해주세요."),
-    NOTICE_EMPTY_PUBLIC(false, 4608, "공개 여부를 입력해주세요."),
+    NOTICE_EMPTY_TITLE(false, 4607, "제목을 입력해주세요."),
+    NOTICE_EMPTY_CONTENT(false, 4608, "내용을 입력해주세요."),
+    NOTICE_EMPTY_CATEGORY(false, 4609, "카테고리를 입력해주세요."),
+    NOTICE_EMPTY_DATE(false, 4610, "날짜를 입력해주세요."),
+    NOTICE_EMPTY_PUBLIC(false, 4611, "공개 여부를 입력해주세요."),
 
     /**
      * 5000 : STUDY 에러 - 시현

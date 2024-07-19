@@ -2,11 +2,11 @@ package com.example.dopamines.domain.board.project.controller;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.UNAUTHORIZED_ACCESS;
 
-import com.example.dopamines.domain.board.project.model.request.ProjectBoardReq;
-import com.example.dopamines.domain.board.project.model.request.UpdateProjectBoardReq;
-import com.example.dopamines.domain.board.project.model.response.ProjectBoardRes;
-import com.example.dopamines.domain.board.project.model.response.ReadProjectBoardRes;
-import com.example.dopamines.domain.board.project.service.ProjectBoardService;
+import com.example.dopamines.domain.board.project.model.request.ProjectPostReq;
+import com.example.dopamines.domain.board.project.model.request.ProjectPostUpdateReq;
+import com.example.dopamines.domain.board.project.model.response.ProjectPostRes;
+import com.example.dopamines.domain.board.project.model.response.ProjectPostReadRes;
+import com.example.dopamines.domain.board.project.service.ProjectPostService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import com.example.dopamines.global.infra.s3.CloudFileUploadService;
@@ -22,26 +22,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/project")
 @RequiredArgsConstructor
-public class ProjectBoardController {
+public class ProjectPostController {
 
     private String rootType = "PROJECT";
-    private final ProjectBoardService projectBoardService;
+    private final ProjectPostService projectBoardService;
 
     private final CloudFileUploadService cloudFileUploadService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<ProjectBoardRes> create(@RequestPart ProjectBoardReq req, @RequestPart MultipartFile[] files) {
+    @PostMapping("/create")
+    public ResponseEntity<ProjectPostRes> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
 
         List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
-        ProjectBoardRes response = projectBoardService.create(req, savedFileName.get(0));
+        ProjectPostRes response = projectBoardService.create(req, savedFileName.get(0));
 
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read")
-    public ResponseEntity<ReadProjectBoardRes> read(Long idx) {
+    @GetMapping("/read")
+    public ResponseEntity<ProjectPostReadRes> read(Long idx) {
 
-        ReadProjectBoardRes response = projectBoardService.read(idx);
+        ProjectPostReadRes response = projectBoardService.read(idx);
 
         if(response != null) {
             return ResponseEntity.ok(response);
@@ -50,10 +50,10 @@ public class ProjectBoardController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read-by-course-num")
-    public ResponseEntity<List<ReadProjectBoardRes>> readByCourseNum(Long courseNum) {
+    @GetMapping("/read-by-course-num")
+    public ResponseEntity<List<ProjectPostReadRes>> readByCourseNum(Long courseNum) {
 
-        List<ReadProjectBoardRes> response = projectBoardService.readByCourseNum(courseNum);
+        List<ProjectPostReadRes> response = projectBoardService.readByCourseNum(courseNum);
 
         if(response != null) {
             return ResponseEntity.ok(response);
@@ -63,14 +63,14 @@ public class ProjectBoardController {
     }
 
     @CheckAuthentication
-    @RequestMapping(method = RequestMethod.GET, value = "/read-all")
+    @GetMapping("/read-all")
     public ResponseEntity<?> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
         boolean hasAdminRole = userDetails.getAuthorities().stream().anyMatch(authority->authority.getAuthority().equals("ROLE_ADMIN"));
         if (!hasAdminRole) {
             return ResponseEntity.badRequest().body(new BaseResponse(UNAUTHORIZED_ACCESS));
         }
 
-        List<ReadProjectBoardRes> response = projectBoardService.readAll();
+        List<ProjectPostReadRes> response = projectBoardService.readAll();
         if(response != null) {
             return ResponseEntity.ok(response);
         } else {
@@ -79,9 +79,9 @@ public class ProjectBoardController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<ReadProjectBoardRes> update(@RequestPart UpdateProjectBoardReq req, @RequestPart MultipartFile[] files) {
-        ReadProjectBoardRes response = null;
+    @PatchMapping("/update")
+    public ResponseEntity<ProjectPostReadRes> update(@RequestPart ProjectPostUpdateReq req, @RequestPart MultipartFile[] files) {
+        ProjectPostReadRes response = null;
         if(!req.getSourceUrl().isEmpty()) {
              response = projectBoardService.update(req, req.getSourceUrl());
         } else {
@@ -92,7 +92,7 @@ public class ProjectBoardController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> delete(Long idx) {
 
         projectBoardService.delete(idx);

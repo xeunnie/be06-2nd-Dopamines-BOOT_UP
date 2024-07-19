@@ -27,7 +27,7 @@ public class NoticeController {
     @PostMapping
     public ResponseEntity<BaseResponse<BaseResponse<NoticeResponseDto>>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
         BaseResponse<NoticeResponseDto> createdNotice = noticeService.saveNotice(noticeRequestDto);
-        return ResponseEntity.ok(new BaseResponse<>(createdNotice));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice));
     }
 
     // 공지사항 조회
@@ -80,6 +80,6 @@ public class NoticeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.NOTICE_ERROR_CONVENTION));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }
 }

@@ -20,6 +20,16 @@ public class NoticeResponseDto {
     private boolean isPrivate;
     private List<String> imageUrls;
 
+    public NoticeResponseDto(Notice savedNotice) {
+        this.id = savedNotice.getId();
+        this.title = savedNotice.getTitle();
+        this.content = savedNotice.getContent();
+        this.date = savedNotice.getDate();
+        this.category = savedNotice.getCategory();
+        this.isPrivate = savedNotice.isPrivate();
+        this.imageUrls = savedNotice.getImageUrls();
+    }
+
     public Notice toEntity() {
         return Notice.builder()
                 .id(this.id)

@@ -1,8 +1,5 @@
 package com.example.dopamines.domain.board.community.free.model.response;
 
-import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
-import com.example.dopamines.domain.board.community.free.model.entity.FreeLike;
-import com.example.dopamines.domain.user.model.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class FreeBoardReadRes {
+public class FreePostReadRes {
     private Long idx;
     private String title;
     private String content;

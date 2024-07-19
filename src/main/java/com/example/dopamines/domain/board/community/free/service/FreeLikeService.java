@@ -14,30 +14,30 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 public class FreeLikeService {
-    private final FreeLikeRepository freeLikeRepository;
-    private final FreeBoardRepository freeBoardRepository;
+    private final FreePostLikeRepository freePostLikeRepository;
+    private final FreePostRepository freePostRepository;
     private final FreeCommentLikeRepository freeCommentLikeRepository;
     private final FreeCommentRepository freeCommentRepository;
     private final FreeRecommentRepository freeRecommentRepository;
     private final FreeRecommentLikeRepository freeRecommentLikeRepository;
 
 
-    public String createFreeBoardLike(User user, Long idx) {
-        Optional<FreeLike> result = freeLikeRepository.findByUserAndFreeBoard(user.getIdx(),idx);
-        FreeLike freeLike;
+    public String createFreePostLike(User user, Long idx) {
+        Optional<FreePostLike> result = freePostLikeRepository.findByUserAndFreePost(user.getIdx(),idx);
+        FreePostLike freePostLike;
 
         if(result.isPresent()){ // 이미 좋아요한 경우
-            freeLike= result.get();
-            freeLikeRepository.delete(freeLike);
+            freePostLike = result.get();
+            freePostLikeRepository.delete(freePostLike);
             return "자유 게시글 좋아요 취소";
         }
 
-        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-        freeLike = FreeLike.builder()
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        freePostLike = FreePostLike.builder()
                 .user(user)
-                .freeBoard(freeBoard)
+                .freePost(freePost)
                 .build();
-        freeLikeRepository.save(freeLike);
+        freePostLikeRepository.save(freePostLike);
         return "자유 게시글 좋아요 등록";
     }
 

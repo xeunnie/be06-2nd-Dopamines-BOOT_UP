@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class OpenCommentReadRes {
     private Long idx;
-    private Long openBoardIdx;
+    private Long openPostIdx;
     private String content;
     private String author;
     private LocalDateTime createdAt;

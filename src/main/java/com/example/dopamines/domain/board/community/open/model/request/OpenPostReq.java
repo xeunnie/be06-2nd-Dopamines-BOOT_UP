@@ -7,8 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OpenBoardUpdateReq {
-    private Long idx;
+public class OpenPostReq {
     private String title;
     private String content;
     private String image;

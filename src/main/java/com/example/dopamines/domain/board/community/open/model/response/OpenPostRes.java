@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class OpenBoardRes {
+public class OpenPostRes {
     private Long idx;
     private String title;
     private String content;

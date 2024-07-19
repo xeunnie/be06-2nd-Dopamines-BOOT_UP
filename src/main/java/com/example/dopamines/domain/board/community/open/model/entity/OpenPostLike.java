@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OpenLike {
+public class OpenPostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -20,6 +20,6 @@ public class OpenLike {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_idx")
-    private OpenBoard openBoard;
+    @JoinColumn(name = "post_idx")
+    private OpenPost openPost;
 }

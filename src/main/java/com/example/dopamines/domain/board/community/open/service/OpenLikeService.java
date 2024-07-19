@@ -14,30 +14,30 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 public class OpenLikeService {
-    private final OpenLikeRepository openLikeRepository;
-    private final OpenBoardRepository openBoardRepository;
+    private final OpenPostLikeRepository openPostLikeRepository;
+    private final OpenPostRepository openPostRepository;
     private final OpenCommentLikeRepository openCommentLikeRepository;
     private final OpenCommentRepository openCommentRepository;
     private final OpenRecommentRepository openRecommentRepository;
     private final OpenRecommentLikeRepository openRecommentLikeRepository;
 
 
-    public String createOpenBoardLike(User user, Long idx) {
-        Optional<OpenLike> result = openLikeRepository.findByUserAndOpenBoard(user.getIdx(),idx);
-        OpenLike openLike;
+    public String createOpenPostLike(User user, Long idx) {
+        Optional<OpenPostLike> result = openPostLikeRepository.findByUserAndOpenPost(user.getIdx(),idx);
+        OpenPostLike openPostLike;
 
         if(result.isPresent()){ // 이미 좋아요한 경우
-            openLike= result.get();
-            openLikeRepository.delete(openLike);
+            openPostLike = result.get();
+            openPostLikeRepository.delete(openPostLike);
             return "자유 게시글 좋아요 취소";
         }
 
-        OpenBoard openBoard = openBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-        openLike = OpenLike.builder()
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        openPostLike = OpenPostLike.builder()
                 .user(user)
-                .openBoard(openBoard)
+                .openPost(openPost)
                 .build();
-        openLikeRepository.save(openLike);
+        openPostLikeRepository.save(openPostLike);
         return "자유 게시글 좋아요 등록";
     }
 

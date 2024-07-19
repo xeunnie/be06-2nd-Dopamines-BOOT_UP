@@ -1,15 +1,15 @@
 package com.example.dopamines.domain.board.community.open.service;
 
-import com.example.dopamines.domain.board.community.open.model.entity.OpenBoard;
+import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenComment;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenRecomment;
-import com.example.dopamines.domain.board.community.open.model.request.OpenBoardReq;
-import com.example.dopamines.domain.board.community.open.model.request.OpenBoardUpdateReq;
-import com.example.dopamines.domain.board.community.open.model.response.OpenBoardReadRes;
-import com.example.dopamines.domain.board.community.open.model.response.OpenBoardRes;
+import com.example.dopamines.domain.board.community.open.model.request.OpenPostReq;
+import com.example.dopamines.domain.board.community.open.model.request.OpenPostUpdateReq;
+import com.example.dopamines.domain.board.community.open.model.response.OpenPostReadRes;
+import com.example.dopamines.domain.board.community.open.model.response.OpenPostRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenCommentReadRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenRecommentReadRes;
-import com.example.dopamines.domain.board.community.open.repository.OpenBoardRepository;
+import com.example.dopamines.domain.board.community.open.repository.OpenPostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +28,11 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
-public class OpenBoardService {
-    private final OpenBoardRepository openBoardRepository;
+public class OpenPostService {
+    private final OpenPostRepository openPostRepository;
 
     @Transactional
-    public String create(User user, OpenBoardReq req) {
+    public String create(User user, OpenPostReq req) {
 
         if(req.getTitle() == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
@@ -40,7 +40,7 @@ public class OpenBoardService {
         if(req.getContent() == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
-        OpenBoard openBoard = openBoardRepository.save(OpenBoard.builder()
+        OpenPost openPost = openPostRepository.save(OpenPost.builder()
                 .title(req.getTitle())
                 .content(req.getContent())
                 .user(user)
@@ -52,16 +52,16 @@ public class OpenBoardService {
         return "자유 게시판 게시글 등록";
     }
 
-    public OpenBoardReadRes read(Long idx) {
-        OpenBoard openBoard = openBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public OpenPostReadRes read(Long idx) {
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         List<OpenCommentReadRes> openCommentReadResList = new ArrayList<>();
-        for(OpenComment openComment : openBoard.getComments()){
+        for(OpenComment openComment : openPost.getComments()){
             List<OpenRecommentReadRes> openRecommentReadResList = new ArrayList<>();
             for(OpenRecomment openRecomment : openComment.getOpenRecomments()){
                 openRecommentReadResList.add(OpenRecommentReadRes.builder()
                         .idx(openRecomment.getIdx())
-                        .openBoardIdx(openBoard.getIdx())
+                        .openPostIdx(openPost.getIdx())
                         .commentIdx(openRecomment.getOpenComment().getIdx())
                         .content(openRecomment.getContent())
                         .author(openRecomment.getUser().getNickname())
@@ -71,7 +71,7 @@ public class OpenBoardService {
             }
             openCommentReadResList.add(OpenCommentReadRes.builder()
                     .idx(openComment.getIdx())
-                    .openBoardIdx(openBoard.getIdx())
+                    .openPostIdx(openPost.getIdx())
                     .content(openComment.getContent())
                     .author(openComment.getUser().getNickname())
                     .createdAt(openComment.getCreatedAt())
@@ -81,60 +81,60 @@ public class OpenBoardService {
 
         }
 
-        return OpenBoardReadRes.builder()
-                .idx(openBoard.getIdx())
-                .title(openBoard.getTitle())
-                .content(openBoard.getContent())
-                .author(openBoard.getUser().getNickname())
-                .image(openBoard.getImage())
+        return OpenPostReadRes.builder()
+                .idx(openPost.getIdx())
+                .title(openPost.getTitle())
+                .content(openPost.getContent())
+                .author(openPost.getUser().getNickname())
+                .image(openPost.getImage())
                 .created_at(LocalDateTime.now())
-                .likeCount(openBoard.getLikes().size())
+                .likeCount(openPost.getLikes().size())
                 .openCommentList(openCommentReadResList)
                 .build();
     }
 
-    public List<OpenBoardRes> readAll(Integer page, Integer size) {
+    public List<OpenPostRes> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
-        Slice<OpenBoard> result = openBoardRepository.findAllWithPaging(pageable);
-        List<OpenBoardRes> openBoardResList = new ArrayList<>();
+        Slice<OpenPost> result = openPostRepository.findAllWithPaging(pageable);
+        List<OpenPostRes> openPostResList = new ArrayList<>();
 
-        for(OpenBoard openBoard : result.getContent()){
-            openBoardResList.add(OpenBoardRes.builder()
-                    .idx(openBoard.getIdx())
-                    .title(openBoard.getTitle())
-                    .content(openBoard.getContent())
+        for(OpenPost openPost : result.getContent()){
+            openPostResList.add(OpenPostRes.builder()
+                    .idx(openPost.getIdx())
+                    .title(openPost.getTitle())
+                    .content(openPost.getContent())
                     .build());
         }
-        return openBoardResList;
+        return openPostResList;
     }
 
-    public OpenBoardRes update(User user, OpenBoardUpdateReq req) {
-        OpenBoard openBoard = openBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public OpenPostRes update(User user, OpenPostUpdateReq req) {
+        OpenPost openPost = openPostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(openBoard.getUser().getIdx()!= user.getIdx()){
+        if(openPost.getUser().getIdx()!= user.getIdx()){
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
-        openBoard.setTitle(req.getTitle());
-        openBoard.setContent(req.getContent());
-        openBoard.setImage(req.getImage());
-        openBoard.setCreatedAt(LocalDateTime.now());
+        openPost.setTitle(req.getTitle());
+        openPost.setContent(req.getContent());
+        openPost.setImage(req.getImage());
+        openPost.setCreatedAt(LocalDateTime.now());
 
-        openBoardRepository.save(openBoard);
+        openPostRepository.save(openPost);
 
-        return OpenBoardRes.builder()
-                .idx(openBoard.getIdx())
-                .title(openBoard.getContent())
-                .content(openBoard.getContent())
+        return OpenPostRes.builder()
+                .idx(openPost.getIdx())
+                .title(openPost.getContent())
+                .content(openPost.getContent())
                 .build();
 
     }
 
     public String delete(User user,Long idx) {
-        OpenBoard openBoard = openBoardRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-        if(!openBoard.getUser().getIdx().equals(user.getIdx())){
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        if(!openPost.getUser().getIdx().equals(user.getIdx())){
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
-        openBoardRepository.delete(openBoard);
+        openPostRepository.delete(openPost);
         // TODO : 게시글 삭제 시, 해당 게시글의 댓글, 댓글좋아요, 대댓글, 대댓글좋아요 삭제
         return  "게시글 삭제";
     }

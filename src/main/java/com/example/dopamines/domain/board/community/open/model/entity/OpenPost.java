@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OpenBoard {
+public class OpenPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -29,9 +29,9 @@ public class OpenBoard {
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "openBoard")
-    List<OpenLike> likes;
+    @OneToMany(mappedBy = "openPost")
+    List<OpenPostLike> likes;
 
-    @OneToMany(mappedBy = "openBoard")
+    @OneToMany(mappedBy = "openPost")
     private List<OpenComment> comments;
 }

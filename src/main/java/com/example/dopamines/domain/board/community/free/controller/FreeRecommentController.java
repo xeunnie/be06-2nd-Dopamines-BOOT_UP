@@ -1,10 +1,12 @@
 package com.example.dopamines.domain.board.community.free.controller;
 
+import com.example.dopamines.domain.board.community.free.model.entity.FreeRecomment;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeRecommentReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeRecommentUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
+import com.example.dopamines.domain.board.community.free.model.response.FreeRecommentReadRes;
 import com.example.dopamines.domain.board.community.free.service.FreeRecommentService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
@@ -29,6 +31,13 @@ public class FreeRecommentController {
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<?>> findAll(Long idx, Integer page, Integer size) {
+        List<FreeRecommentReadRes> res = freeRecommentService.findAllWithPage(idx, page, size);
+        return ResponseEntity.ok(new BaseResponse<>(res));
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeRecommentUpdateReq req){

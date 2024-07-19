@@ -111,7 +111,7 @@ public class FreeCommentService {
                         .author(comment.getUser().getNickname())
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
-                        .likeCount(comment.getLikes().size())
+                        .likeCount(comment.getLikesCount())
                         .build()
         ).collect(Collectors.toList());
 

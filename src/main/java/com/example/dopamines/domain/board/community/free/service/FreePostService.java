@@ -66,7 +66,7 @@ public class FreePostService {
                         .content(freeRecomment.getContent())
                         .author(freeRecomment.getUser().getNickname())
                         .createdAt(freeRecomment.getCreatedAt())
-                        .likeCount(freeRecomment.getLikes().size())
+                        .likeCount(freeRecomment.getLikesCount())
                         .build());
             }
             freeCommentReadResList.add(FreeCommentReadRes.builder()
@@ -75,7 +75,7 @@ public class FreePostService {
                     .content(freeComment.getContent())
                     .author(freeComment.getUser().getNickname())
                     .createdAt(freeComment.getCreatedAt())
-                    .likeCount(freeComment.getLikes().size())
+                    .likeCount(freeComment.getLikesCount())
                     .recommentList(freeRecommentReadResList)
                     .build());
 
@@ -88,7 +88,7 @@ public class FreePostService {
                 .author(freePost.getUser().getNickname())
                 .imageUrlList(freePost.getImageUrlList())
                 .created_at(LocalDateTime.now())
-                .likeCount(freePost.getLikes().size())
+                .likeCount(freePost.getLikesCount())
                 .freeCommentList(freeCommentReadResList)
                 .build();
     }

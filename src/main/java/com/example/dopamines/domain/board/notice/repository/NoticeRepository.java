@@ -11,6 +11,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     Page<Notice> findByIsPrivateFalseOrderByDateDesc(Pageable pageable);
     Page<Notice> findByIsPrivateFalseAndDateBetweenOrderByDateDesc(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
     Page<Notice> findByIsPrivateFalseAndCategoryOrderByDateDesc(String category, Pageable pageable);
-
     Page<Notice> findByIsPrivateTrueOrderByDateDesc(Pageable pageable);
+
 }

@@ -4,6 +4,7 @@ import com.example.dopamines.domain.board.notice.model.entity.Notice;
 import com.example.dopamines.domain.board.notice.model.request.NoticeReq;
 import com.example.dopamines.domain.board.notice.model.response.NoticeRes;
 import com.example.dopamines.domain.board.notice.repository.NoticeRepository;
+import com.example.dopamines.domain.board.notice.repository.NoticeRepositoryImpl;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -24,6 +25,7 @@ import java.util.List;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
+    private final NoticeRepositoryImpl noticeRepositoryImpl;
     private final CloudFileUploadService fileUploadService;
 
     // 공지사항 생성
@@ -64,6 +66,16 @@ public class NoticeService {
     public Page<Notice> getAllPrivateNotices(Pageable pageable) {
         return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable);
     }
+
+    // 공지사항 검색
+    public Page<Notice> findNoticesByCriteria(Boolean isPrivate, String category, int page, int size) {
+        return noticeRepositoryImpl.findNoticesByCriteria(isPrivate, category, page, size);
+    }
+
+    public Page<Notice> findNoticesByTitleAndContent(String title, String content, Pageable pageable) {
+        return noticeRepositoryImpl.findNoticesByTitleAndContent(title, content, pageable);
+    }
+
 
 
     // 공지사항 수정

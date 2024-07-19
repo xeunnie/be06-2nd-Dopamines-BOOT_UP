@@ -48,7 +48,6 @@ public class NoticeController {
         Page<Notice> notices = noticeService.getAllPrivateNotices(pageable);
         return ResponseEntity.ok(new BaseResponse<>(notices));
     }
-    //여기까지 했음
 
     @GetMapping("/public")
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPublicNotices(Pageable pageable) {
@@ -68,6 +67,24 @@ public class NoticeController {
         LocalDateTime end = LocalDateTime.parse(endDate);
         Page<Notice> notices = noticeService.getNoticesByDateRange(start, end, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(notices));
+    }
+
+    // 공지사항 검색
+    @GetMapping("/notices/criteria")
+    public Page<Notice> findNoticesByCriteria(
+            @RequestParam(required = false) Boolean isPrivate,
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return noticeService.findNoticesByCriteria(isPrivate, category, page, size);
+    }
+
+    @GetMapping("/notices/search")
+    public Page<Notice> findNoticesByTitleAndContent(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String content,
+            Pageable pageable) {
+        return noticeService.findNoticesByTitleAndContent(title, content, pageable);
     }
 
     // 공지사항 수정

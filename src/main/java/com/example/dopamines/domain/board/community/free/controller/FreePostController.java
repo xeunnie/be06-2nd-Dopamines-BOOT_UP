@@ -18,12 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/freepost")
+@RequestMapping("/free/post")
 @RequiredArgsConstructor
 public class FreePostController {
     private final FreePostService freePostService;
     private final CloudFileUploadService cloudFileUploadService;
-    @RequestMapping(method = RequestMethod.POST, value = "/create")
+
+    @PostMapping("/create")
     public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostReq req, @RequestPart MultipartFile[] files){
         User user = customUserDetails.getUser();
         String rootType ="FREEBOARD";
@@ -32,7 +33,7 @@ public class FreePostController {
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read")
+    @GetMapping("/read")
     public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         FreePostReadRes response = freePostService.read(idx);
@@ -40,14 +41,14 @@ public class FreePostController {
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read-all")
+    @GetMapping("/read-all")
     public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
         User user = customUserDetails.getUser();
         List<FreePostRes> response = freePostService.readAll(page,size);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/update")
+    @PutMapping("/update")
     public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostUpdateReq req, @RequestPart MultipartFile[] files){
         User user = customUserDetails.getUser();
         String rootType ="FREEBOARD";
@@ -56,14 +57,14 @@ public class FreePostController {
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String response = freePostService.delete(user,idx);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/search")
+    @GetMapping("/search")
     public ResponseEntity<BaseResponse<?>> search(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size,String keyword){
         User user = customUserDetails.getUser();
         List<FreePostRes> response = freePostService.search(page,size,keyword);

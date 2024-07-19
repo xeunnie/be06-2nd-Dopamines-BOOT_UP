@@ -10,10 +10,7 @@ import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ import java.util.List;
 public class FreeCommentController {
     private final FreeCommentService freeCommentService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/create")
+    @PostMapping("/create")
     public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeCommentReq req){
         User user = customUserDetails.getUser();
         String response = freeCommentService.create(user,req);
@@ -40,7 +37,7 @@ public class FreeCommentController {
 //        return ResponseEntity.ok(new BaseResponse<>(response));
 //    }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/update")
+    @PutMapping("/update")
     public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeCommentUpdateReq req){
         User user = customUserDetails.getUser();
         String response = freeCommentService.update(user,req);
@@ -48,7 +45,7 @@ public class FreeCommentController {
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails,Long idx){
         User user = customUserDetails.getUser();
         String response = freeCommentService.delete(user,idx);

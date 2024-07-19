@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FreeLikeController {
     private final FreeLikeService freeLikeService;
 
-    @GetMapping("/free-post")
+    @GetMapping("/post")
     public ResponseEntity<BaseResponse<?>> createFreePostLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String result = freeLikeService.createFreePostLike(user,idx);
@@ -26,7 +26,7 @@ public class FreeLikeController {
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/comment")
+    @GetMapping("/comment")
     public ResponseEntity<BaseResponse<?>> createCommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String result = freeLikeService.createCommentLike(user,idx);
@@ -34,7 +34,7 @@ public class FreeLikeController {
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/recomment")
+    @GetMapping("/recomment")
     public ResponseEntity<BaseResponse<?>> createRecommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String result = freeLikeService.createRecommentLike(user,idx);

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductImage {
+public class MarketProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;

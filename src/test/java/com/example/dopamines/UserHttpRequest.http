@@ -12,11 +12,11 @@ Content-Type: application/json
 }
 
 ### 유저 로그인 테스트 ( JWT 토큰 받아오기 )
-POST http://localhost:7218/login
+POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "email": "tjtlgus4@naver.com",
+  "email": "유송연@test.com",
   "password": "qwer1234"
 }
 

@@ -1,17 +1,14 @@
   package com.example.dopamines.domain.chat.service;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_ERROR_CONVENTION;
-import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_ERROR_USER_NOT_FOUND;
-import static com.example.dopamines.global.common.BaseResponseStatus.POST_NOT_FOUND;
 
-import com.example.dopamines.domain.board.market.mapper.MarketBoardMapper;
+import com.example.dopamines.domain.board.market.mapper.MarketPostMapper;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
 import com.example.dopamines.domain.board.market.repository.MarketPostRepository;
 import com.example.dopamines.domain.chat.mapper.ChatMessageMapper;
 import com.example.dopamines.domain.chat.mapper.ChatRoomMapper;
 import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO;
 import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO;
-import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.Response;
 import com.example.dopamines.domain.chat.model.entity.ChatMessage;
 import com.example.dopamines.domain.chat.model.entity.ChatRoom;
 import com.example.dopamines.domain.chat.model.entity.ParticipatedChatRoom;
@@ -39,7 +36,7 @@ public class ChatRoomService {
     private final ChatRoomMapper chatRoomMapper;
 
     private final ChatMessageMapper chatMessageMapper;
-    private final MarketBoardMapper marketBoardMapper;
+    private final MarketPostMapper marketPostMapper;
 
     public List<ChatRoomDTO.Response> findAll(User user) {
         List<ParticipatedChatRoom> chatRooms = participatedChatRoomRepository.findAllByUser(user);
@@ -51,7 +48,7 @@ public class ChatRoomService {
             return ChatRoomDTO.Response.builder()
                     .idx(room.getChatRoom().getIdx())
                     .name(room.getChatRoom().getName())
-                    .product(marketBoardMapper.toDto(post, author))
+                    .product(marketPostMapper.toDto(post, author))
                     .build();
 
         }

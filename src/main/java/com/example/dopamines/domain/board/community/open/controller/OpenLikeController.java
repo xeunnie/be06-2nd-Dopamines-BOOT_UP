@@ -7,6 +7,7 @@ import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OpenLikeController {
     private final OpenLikeService openLikeService;
 
-    @GetMapping("/open-post")
+    @GetMapping("/post")
     public ResponseEntity<BaseResponse<?>> createOpenPostLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String result = openLikeService.createOpenPostLike(user,idx);
@@ -26,7 +27,7 @@ public class OpenLikeController {
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/comment")
+    @GetMapping("/comment")
     public ResponseEntity<BaseResponse<?>> createCommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String result = openLikeService.createCommentLike(user,idx);
@@ -34,7 +35,7 @@ public class OpenLikeController {
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/recomment")
+    @GetMapping("/recomment")
     public ResponseEntity<BaseResponse<?>> createRecommentLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
         String result = openLikeService.createRecommentLike(user,idx);

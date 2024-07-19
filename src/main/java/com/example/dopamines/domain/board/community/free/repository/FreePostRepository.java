@@ -13,6 +13,6 @@ public interface FreePostRepository extends JpaRepository<FreePost, Long> {
     Slice<FreePost> findAllWithPaging(Pageable pageable);
 
     @Query("SELECT f FROM FreePost f WHERE LOCATE(:keyword, f.title) > 0 OR LOCATE(:keyword, f.content) > 0")
-    Slice<FreePost> search(Pageable pageable, @Param("keyword") String keyword);
+    Slice<FreePost> search(Pageable pageable, String keyword);
 
 }

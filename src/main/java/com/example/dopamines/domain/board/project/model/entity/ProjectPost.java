@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectBoard {
+public class ProjectPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

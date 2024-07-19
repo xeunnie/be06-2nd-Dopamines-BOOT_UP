@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UpdateProjectBoardReq {
+public class ProjectPostUpdateReq {
     private Long idx;
 
     private String title;

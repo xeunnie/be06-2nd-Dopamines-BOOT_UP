@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReservationListRes {
+public class ReservationReadByUserRes {
     private LocalDateTime createdAt;
     private String time;
     private String section;

@@ -1,7 +1,5 @@
 package com.example.dopamines.domain.reservation.model.response;
 
-import com.example.dopamines.domain.reservation.model.entity.Seat;
-import com.example.dopamines.domain.user.model.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,7 +8,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReservationRes {
+public class ReservationReserveRes {
     private Long idx;
     private LocalDateTime createdAt;
     private Long userIdx;

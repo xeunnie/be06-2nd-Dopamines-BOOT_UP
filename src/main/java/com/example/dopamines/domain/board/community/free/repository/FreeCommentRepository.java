@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface FreeCommentRepository extends JpaRepository<FreeComment,Long> {
-    //@Query("SELECT fc FROM FreeComment fc JOIN FETCH fc.user u JOIN FETCH fc.likes l WHERE fc.freePost.idx = :postIdx")
-    @Query("SELECT fc FROM FreeComment fc  WHERE fc.freePost.idx = :postIdx")
+    @Query("SELECT fc FROM FreeComment fc JOIN FETCH fc.user u WHERE fc.freePost.idx = :postIdx")
+    // 성능 개선 전: @Query("SELECT fc FROM FreeComment fc  WHERE fc.freePost.idx = :postIdx")
     Slice<FreeComment> findAllWithPaging(Pageable pageable, Long postIdx); // 페이지 사이즈가 10으로 고정
 
 

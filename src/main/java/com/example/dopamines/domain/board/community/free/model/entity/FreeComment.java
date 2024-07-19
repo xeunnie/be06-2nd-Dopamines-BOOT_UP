@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -30,7 +31,8 @@ public class FreeComment {
     @JoinColumn(name = "post_idx")
     private FreePost freePost;
 
-    @OneToMany(mappedBy = "freeComment")
+    @OneToMany(mappedBy = "freeComment", fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private List<FreeCommentLike> likes;
 
     @OneToMany(mappedBy = "freeComment")

@@ -27,8 +27,8 @@ public class OpenComment {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_idx")
-    private OpenBoard openBoard;
+    @JoinColumn(name = "post_idx")
+    private OpenPost openPost;
 
     @OneToMany(mappedBy = "openComment")
     private List<OpenCommentLike> likes;

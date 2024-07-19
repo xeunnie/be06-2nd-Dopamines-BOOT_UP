@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpenLikeReq {
-    private Long OpenBoardIdx;
+public class OpenPostLikeReq {
+    private Long OpenPostIdx;
     private User user;
 }

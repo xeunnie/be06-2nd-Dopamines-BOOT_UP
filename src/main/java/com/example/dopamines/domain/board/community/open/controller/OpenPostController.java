@@ -1,10 +1,10 @@
 package com.example.dopamines.domain.board.community.open.controller;
 
-import com.example.dopamines.domain.board.community.open.model.request.OpenBoardReq;
-import com.example.dopamines.domain.board.community.open.model.request.OpenBoardUpdateReq;
-import com.example.dopamines.domain.board.community.open.model.response.OpenBoardReadRes;
-import com.example.dopamines.domain.board.community.open.model.response.OpenBoardRes;
-import com.example.dopamines.domain.board.community.open.service.OpenBoardService;
+import com.example.dopamines.domain.board.community.open.model.request.OpenPostReq;
+import com.example.dopamines.domain.board.community.open.model.request.OpenPostUpdateReq;
+import com.example.dopamines.domain.board.community.open.model.response.OpenPostReadRes;
+import com.example.dopamines.domain.board.community.open.model.response.OpenPostRes;
+import com.example.dopamines.domain.board.community.open.service.OpenPostService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.security.CustomUserDetails;
@@ -19,22 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/openboard")
+@RequestMapping("/open/post")
 @RequiredArgsConstructor
-public class OpenBoardController {
-    private final OpenBoardService openBoardService;
+public class OpenPostController {
+    private final OpenPostService openPostService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenBoardReq req){
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenPostReq req){
         User user = customUserDetails.getUser();
-        String result = openBoardService.create(user,req);
+        String result = openPostService.create(user,req);
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/read")
     public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        OpenBoardReadRes response = openBoardService.read(idx);
+        OpenPostReadRes response = openPostService.read(idx);
 
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
@@ -42,21 +42,21 @@ public class OpenBoardController {
     @RequestMapping(method = RequestMethod.GET, value = "/read-all")
     public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
         User user = customUserDetails.getUser();
-        List<OpenBoardRes> response = openBoardService.readAll(page,size);
+        List<OpenPostRes> response = openPostService.readAll(page,size);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenBoardUpdateReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenPostUpdateReq req){
         User user = customUserDetails.getUser();
-        OpenBoardRes response = openBoardService.update(user,req);
+        OpenPostRes response = openPostService.update(user,req);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/delete")
     public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        String response = openBoardService.delete(user,idx);
+        String response = openPostService.delete(user,idx);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 }

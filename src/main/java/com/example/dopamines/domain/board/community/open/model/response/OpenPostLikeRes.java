@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class OpenLikeRes {
+public class OpenPostLikeRes {
     // TODO :  사용할지 안할지 결정
     private Long idx;
-    private Long boardIdx;
+    private Long postIdx;
     private Long userIdx;
 }

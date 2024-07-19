@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class OpenBoardReadRes {
+public class OpenPostReadRes {
     private Long idx;
     private String title;
     private String content;

@@ -1,11 +1,11 @@
 package com.example.dopamines.domain.board.community.open.service;
 
-import com.example.dopamines.domain.board.community.open.model.entity.OpenBoard;
+import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenComment;
 import com.example.dopamines.domain.board.community.open.model.request.OpenCommentReq;
 import com.example.dopamines.domain.board.community.open.model.request.OpenCommentUpdateReq;
 import com.example.dopamines.domain.board.community.open.model.response.OpenCommentReadRes;
-import com.example.dopamines.domain.board.community.open.repository.OpenBoardRepository;
+import com.example.dopamines.domain.board.community.open.repository.OpenPostRepository;
 import com.example.dopamines.domain.board.community.open.repository.OpenCommentRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
@@ -23,18 +23,18 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class OpenCommentService {
     private final OpenCommentRepository openCommentRepository;
-    private final OpenBoardRepository openBoardRepository;
+    private final OpenPostRepository openPostRepository;
 
     @Transactional
     public String create(User user, OpenCommentReq req) {
-        OpenBoard openBoard = openBoardRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if(req.getContent() == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         openCommentRepository.save(OpenComment.builder()
-                .openBoard(openBoard)
+                .openPost(openPost)
                 .content(req.getContent())
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -47,12 +47,12 @@ public class OpenCommentService {
     // TODO :  대댓글 조회까지 한번에 처리
     // TODO : 댓글 좋아요까지 구현 후 성능 테스트
     public List<OpenCommentReadRes> read(User user,Long idx) {
-        OpenBoard openBoard = openBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
         List<OpenCommentReadRes> openCommentReadResList = new ArrayList<>();
-        for(OpenComment openComment : openBoard.getComments()){
+        for(OpenComment openComment : openPost.getComments()){
             openCommentReadResList.add(OpenCommentReadRes.builder()
                     .idx(openComment.getIdx())
-                    .openBoardIdx(openBoard.getIdx())
+                    .openPostIdx(openPost.getIdx())
                     .content(openComment.getContent())
                     .author(user.getNickname())
                     .createdAt(openComment.getCreatedAt())
@@ -65,7 +65,7 @@ public class OpenCommentService {
 
     public String update(User user, OpenCommentUpdateReq req) {
         OpenComment openComment = openCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
-        OpenBoard openBoard = openBoardRepository.findById(openComment.getOpenBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if (openComment.getUser().getIdx() != user.getIdx()){
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
@@ -82,7 +82,7 @@ public class OpenCommentService {
 
     public String delete(User user, Long idx) {
         OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
-        OpenBoard openBoard = openBoardRepository.findById(openComment.getOpenBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if (openComment.getUser().getIdx() != user.getIdx()){
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);

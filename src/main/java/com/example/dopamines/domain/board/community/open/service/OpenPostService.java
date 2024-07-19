@@ -1,5 +1,7 @@
 package com.example.dopamines.domain.board.community.open.service;
 
+import com.example.dopamines.domain.board.community.free.model.entity.FreePost;
+import com.example.dopamines.domain.board.community.free.model.response.FreePostRes;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenComment;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenRecomment;
@@ -140,4 +142,18 @@ public class OpenPostService {
     }
 
 
+    public List<OpenPostRes> search(Integer page, Integer size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
+        Slice<OpenPost> result = openPostRepository.search(pageable,keyword);
+        List<OpenPostRes> openPostResList = new ArrayList<>();
+
+        for(OpenPost openPost : result.getContent()){
+            openPostResList.add(OpenPostRes.builder()
+                    .idx(openPost.getIdx())
+                    .title(openPost.getTitle())
+                    .content(openPost.getContent())
+                    .build());
+        }
+        return openPostResList;
+    }
 }

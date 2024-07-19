@@ -63,4 +63,12 @@ public class OpenPostController {
         String response = openPostService.delete(user,idx);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<?>> search(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size,String keyword){
+        User user = customUserDetails.getUser();
+        List<OpenPostRes> response = openPostService.search(page,size,keyword);
+        return ResponseEntity.ok(new BaseResponse<>(response));
+
+    }
 }

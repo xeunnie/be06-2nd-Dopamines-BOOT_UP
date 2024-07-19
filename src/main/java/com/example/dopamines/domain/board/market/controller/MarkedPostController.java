@@ -1,6 +1,6 @@
 package com.example.dopamines.domain.board.market.controller;
 
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.Response;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.board.market.service.MarkedService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/marked")
 @RequiredArgsConstructor
-public class MarkedController {
+public class MarkedPostController {
 
     private final MarkedService markedService;
 
@@ -33,9 +33,9 @@ public class MarkedController {
 
     @GetMapping
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<List<Response>>> findAll(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
+    public ResponseEntity<BaseResponse<List<MarketReadRes>>> findAll(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
         User user = customUserDetails.getUser();
-        List<Response> posts = markedService.findAll(user, page, size);
+        List<MarketReadRes> posts = markedService.findAll(user, page, size);
         return ResponseEntity.ok(new BaseResponse(posts));
     }
 }

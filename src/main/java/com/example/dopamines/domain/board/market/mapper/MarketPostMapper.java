@@ -1,10 +1,10 @@
 package com.example.dopamines.domain.board.market.mapper;
 
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.DetailResponse;
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.Request;
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.Response;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
-import com.example.dopamines.domain.board.market.model.entity.ProductImage;
+import com.example.dopamines.domain.board.market.model.entity.MarketProductImage;
+import com.example.dopamines.domain.board.market.model.request.MarketCreateReq;
+import com.example.dopamines.domain.board.market.model.response.MarketDetailRes;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.user.model.entity.User;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,8 +16,8 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = ComponentModel.SPRING, imports = {LocalDate.class})
-public interface MarketBoardMapper {
-    MarketBoardMapper INSTANCE = Mappers.getMapper(MarketBoardMapper.class);
+public interface MarketPostMapper {
+    MarketPostMapper INSTANCE = Mappers.getMapper(MarketPostMapper.class);
 
     @Mappings({
             @Mapping(target = "idx", ignore = true),
@@ -25,14 +25,14 @@ public interface MarketBoardMapper {
             @Mapping(target = "updatedAt", expression = "java(LocalDate.now())"),
             @Mapping(target = "status", constant = "false")
     })
-    MarketPost toEntity(String mainImage, Request dto, User user);
+    MarketPost toEntity(String mainImage, MarketCreateReq dto, User user);
 
-    Response toDto(MarketPost entity, String author);
+    MarketReadRes toDto(MarketPost entity, String author);
     @Mapping(source = "entity.images", target = "images")
-    DetailResponse toDetailDto(MarketPost entity, String author);
-    default List<String> map(List<ProductImage> images) {
+    MarketDetailRes toDetailDto(MarketPost entity, String author);
+    default List<String> map(List<MarketProductImage> images) {
         return images.stream()
-                .map(ProductImage::getUrl)
+                .map(MarketProductImage::getUrl)
                 .collect(Collectors.toList());
     }
 

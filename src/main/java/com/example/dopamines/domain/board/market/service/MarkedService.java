@@ -1,9 +1,9 @@
 package com.example.dopamines.domain.board.market.service;
 
-import com.example.dopamines.domain.board.market.mapper.MarketBoardMapper;
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.Response;
+import com.example.dopamines.domain.board.market.mapper.MarketPostMapper;
 import com.example.dopamines.domain.board.market.model.entity.MarkedPost;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.board.market.repository.MarkedPostRepository;
 import com.example.dopamines.domain.board.market.repository.MarketPostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
@@ -27,7 +27,7 @@ public class MarkedService {
     private final MarkedPostRepository markedRepository;
     private final MarketPostRepository marketPostRepository;
 
-    private final MarketBoardMapper mapper;
+    private final MarketPostMapper mapper;
     public String create(User user, Long postIdx) {
 
         Optional<MarkedPost> result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx);
@@ -55,7 +55,7 @@ public class MarkedService {
         return markedRepository.existsByUserAndMarketPost(user, post);
     }
 
-    public List<Response> findAll(User user, Integer page, Integer size) {
+    public List<MarketReadRes> findAll(User user, Integer page, Integer size) {
         List<Long> postIds = markedRepository.findPostIdsByUserId(user.getIdx());
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));

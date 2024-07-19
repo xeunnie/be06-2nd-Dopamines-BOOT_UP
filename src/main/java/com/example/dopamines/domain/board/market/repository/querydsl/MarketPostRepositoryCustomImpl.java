@@ -2,7 +2,8 @@ package com.example.dopamines.domain.board.market.repository.querydsl;
 
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
 import com.example.dopamines.domain.board.market.model.entity.QMarketPost;
-import com.example.dopamines.domain.board.market.model.entity.QProductImage;
+
+import com.example.dopamines.domain.board.market.model.entity.QMarketProductImage;
 import com.example.dopamines.domain.user.model.entity.QUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,13 +22,13 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
     private final JPAQueryFactory queryFactory;
     private QMarketPost marketPost;
     private QUser user;
-    private QProductImage productImage;
+    private QMarketProductImage marketProductImage;
 
     public MarketPostRepositoryCustomImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
         this.marketPost = QMarketPost.marketPost;
         this.user = QUser.user;
-        this.productImage = QProductImage.productImage;
+        this.marketProductImage = QMarketProductImage.marketProductImage;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
     public Optional<MarketPost> findByIdWithImages(Long idx) {
         MarketPost post = queryFactory
                 .selectFrom(marketPost)
-                .leftJoin(marketPost.images, productImage).fetchJoin()
+                .leftJoin(marketPost.images, marketProductImage).fetchJoin()
                 .leftJoin(marketPost.user, user).fetchJoin()
                 .where(marketPost.idx.eq(idx))
                 .fetchOne();

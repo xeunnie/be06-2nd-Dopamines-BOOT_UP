@@ -2,7 +2,9 @@ package com.example.dopamines.domain.board.market.controller;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.UNAUTHORIZED_ACCESS;
 
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.*;
+import com.example.dopamines.domain.board.market.model.request.MarketCreateReq;
+import com.example.dopamines.domain.board.market.model.response.MarketDetailRes;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.board.market.service.MarkedService;
 import com.example.dopamines.domain.board.market.service.MarketService;
 import com.example.dopamines.domain.user.model.entity.User;
@@ -27,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/market")
 @RequiredArgsConstructor
-public class MarketBoardController {
+public class MarketPostController {
 
     private final String BOARD_TYPE = "MARKET";
     private final MarketService marketService;
@@ -37,25 +39,25 @@ public class MarketBoardController {
 
     @PostMapping
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart MultipartFile[] images, @RequestPart Request req) {
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart MultipartFile[] images, @RequestPart MarketCreateReq req) {
         User user = customUserDetails.getUser();
         List<String> imagePathes = cloudFileUploadService.uploadImages(images, BOARD_TYPE);
-        Response post = marketService.add(imagePathes, req, user);
+        MarketReadRes post = marketService.add(imagePathes, req, user);
 
         return ResponseEntity.ok(new BaseResponse(post));
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<List<Response>>> findAll(Integer page, Integer size) {
-        List<Response> posts = marketService.findAll(page, size);
+    public ResponseEntity<BaseResponse<List<MarketReadRes>>> findAll(Integer page, Integer size) {
+        List<MarketReadRes> posts = marketService.findAll(page, size);
         return ResponseEntity.ok(new BaseResponse(posts));
     }
 
     @GetMapping("/{idx}")
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<DetailResponse>> findOne(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("idx") Long idx) {
+    public ResponseEntity<BaseResponse<MarketDetailRes>> findOne(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("idx") Long idx) {
         User user = customUserDetails.getUser();
-        DetailResponse post = marketService.findById(idx);
+        MarketDetailRes post = marketService.findById(idx);
 
         Boolean isMarked = markedService.checkMarked(user, idx);
         post.setMarked(isMarked);
@@ -64,8 +66,8 @@ public class MarketBoardController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<BaseResponse<List<Response>>> search(Integer page, Integer size, String keyword, Integer minPrice, Integer maxPrice) {
-        List<Response> result = marketService.search(page, size, keyword, minPrice, maxPrice);
+    public ResponseEntity<BaseResponse<List<MarketReadRes>>> search(Integer page, Integer size, String keyword, Integer minPrice, Integer maxPrice) {
+        List<MarketReadRes> result = marketService.search(page, size, keyword, minPrice, maxPrice);
         return ResponseEntity.ok(new BaseResponse(result));
     }
 

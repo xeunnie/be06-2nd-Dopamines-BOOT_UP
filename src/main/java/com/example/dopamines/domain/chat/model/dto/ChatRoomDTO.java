@@ -1,6 +1,6 @@
 package com.example.dopamines.domain.chat.model.dto;
 
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +24,6 @@ public class ChatRoomDTO {
     public static class Response {
         private String idx; // 채팅방 uuid
         private String name;
-        private MarketBoardDTO.Response product;
+        private MarketReadRes product;
     }
 }

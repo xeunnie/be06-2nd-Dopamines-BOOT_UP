@@ -46,7 +46,7 @@ public class MarketPost {
     boolean status;
 
     @OneToMany(mappedBy = "marketPost", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ProductImage> images;
+    private List<MarketProductImage> images;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")

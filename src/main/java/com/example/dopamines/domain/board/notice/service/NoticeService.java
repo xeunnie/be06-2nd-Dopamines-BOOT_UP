@@ -1,9 +1,10 @@
 package com.example.dopamines.domain.board.notice.service;
 
 import com.example.dopamines.domain.board.notice.model.entity.Notice;
-import com.example.dopamines.domain.board.notice.model.request.NoticeRequestDto;
-import com.example.dopamines.domain.board.notice.model.response.NoticeResponseDto;
+import com.example.dopamines.domain.board.notice.model.request.NoticeReq;
+import com.example.dopamines.domain.board.notice.model.response.NoticeRes;
 import com.example.dopamines.domain.board.notice.repository.NoticeRepository;
+import com.example.dopamines.domain.board.notice.repository.NoticeRepositoryImpl;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,25 +25,26 @@ import java.util.List;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
+    private final NoticeRepositoryImpl noticeRepositoryImpl;
     private final CloudFileUploadService fileUploadService;
 
     // 공지사항 생성
     @Transactional
-    public BaseResponse<NoticeResponseDto> saveNotice(NoticeRequestDto noticeRequestDto) {
+    public BaseResponse<NoticeRes> saveNotice(NoticeReq req) {
         try {
-            Notice notice = noticeRequestDto.toEntity();
+            Notice notice = req.toEntity();
             Notice savedNotice = noticeRepository.save(notice);
-            return new BaseResponse<>(new NoticeResponseDto(savedNotice));
+            return new BaseResponse<>(new NoticeRes(savedNotice));
         } catch (Exception e) {
-            return new BaseResponse<>(false, BaseResponseStatus.NOTICE_SAVE_FAILED.getMessage(), BaseResponseStatus.NOTICE_SAVE_FAILED.getCode(), null);
+            return new BaseResponse<>(BaseResponseStatus.NOTICE_SAVE_FAILED);
         }
     }
 
     // 공지사항 조회
-    public NoticeResponseDto getNotice(Long id) {
+    public NoticeRes getNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
-        return new NoticeResponseDto(notice);
+        return new NoticeRes(notice);
     }
 
     public List<Notice> getAllNotices() {
@@ -64,19 +67,34 @@ public class NoticeService {
         return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable);
     }
 
+    // 공지사항 검색
+    public Page<Notice> findNoticesByCriteria(Boolean isPrivate, String category, int page, int size) {
+        return noticeRepositoryImpl.findNoticesByCriteria(isPrivate, category, page, size);
+    }
+
+    public Page<Notice> findNoticesByTitleAndContent(String title, String content, Pageable pageable) {
+        return noticeRepositoryImpl.findNoticesByTitleAndContent(title, content, pageable);
+    }
+
+
 
     // 공지사항 수정
     @Transactional
-    public NoticeResponseDto updateNotice(Long id, NoticeRequestDto noticeDetails) {
+    public NoticeRes updateNotice(Long id, NoticeReq req) {
+        try {
+
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
-        updateNoticeDetails(notice, noticeDetails);
+        updateNoticeDetails(notice, req);
         Notice savedNotice = noticeRepository.save(notice);
         return convertToNoticeResponseDto(savedNotice);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.NOTICE_UPDATE_FAILED);
+        }
     }
 
-    private NoticeResponseDto convertToNoticeResponseDto(Notice notice) {
-        return new NoticeResponseDto(
+    private NoticeRes convertToNoticeResponseDto(Notice notice) {
+        return new NoticeRes(
                 notice.getId(),
                 notice.getTitle(),
                 notice.getContent(),
@@ -86,13 +104,13 @@ public class NoticeService {
                 notice.getImageUrls());
     }
 
-    private NoticeResponseDto updateNoticeDetails(Notice notice, NoticeRequestDto noticeDetails) {
+    private NoticeRes updateNoticeDetails(Notice notice, NoticeReq noticeDetails) {
         notice.setTitle(noticeDetails.getTitle());
         notice.setContent(noticeDetails.getContent());
         notice.setCategory(noticeDetails.getCategory());
         notice.setPrivate(noticeDetails.isPrivate());
         Notice savedNotice = noticeRepository.save(notice);
-        return new NoticeResponseDto(savedNotice);
+        return new NoticeRes(savedNotice);
     }
 
 
@@ -106,5 +124,4 @@ public class NoticeService {
             throw new BaseException(BaseResponseStatus.NOTICE_DELETE_FAILED);
         }
     }
-
 }

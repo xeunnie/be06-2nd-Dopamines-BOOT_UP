@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeResponseDto {
+public class NoticeRes {
     private Long id;
     private String title;
     private String content;
@@ -20,7 +20,7 @@ public class NoticeResponseDto {
     private boolean isPrivate;
     private List<String> imageUrls;
 
-    public NoticeResponseDto(Notice savedNotice) {
+    public NoticeRes(Notice savedNotice) {
         this.id = savedNotice.getId();
         this.title = savedNotice.getTitle();
         this.content = savedNotice.getContent();

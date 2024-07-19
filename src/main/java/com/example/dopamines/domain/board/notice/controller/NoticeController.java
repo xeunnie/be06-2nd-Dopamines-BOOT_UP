@@ -1,8 +1,8 @@
 package com.example.dopamines.domain.board.notice.controller;
 
 import com.example.dopamines.domain.board.notice.model.entity.Notice;
-import com.example.dopamines.domain.board.notice.model.request.NoticeRequestDto;
-import com.example.dopamines.domain.board.notice.model.response.NoticeResponseDto;
+import com.example.dopamines.domain.board.notice.model.request.NoticeReq;
+import com.example.dopamines.domain.board.notice.model.response.NoticeRes;
 import com.example.dopamines.domain.board.notice.service.NoticeService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -25,20 +25,20 @@ public class NoticeController {
 
     // 공지사항 생성
     @PostMapping
-    public ResponseEntity<BaseResponse<BaseResponse<NoticeResponseDto>>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
-        BaseResponse<NoticeResponseDto> createdNotice = noticeService.saveNotice(noticeRequestDto);
+    public ResponseEntity<BaseResponse<BaseResponse<NoticeRes>>> createNotice(@RequestBody NoticeReq req) {
+        BaseResponse<NoticeRes> createdNotice = noticeService.saveNotice(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice));
     }
 
     // 공지사항 조회
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<NoticeResponseDto>> getNotice(@PathVariable Long id) {
-        Optional<NoticeResponseDto> noticeOptional = Optional.ofNullable(noticeService.getNotice(id));
+    public ResponseEntity<BaseResponse<NoticeRes>> getNotice(@PathVariable Long id) {
+        Optional<NoticeRes> noticeOptional = Optional.ofNullable(noticeService.getNotice(id));
         if (noticeOptional.isPresent()) {
-            BaseResponse<NoticeResponseDto> response = new BaseResponse<>(noticeOptional.get());
-            return ResponseEntity.ok(response);
+            BaseResponse<NoticeRes> response = new BaseResponse<>(noticeOptional.get());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
-            BaseResponse<NoticeResponseDto> response = new BaseResponse<>(false, BaseResponseStatus.NOTICE_NOT_FOUND.getMessage(), BaseResponseStatus.NOTICE_NOT_FOUND.getCode(), null);
+            BaseResponse<NoticeRes> response = new BaseResponse<>(BaseResponseStatus.NOTICE_NOT_FOUND);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
@@ -66,20 +66,38 @@ public class NoticeController {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);
         Page<Notice> notices = noticeService.getNoticesByDateRange(start, end, pageable);
-        return ResponseEntity.ok(new BaseResponse<>(notices));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(notices));
+    }
+
+    // 공지사항 검색
+    @GetMapping("/notices/criteria")
+    public Page<Notice> findNoticesByCriteria(
+            @RequestParam(required = false) Boolean isPrivate,
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return noticeService.findNoticesByCriteria(isPrivate, category, page, size);
+    }
+
+    @GetMapping("/notices/search")
+    public Page<Notice> findNoticesByTitleAndContent(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String content,
+            Pageable pageable) {
+        return noticeService.findNoticesByTitleAndContent(title, content, pageable);
     }
 
     // 공지사항 수정
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<Notice>> updateNotice(@PathVariable Long id, @RequestBody NoticeRequestDto noticeRequestDto) {
+    public ResponseEntity<BaseResponse<Notice>> updateNotice(@PathVariable Long id, @RequestBody NoticeReq noticeRequestDto) {
         Notice updatedNotice = noticeService.updateNotice(id, noticeRequestDto).toEntity();
-        return ResponseEntity.ok(new BaseResponse<>(updatedNotice));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(updatedNotice));
     }
 
     // 공지사항 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }
 }

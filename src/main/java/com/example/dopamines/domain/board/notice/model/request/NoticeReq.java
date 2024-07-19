@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class NoticeRequestDto {
+public class NoticeReq {
     private Long id;
 
     private String title;

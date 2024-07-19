@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FreeBoardUpdateReq {
+public class FreePostUpdateReq {
     private Long idx;
     private String title;
     private String content;

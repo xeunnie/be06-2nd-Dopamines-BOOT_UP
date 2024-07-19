@@ -7,6 +7,7 @@ import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FreeLikeController {
     private final FreeLikeService freeLikeService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/free-board")
-    public ResponseEntity<BaseResponse<?>> createFreeBoardLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+    @GetMapping("/free-post")
+    public ResponseEntity<BaseResponse<?>> createFreePostLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
         User user = customUserDetails.getUser();
-        String result = freeLikeService.createFreeBoardLike(user,idx);
+        String result = freeLikeService.createFreePostLike(user,idx);
 
         return ResponseEntity.ok(new BaseResponse<>(result));
     }

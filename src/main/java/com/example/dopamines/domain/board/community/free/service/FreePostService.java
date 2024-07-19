@@ -1,15 +1,15 @@
 package com.example.dopamines.domain.board.community.free.service;
 
-import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
+import com.example.dopamines.domain.board.community.free.model.entity.FreePost;
 import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
 import com.example.dopamines.domain.board.community.free.model.entity.FreeRecomment;
-import com.example.dopamines.domain.board.community.free.model.request.FreeBoardReq;
-import com.example.dopamines.domain.board.community.free.model.request.FreeBoardUpdateReq;
-import com.example.dopamines.domain.board.community.free.model.response.FreeBoardReadRes;
-import com.example.dopamines.domain.board.community.free.model.response.FreeBoardRes;
+import com.example.dopamines.domain.board.community.free.model.request.FreePostReq;
+import com.example.dopamines.domain.board.community.free.model.request.FreePostUpdateReq;
+import com.example.dopamines.domain.board.community.free.model.response.FreePostReadRes;
+import com.example.dopamines.domain.board.community.free.model.response.FreePostRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeRecommentReadRes;
-import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
+import com.example.dopamines.domain.board.community.free.repository.FreePostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +28,11 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
-public class FreeBoardService {
-    private final FreeBoardRepository freeBoardRepository;
+public class FreePostService {
+    private final FreePostRepository freePostRepository;
 
     @Transactional
-    public String create(User user, FreeBoardReq req, List<String> imageUrlList) {
+    public String create(User user, FreePostReq req, List<String> imageUrlList) {
 
         if(req.getTitle() == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
@@ -40,7 +40,7 @@ public class FreeBoardService {
         if(req.getContent() == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
-        FreeBoard freeBoard = freeBoardRepository.save(FreeBoard.builder()
+        FreePost freePost = freePostRepository.save(FreePost.builder()
                 .title(req.getTitle())
                 .content(req.getContent())
                 .user(user)
@@ -52,16 +52,16 @@ public class FreeBoardService {
         return "자유 게시판 게시글 등록";
     }
 
-    public FreeBoardReadRes read(Long idx) {
-        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public FreePostReadRes read(Long idx) {
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
-        for(FreeComment freeComment : freeBoard.getComments()){
+        for(FreeComment freeComment : freePost.getComments()){
             List<FreeRecommentReadRes> freeRecommentReadResList = new ArrayList<>();
             for(FreeRecomment freeRecomment : freeComment.getFreeRecomments()){
                 freeRecommentReadResList.add(FreeRecommentReadRes.builder()
                         .idx(freeRecomment.getIdx())
-                        .freeBoardIdx(freeBoard.getIdx())
+                        .freePostIdx(freePost.getIdx())
                         .commentIdx(freeRecomment.getFreeComment().getIdx())
                         .content(freeRecomment.getContent())
                         .author(freeRecomment.getUser().getNickname())
@@ -71,7 +71,7 @@ public class FreeBoardService {
             }
             freeCommentReadResList.add(FreeCommentReadRes.builder()
                     .idx(freeComment.getIdx())
-                    .freeBoardIdx(freeBoard.getIdx())
+                    .freePostIdx(freePost.getIdx())
                     .content(freeComment.getContent())
                     .author(freeComment.getUser().getNickname())
                     .createdAt(freeComment.getCreatedAt())
@@ -81,63 +81,77 @@ public class FreeBoardService {
 
         }
 
-        return FreeBoardReadRes.builder()
-                .idx(freeBoard.getIdx())
-                .title(freeBoard.getTitle())
-                .content(freeBoard.getContent())
-                .author(freeBoard.getUser().getNickname())
-                .imageUrlList(freeBoard.getImageUrlList())
+        return FreePostReadRes.builder()
+                .idx(freePost.getIdx())
+                .title(freePost.getTitle())
+                .content(freePost.getContent())
+                .author(freePost.getUser().getNickname())
+                .imageUrlList(freePost.getImageUrlList())
                 .created_at(LocalDateTime.now())
-                .likeCount(freeBoard.getLikes().size())
+                .likeCount(freePost.getLikes().size())
                 .freeCommentList(freeCommentReadResList)
                 .build();
     }
 
-    public List<FreeBoardRes> readAll(Integer page, Integer size) {
+    public List<FreePostRes> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
-        Slice<FreeBoard> result = freeBoardRepository.findAllWithPaging(pageable);
-        List<FreeBoardRes> freeBoardResList = new ArrayList<>();
+        Slice<FreePost> result = freePostRepository.findAllWithPaging(pageable);
+        List<FreePostRes> freePostResList = new ArrayList<>();
 
-        for(FreeBoard freeBoard : result.getContent()){
-            freeBoardResList.add(FreeBoardRes.builder()
-                    .idx(freeBoard.getIdx())
-                    .title(freeBoard.getTitle())
-                    .content(freeBoard.getContent())
+        for(FreePost freePost : result.getContent()){
+            freePostResList.add(FreePostRes.builder()
+                    .idx(freePost.getIdx())
+                    .title(freePost.getTitle())
+                    .content(freePost.getContent())
                     .build());
         }
-        return freeBoardResList;
+        return freePostResList;
     }
 
-    public FreeBoardRes update(User user, FreeBoardUpdateReq req,List<String> imageUrlList) {
-        FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public FreePostRes update(User user, FreePostUpdateReq req, List<String> imageUrlList) {
+        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(freeBoard.getUser().getIdx()!= user.getIdx()){
+        if(freePost.getUser().getIdx()!= user.getIdx()){
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
-        freeBoard.setTitle(req.getTitle());
-        freeBoard.setContent(req.getContent());
-        freeBoard.setImageUrlList(imageUrlList);
-        freeBoard.setCreatedAt(LocalDateTime.now());
+        freePost.setTitle(req.getTitle());
+        freePost.setContent(req.getContent());
+        freePost.setImageUrlList(imageUrlList);
+        freePost.setCreatedAt(LocalDateTime.now());
 
-        freeBoardRepository.save(freeBoard);
+        freePostRepository.save(freePost);
 
-        return FreeBoardRes.builder()
-                .idx(freeBoard.getIdx())
-                .title(freeBoard.getContent())
-                .content(freeBoard.getContent())
+        return FreePostRes.builder()
+                .idx(freePost.getIdx())
+                .title(freePost.getContent())
+                .content(freePost.getContent())
                 .build();
 
     }
 
     public String delete(User user,Long idx) {
-        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-        if(!freeBoard.getUser().getIdx().equals(user.getIdx())){
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        if(!freePost.getUser().getIdx().equals(user.getIdx())){
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
-        freeBoardRepository.delete(freeBoard);
+        freePostRepository.delete(freePost);
         // TODO : 게시글 삭제 시, 해당 게시글의 댓글, 댓글좋아요, 대댓글, 대댓글좋아요 삭제
         return  "게시글 삭제";
     }
 
 
+    public List<FreePostRes> search(Integer page, Integer size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
+        Slice<FreePost> result = freePostRepository.search(pageable,keyword);
+        List<FreePostRes> freePostResList = new ArrayList<>();
+
+        for(FreePost freePost : result.getContent()){
+            freePostResList.add(FreePostRes.builder()
+                    .idx(freePost.getIdx())
+                    .title(freePost.getTitle())
+                    .content(freePost.getContent())
+                    .build());
+        }
+        return freePostResList;
+    }
 }

@@ -140,18 +140,18 @@ public class FreePostService {
     }
 
 
-    public List<FreePostRes> search(Integer page, Integer size, String keyword) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
-        Slice<FreePost> result = freePostRepository.search(pageable,keyword);
-        List<FreePostRes> freePostResList = new ArrayList<>();
-
-        for(FreePost freePost : result.getContent()){
-            freePostResList.add(FreePostRes.builder()
-                    .idx(freePost.getIdx())
-                    .title(freePost.getTitle())
-                    .content(freePost.getContent())
-                    .build());
-        }
-        return freePostResList;
-    }
+//    public List<FreePostRes> search(Integer page, Integer size, String keyword) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
+//        Slice<FreePost> result = freePostRepository.search(pageable,keyword);
+//        List<FreePostRes> freePostResList = new ArrayList<>();
+//
+//        for(FreePost freePost : result.getContent()){
+//            freePostResList.add(FreePostRes.builder()
+//                    .idx(freePost.getIdx())
+//                    .title(freePost.getTitle())
+//                    .content(freePost.getContent())
+//                    .build());
+//        }
+//        return freePostResList;
+//    }
 }

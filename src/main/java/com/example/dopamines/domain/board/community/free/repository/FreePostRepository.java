@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface FreePostRepository extends JpaRepository<FreePost, Long> {
     @Query("SELECT f FROM FreePost f")
     public Slice<FreePost> findAllWithPaging(Pageable pageable);
-    @Query("SELECT f FROM FreePost f")
-    Slice<FreePost> search(Pageable pageable, String keyword);
+//    @Query("SELECT f FROM FreePost f")
+//    Slice<FreePost> search(Pageable pageable, String keyword);
 }

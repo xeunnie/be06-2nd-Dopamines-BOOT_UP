@@ -64,11 +64,11 @@ public class FreePostController {
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<BaseResponse<?>> search(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size,String keyword){
-        User user = customUserDetails.getUser();
-        List<FreePostRes> response = freePostService.search(page,size,keyword);
-        return ResponseEntity.ok(new BaseResponse<>(response));
-
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity<BaseResponse<?>> search(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size,String keyword){
+//        User user = customUserDetails.getUser();
+//        List<FreePostRes> response = freePostService.search(page,size,keyword);
+//        return ResponseEntity.ok(new BaseResponse<>(response));
+//
+//    }
 }

@@ -31,33 +31,28 @@ public class ProjectPostController {
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<BaseResponse<ProjectPostRes>>> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
+    public ResponseEntity<BaseResponse<ProjectPostRes>> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
         List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
         BaseResponse<ProjectPostRes> response = projectBoardService.create(req, savedFileName.get(0));
-        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/read")
-    public ResponseEntity<BaseResponse<BaseResponse<ProjectPostReadRes>>> read(Long idx) {
+    public ResponseEntity<BaseResponse<ProjectPostReadRes>> read(Long idx) {
         BaseResponse<ProjectPostReadRes> response = projectBoardService.read(idx);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
-    }
-
-    @GetMapping("/read-by-course-num")
-    public ResponseEntity<List<ProjectPostReadRes>> readByCourseNum(Long courseNum) {
-        List<ProjectPostReadRes> response = projectBoardService.readByCourseNum(courseNum);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @CheckAuthentication
-    @GetMapping("/read-all")
-    public ResponseEntity<?> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        boolean hasAdminRole = userDetails.getAuthorities().stream().anyMatch(authority->authority.getAuthority().equals("ROLE_ADMIN"));
-        if (!hasAdminRole) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseResponse<>(UNAUTHORIZED_ACCESS));
-        }
+    @GetMapping("/read-by-course-num")
+    public ResponseEntity<BaseResponse<List<ProjectPostReadRes>>> readByCourseNum(Integer courseNum) {
+        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readByCourseNum(courseNum);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
-        List<ProjectPostReadRes> response = projectBoardService.readAll();
+//    @CheckAuthentication
+    @GetMapping("/read-all")
+    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readAll();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

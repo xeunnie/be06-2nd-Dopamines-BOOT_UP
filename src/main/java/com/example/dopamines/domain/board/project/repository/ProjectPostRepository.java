@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ProjectPostRepository extends JpaRepository<ProjectPost, Long> {
 
-    Optional<List<ProjectPost>> findByCourseNum(Long courseNum);
+    Optional<List<ProjectPost>> findByCourseNum(Integer courseNum);
 }

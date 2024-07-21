@@ -17,6 +17,7 @@ import com.example.dopamines.domain.board.market.model.entity.MarketProductImage
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
+import com.example.dopamines.global.common.annotation.Timer;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -73,6 +74,7 @@ public class FreePostService {
         return "자유 게시판 게시글 등록";
     }
 
+    @Timer
     public FreePostReadRes read(Long idx) {
         FreePost freePost = freePostRepository.findByIdWithAuthor(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
         List<FreeCommentReadRes> freeComments = freeCommentService.findAllWithPage(idx, 0, 10);

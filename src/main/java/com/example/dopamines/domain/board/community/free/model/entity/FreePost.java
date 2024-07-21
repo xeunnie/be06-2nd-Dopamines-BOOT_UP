@@ -7,7 +7,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
+@DynamicInsert
 @Entity
 @Getter
 @Setter

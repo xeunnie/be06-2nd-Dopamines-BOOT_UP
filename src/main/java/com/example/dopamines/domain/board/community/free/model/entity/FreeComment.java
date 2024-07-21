@@ -6,7 +6,11 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
+@DynamicInsert
 @Entity
 @Getter
 @Setter
@@ -30,8 +34,23 @@ public class FreeComment {
     @JoinColumn(name = "post_idx")
     private FreePost freePost;
 
-    @OneToMany(mappedBy = "freeComment")
-    private List<FreeCommentLike> likes;
+    @ColumnDefault(value = "0")
+    private Integer likesCount;
+
+    @Version    // 낙관적 락 : 프로그램 단에서 사용하는 Lock, 낙관적 락 테스트할 때는 비관적 락 주석 처리
+    @ColumnDefault(value = "0")
+    private Integer version;
+
+    public void addLikesCount() {
+        this.likesCount = this.likesCount + 1;
+    }
+    public void subLikesCount() {
+        this.likesCount = this.likesCount - 1;
+    }
+
+//    @OneToMany(mappedBy = "freeComment", fetch = FetchType.LAZY)
+//    @BatchSize(size = 10)
+//    private List<FreeCommentLike> likes;
 
     @OneToMany(mappedBy = "freeComment")
     private List<FreeRecomment> freeRecomments;

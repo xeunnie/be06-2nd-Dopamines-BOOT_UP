@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @RestController
@@ -29,14 +30,11 @@ public class FreeCommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(response));
     }
 
-    // 내가 쓴 댓글 조회
-//    @RequestMapping(method = RequestMethod.GET, value = "/read")
-//    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-//        User user = customUserDetails.getUser();
-//        List<FreeCommentReadRes> response = freeCommentService.read(user);
-//
-//        return ResponseEntity.ok(new BaseResponse<>(response));
-//    }
+    @GetMapping
+    public ResponseEntity<BaseResponse<?>> findAll(Long idx, Integer page, Integer size) {
+        List<FreeCommentReadRes> res = freeCommentService.findAllWithPage(idx, page, size);
+        return ResponseEntity.ok(new BaseResponse<>(res));
+    }
 
     @PutMapping("/update")
     public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeCommentUpdateReq req){

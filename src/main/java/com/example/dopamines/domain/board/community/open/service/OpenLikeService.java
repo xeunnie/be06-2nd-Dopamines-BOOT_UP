@@ -4,12 +4,9 @@ import com.example.dopamines.domain.board.community.open.model.entity.*;
 import com.example.dopamines.domain.board.community.open.repository.*;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +20,16 @@ public class OpenLikeService {
 
 
     public String createOpenPostLike(User user, Long idx) {
-        Optional<OpenPostLike> result = openPostLikeRepository.findByUserAndOpenPost(user.getIdx(),idx);
+        OpenPostLike result = openPostLikeRepository.findByUserAndOpenPost(user.getIdx(), idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_POST_LIKE_FAILED));
         OpenPostLike openPostLike;
 
-        if(result.isPresent()){ // 이미 좋아요한 경우
-            openPostLike = result.get();
-            openPostLikeRepository.delete(openPostLike);
+        if(result != null){ // 이미 좋아요한 경우
+            openPostLikeRepository.delete(result);
             return "자유 게시글 좋아요 취소";
         }
 
-        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
         openPostLike = OpenPostLike.builder()
                 .user(user)
                 .openPost(openPost)
@@ -42,16 +39,16 @@ public class OpenLikeService {
     }
 
     public String createCommentLike(User user, Long idx) {
-        Optional<OpenCommentLike> result = openCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
+        OpenCommentLike result = openCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_LIKE_FAILED));
         OpenCommentLike openCommentLike;
 
-        if(result.isPresent()){ // 이미 좋아요한 경우
-            openCommentLike= result.get();
-            openCommentLikeRepository.delete(openCommentLike);
+        if(result != null){ // 이미 좋아요한 경우
+            openCommentLikeRepository.delete(result);
             return "자유 게시글 댓글 좋아요 취소";
         }
 
-        OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+        OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND));
         openCommentLike = OpenCommentLike.builder()
                 .user(user)
                 .openComment(openComment)
@@ -61,16 +58,16 @@ public class OpenLikeService {
     }
 
     public String createRecommentLike(User user, Long idx) {
-        Optional<OpenRecommentLike> result = openRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
+        OpenRecommentLike result = openRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_LIKE_FAILED));
         OpenRecommentLike openRecommentLike;
 
-        if(result.isPresent()){ // 이미 좋아요한 경우
-            openRecommentLike= result.get();
-            openRecommentLikeRepository.delete(openRecommentLike);
+        if(result != null){ // 이미 좋아요한 경우
+            openRecommentLikeRepository.delete(result);
             return "자유 게시글 대댓글 좋아요 취소";
         }
 
-        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_RECOMMENT_NOT_FOUND));
         openRecommentLike = OpenRecommentLike.builder()
                 .user(user)
                 .openRecomment(openRecomment)

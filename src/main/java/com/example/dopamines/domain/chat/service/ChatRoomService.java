@@ -42,7 +42,7 @@ public class ChatRoomService {
         List<ParticipatedChatRoom> chatRooms = participatedChatRoomRepository.findAllByUser(user);
         List<ChatRoomDTO.Response> dto = chatRooms.stream().map((room) ->{
             Long postIdx = room.getChatRoom().getMarketPost().getIdx();
-            MarketPost post = marketPostRepository.findByIdWithImages(postIdx).orElseThrow(()->new BaseException(MARKET_ERROR_CONVENTION));
+            MarketPost post = marketPostRepository.findByIdWithImages(postIdx);
             String author = post.getUser().getName();
 
             return ChatRoomDTO.Response.builder()

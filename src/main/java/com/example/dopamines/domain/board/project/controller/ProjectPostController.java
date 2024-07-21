@@ -8,10 +8,12 @@ import com.example.dopamines.domain.board.project.model.response.ProjectPostRes;
 import com.example.dopamines.domain.board.project.model.response.ProjectPostReadRes;
 import com.example.dopamines.domain.board.project.service.ProjectPostService;
 import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import com.example.dopamines.global.infra.s3.CloudFileUploadService;
 import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,40 +28,25 @@ public class ProjectPostController {
 
     private String rootType = "PROJECT";
     private final ProjectPostService projectBoardService;
-
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/create")
-    public ResponseEntity<ProjectPostRes> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
-
+    public ResponseEntity<BaseResponse<BaseResponse<ProjectPostRes>>> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
         List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
-        ProjectPostRes response = projectBoardService.create(req, savedFileName.get(0));
-
-        return ResponseEntity.ok(response);
+        BaseResponse<ProjectPostRes> response = projectBoardService.create(req, savedFileName.get(0));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(response));
     }
 
     @GetMapping("/read")
-    public ResponseEntity<ProjectPostReadRes> read(Long idx) {
-
-        ProjectPostReadRes response = projectBoardService.read(idx);
-
-        if(response != null) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<BaseResponse<BaseResponse<ProjectPostReadRes>>> read(Long idx) {
+        BaseResponse<ProjectPostReadRes> response = projectBoardService.read(idx);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
     @GetMapping("/read-by-course-num")
     public ResponseEntity<List<ProjectPostReadRes>> readByCourseNum(Long courseNum) {
-
         List<ProjectPostReadRes> response = projectBoardService.readByCourseNum(courseNum);
-
-        if(response != null) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(null);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @CheckAuthentication
@@ -67,36 +54,30 @@ public class ProjectPostController {
     public ResponseEntity<?> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
         boolean hasAdminRole = userDetails.getAuthorities().stream().anyMatch(authority->authority.getAuthority().equals("ROLE_ADMIN"));
         if (!hasAdminRole) {
-            return ResponseEntity.badRequest().body(new BaseResponse(UNAUTHORIZED_ACCESS));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseResponse<>(UNAUTHORIZED_ACCESS));
         }
 
         List<ProjectPostReadRes> response = projectBoardService.readAll();
-        if(response != null) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(null);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
     @PatchMapping("/update")
-    public ResponseEntity<ProjectPostReadRes> update(@RequestPart ProjectPostUpdateReq req, @RequestPart MultipartFile[] files) {
+    public ResponseEntity<BaseResponse<ProjectPostReadRes>> update(@RequestPart ProjectPostUpdateReq req, @RequestPart MultipartFile[] files) {
         ProjectPostReadRes response = null;
         if(!req.getSourceUrl().isEmpty()) {
-             response = projectBoardService.update(req, req.getSourceUrl());
+            response = projectBoardService.update(req, req.getSourceUrl());
         } else {
-            List<String> savedFileName = cloudFileUploadService.uploadImages(files, "PROJECT"); // TODO : "PROJECT" 지우기
+            List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
             response = projectBoardService.update(req, savedFileName.get(0));
         }
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(Long idx) {
-
+    public ResponseEntity<BaseResponse<Void>> delete(Long idx) {
         projectBoardService.delete(idx);
-
-        return ResponseEntity.ok("삭제가 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }
 }

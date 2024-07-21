@@ -11,5 +11,4 @@ public interface FreeCommentRepository extends JpaRepository<FreeComment,Long> {
     // 성능 개선 전: @Query("SELECT fc FROM FreeComment fc  WHERE fc.freePost.idx = :postIdx")
     Slice<FreeComment> findAllWithPaging(Pageable pageable, Long postIdx); // 페이지 사이즈가 10으로 고정
 
-
 }

@@ -9,6 +9,7 @@ import com.example.dopamines.domain.board.community.free.model.response.FreePost
 import com.example.dopamines.domain.board.community.free.model.response.FreePostRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
 import com.example.dopamines.domain.board.community.free.model.response.FreeRecommentReadRes;
+import com.example.dopamines.domain.board.community.free.repository.FreeCommentRepository;
 import com.example.dopamines.domain.board.community.free.repository.FreePostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
@@ -32,6 +33,7 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class FreePostService {
     private final FreePostRepository freePostRepository;
+    private final FreeCommentService freeCommentService;
 
     @Transactional
     public String create(User user, FreePostReq req, List<String> imageUrlList) {
@@ -55,33 +57,8 @@ public class FreePostService {
     }
 
     public FreePostReadRes read(Long idx) {
-        FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
-
-        List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
-        for(FreeComment freeComment : freePost.getComments()){
-            List<FreeRecommentReadRes> freeRecommentReadResList = new ArrayList<>();
-            for(FreeRecomment freeRecomment : freeComment.getFreeRecomments()){
-                freeRecommentReadResList.add(FreeRecommentReadRes.builder()
-                        .idx(freeRecomment.getIdx())
-                        .freePostIdx(freePost.getIdx())
-                        .commentIdx(freeRecomment.getFreeComment().getIdx())
-                        .content(freeRecomment.getContent())
-                        .author(freeRecomment.getUser().getNickname())
-                        .createdAt(freeRecomment.getCreatedAt())
-                        .likeCount(freeRecomment.getLikesCount())
-                        .build());
-            }
-            freeCommentReadResList.add(FreeCommentReadRes.builder()
-                    .idx(freeComment.getIdx())
-                    .freePostIdx(freePost.getIdx())
-                    .content(freeComment.getContent())
-                    .author(freeComment.getUser().getNickname())
-                    .createdAt(freeComment.getCreatedAt())
-                    .likeCount(freeComment.getLikesCount())
-                    .recommentList(freeRecommentReadResList)
-                    .build());
-
-        }
+        FreePost freePost = freePostRepository.findByIdWithAuthor(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
+        List<FreeCommentReadRes> freeComments = freeCommentService.findAllWithPage(idx, 0, 10);
 
         return FreePostReadRes.builder()
                 .idx(freePost.getIdx())
@@ -91,7 +68,7 @@ public class FreePostService {
                 .imageUrlList(freePost.getImageUrlList())
                 .created_at(LocalDateTime.now())
                 .likeCount(freePost.getLikesCount())
-                .freeCommentList(freeCommentReadResList)
+                .freeCommentList(freeComments)
                 .build();
     }
 

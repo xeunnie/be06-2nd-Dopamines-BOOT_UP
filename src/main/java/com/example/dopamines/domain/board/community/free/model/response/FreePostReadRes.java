@@ -1,10 +1,12 @@
 package com.example.dopamines.domain.board.community.free.model.response;
 
+import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Slice;
 
 @Getter
 @Builder

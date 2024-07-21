@@ -30,8 +30,7 @@ public class MarkedService {
     private final MarketPostMapper mapper;
     public String create(User user, Long postIdx) {
 
-        MarkedPost result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.MARKED_SAVE_FAILED));
+        MarkedPost result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx);
         MarkedPost marked = null;
 
         if (result != null) { // 이미 찜 되어 있는 경우

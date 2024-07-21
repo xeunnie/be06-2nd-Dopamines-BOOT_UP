@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MarkedPostRepository extends JpaRepository<MarkedPost, Long> {
     @Query("SELECT m FROM MarkedPost m WHERE m.user.idx = :userIdx and m.marketPost.idx = :postIdx")
-    Optional<MarkedPost> findByUserAndMarketPost(Long userIdx, Long postIdx);
+    MarkedPost findByUserAndMarketPost(Long userIdx, Long postIdx);
     boolean existsByUserAndMarketPost(User user, MarketPost post);
 
     @Query("SELECT m.marketPost.idx FROM MarkedPost m WHERE m.user.idx = :userIdx")

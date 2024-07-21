@@ -38,18 +38,6 @@
 현 플랫폼인 디스코드는 오로지 “해당 기수"만의 소통창구로 이용되고 있다. 이는 전 기수간 혹은 취업준비를 하는 수료자들 간 소통이  불가하다는 점에서 불편함을 야기시킨다. 이에, 원내에서 원활히 사용할 수 있는 소통 및 커뮤니티 플랫폼을 구축하여 BEYOND SW캠프 기수 전체적으로 활동할 수 있는 창구를 마련하고자 한다.
 <br>
 <br>
-## 📋 요구사항 정의서 / ERD
-
-<summary> <b>요구사항 정의서</b> </summary>
-</br>
-<p>
-  <a href= "https://github.com/beyond-sw-camp/be06-1st-Dopamines-BOOT_UP/wiki/%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EC%A0%95%EC%9D%98%EC%84%9C">🔗 요구사항 정의서</a>
-</p>
-
-<summary> <b>ERD</b> </summary>
-  
-![be06-ERD 최종](https://github.com/beyond-sw-camp/be06-1st-Dopamines-BOOT_UP/assets/104816530/4c4f33c2-4043-4121-8dcb-3e0eaba1e2d3)
-
 
 
 <br>
@@ -58,14 +46,6 @@
 ### OS <img src="https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black"/> <img src="https://img.shields.io/badge/Vmware-607078?style=flat&logo=Vmware&logoColor=white"/>  <img src="https://img.shields.io/badge/CentOS-262577?style=flat&logo=CentOS&logoColor=white"/> 
 ### Database <img src="https://img.shields.io/badge/mariaDB-003545?style=flat&logo=mariaDB&logoColor=white"/> <img src="https://img.shields.io/badge/HAPROXY-blue?style=flat&logo=googlepubsub&logoColor=white"/> <img src="https://img.shields.io/badge/Keepalived-FF3E00?style=flat&logo=amazondynamodb&logoColor=white"/>
 
-
-<br>
-
-## 🖥️ 시스템 아키텍처
-
-<div align="center">
-  <img width="500px" alt="스크린샷 2024-05-21 오후 2 19 50" src="https://github.com/beyond-sw-camp/be06-1st-Dopamines-BOOT_UP/assets/104816530/c50febe8-a54b-4e62-8d0a-327926be524e">
-</div>
 
 
 <br>

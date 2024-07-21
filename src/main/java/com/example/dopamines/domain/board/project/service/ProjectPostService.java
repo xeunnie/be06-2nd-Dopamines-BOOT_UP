@@ -76,7 +76,7 @@ public class ProjectPostService {
                 .build());
     }
 
-    public List<ProjectPostReadRes> readByCourseNum(Long courseNum) {
+    public BaseResponse<List<ProjectPostReadRes>> readByCourseNum(Integer courseNum) {
 
         List<ProjectPost> projectList = projectBoardRepository.findByCourseNum(courseNum)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PROJECT_NOT_FOUND));
@@ -99,10 +99,10 @@ public class ProjectPostService {
                     .build());
         }
 
-        return res;
+        return new BaseResponse<>(res);
     }
 
-    public List<ProjectPostReadRes> readAll() {
+    public BaseResponse<List<ProjectPostReadRes>> readAll() {
 
         List<ProjectPost> projectList = projectBoardRepository.findAll();
 
@@ -124,7 +124,7 @@ public class ProjectPostService {
                     .build());
         }
 
-        return res;
+        return new BaseResponse<>(res);
     }
 
     public ProjectPostReadRes update(ProjectPostUpdateReq req, String savedFileName) {

@@ -1,8 +1,8 @@
 package com.example.dopamines.domain.chat.controller;
 
-import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO;
-import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO;
-import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.Response;
+import com.example.dopamines.domain.chat.model.request.ChatRoomReq;
+import com.example.dopamines.domain.chat.model.response.ChatMessageRes;
+import com.example.dopamines.domain.chat.model.response.ChatRoomRes;
 import com.example.dopamines.domain.chat.service.ChatRoomService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
@@ -28,25 +28,25 @@ public class ChatRoomController {
     // 채팅방을 만들어서 반환하는 기능
     @PostMapping(value = "/room")
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<Response>> createRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomDTO.Request req) {
-        User user = customUserDetails.getUser();
-        Response res = chatRoomService.create(req, user);
+    public ResponseEntity<BaseResponse<ChatRoomRes>> createRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomReq req) {
+        User sender = customUserDetails.getUser();
+        ChatRoomRes res = chatRoomService.create(req, sender);
         return ResponseEntity.ok(new BaseResponse<>(res));
     }
 
      // 현재 접속한 유저가 속한 채팅룸 리스트 받아오는 기능
     @GetMapping("/rooms")
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<List<Response>>> getChatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<BaseResponse<List<ChatRoomRes>>> getChatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
-        List<Response> participatedRooms = chatRoomService.findAll(user);
+        List<ChatRoomRes> participatedRooms = chatRoomService.findAll(user);
         return ResponseEntity.ok(new BaseResponse<>(participatedRooms));
     }
 
     // 채팅방 메시지들을 받아오는 기능
     @GetMapping("/rooms/{roomId}/messages")
-    public ResponseEntity<BaseResponse<List<ChatMessageDTO.Response>>> getMessages(@PathVariable String roomId) {
-        List<ChatMessageDTO.Response> messages = chatRoomService.getAllMessage(roomId);
+    public ResponseEntity<BaseResponse<List<ChatMessageRes>>> getMessages(@PathVariable String roomId) {
+        List<ChatMessageRes> messages = chatRoomService.getAllMessage(roomId);
         return ResponseEntity.ok(new BaseResponse<>(messages));
     }
 

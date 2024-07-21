@@ -1,9 +1,9 @@
 package com.example.dopamines.domain.chat.mapper;
 
-import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO;
-import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO.Request;
 import com.example.dopamines.domain.chat.model.entity.ChatMessage;
 import com.example.dopamines.domain.chat.model.entity.ChatRoom;
+import com.example.dopamines.domain.chat.model.request.ChatMessageReq;
+import com.example.dopamines.domain.chat.model.response.ChatMessageRes;
 import com.example.dopamines.domain.user.model.entity.User;
 import java.time.LocalDate;
 import org.mapstruct.Mapper;
@@ -21,8 +21,9 @@ public interface ChatMessageMapper {
             @Mapping(target = "sender", source = "sender"),
             @Mapping(target = "createdAt", expression = "java(LocalDate.now())")
     })
-    ChatMessage toEntity(Request req, User sender, ChatRoom chatRoom);
+    ChatMessage toEntity(ChatMessageReq req, User sender, ChatRoom chatRoom);
 
 
-    ChatMessageDTO.Response toDto(ChatMessage entity, String senderName);
+    @Mapping(target="sender", source="senderName")
+    ChatMessageRes toDto(ChatMessage entity, String senderName);
 }

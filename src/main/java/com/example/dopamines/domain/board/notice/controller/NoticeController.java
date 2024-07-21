@@ -25,9 +25,9 @@ public class NoticeController {
 
     // 공지사항 생성
     @PostMapping
-    public ResponseEntity<BaseResponse<BaseResponse<NoticeRes>>> createNotice(@RequestBody NoticeReq req) {
+    public ResponseEntity<BaseResponse<NoticeRes>> createNotice(@RequestBody NoticeReq req) {
         BaseResponse<NoticeRes> createdNotice = noticeService.saveNotice(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice).getResult());
     }
 
     // 공지사항 조회

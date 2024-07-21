@@ -1,9 +1,6 @@
 package com.example.dopamines.domain.board.market.service;
 
 
-import static com.example.dopamines.global.common.BaseResponseStatus.POST_NOT_FOUND;
-import static com.example.dopamines.global.common.BaseResponseStatus.USER_NOT_FOUND;
-
 import com.example.dopamines.domain.board.market.mapper.MarketPostMapper;
 import com.example.dopamines.domain.board.market.mapper.MarketProductImageMapper;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
@@ -18,6 +15,9 @@ import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.example.dopamines.global.common.BaseResponseStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,12 +45,12 @@ public class MarketService {
             marketProductImageRepository.save(marketProductImage);
         }
 
-        user = userRepository.findById(user.getIdx()).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+        user = userRepository.findById(user.getIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
         return marketPostMapper.toDto(post,user.getNickname());
     }
 
     public MarketDetailRes findById(Long idx) {
-        MarketPost post = postRepository.findByIdWithImages(idx).orElseThrow(()-> new BaseException(POST_NOT_FOUND));
+        MarketPost post = postRepository.findByIdWithImages(idx);
 
         return marketPostMapper.toDetailDto(post, post.getUser().getNickname());
     }
@@ -74,7 +74,7 @@ public class MarketService {
     }
 
     public void updateStatus(Long idx) {
-        MarketPost post = postRepository.findById(idx).orElseThrow(() -> new BaseException(POST_NOT_FOUND));
+        MarketPost post = postRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.MARKET_NOT_FOUND));
 
         if (!post.isStatus()) { // 상품이 판매되지 않은 상태
             post.setStatus(true); // 판매 완료로 변경
@@ -84,6 +84,12 @@ public class MarketService {
 
     @Transactional
     public void delete(Long idx) {
-        postRepository.deleteById(idx);
+        try {
+            postRepository.deleteById(idx);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(BaseResponseStatus.MARKET_NOT_FOUND);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.MARKET_DELETE_FAILED);
+        }
     }
 }

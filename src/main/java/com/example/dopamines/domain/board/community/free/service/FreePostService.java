@@ -12,6 +12,8 @@ import com.example.dopamines.domain.board.community.free.model.response.FreeReco
 import com.example.dopamines.domain.board.community.free.repository.FreePostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +55,7 @@ public class FreePostService {
     }
 
     public FreePostReadRes read(Long idx) {
-        FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
         List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
         for(FreeComment freeComment : freePost.getComments()){
@@ -95,7 +97,8 @@ public class FreePostService {
 
     public List<FreePostRes> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
-        Slice<FreePost> result = freePostRepository.findAllWithPaging(pageable);
+        Slice<FreePost> result = freePostRepository.findAllWithPaging(pageable)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
         List<FreePostRes> freePostResList = new ArrayList<>();
 
         for(FreePost freePost : result.getContent()){
@@ -109,10 +112,10 @@ public class FreePostService {
     }
 
     public FreePostRes update(User user, FreePostUpdateReq req, List<String> imageUrlList) {
-        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
-        if(freePost.getUser().getIdx()!= user.getIdx()){
-            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        if(!freePost.getUser().getIdx().equals(user.getIdx())){
+            throw new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
         freePost.setTitle(req.getTitle());
         freePost.setContent(req.getContent());
@@ -129,20 +132,28 @@ public class FreePostService {
 
     }
 
-    public String delete(User user,Long idx) {
-        FreePost freePost = freePostRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public void delete(User user,Long idx) {
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(()->new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
         if(!freePost.getUser().getIdx().equals(user.getIdx())){
-            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+            throw new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
-        freePostRepository.delete(freePost);
+
+        try {
+            freePostRepository.delete(freePost);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.COMMUNITY_BOARD_DELETE_FAILED);
+        }
+
         // TODO : 게시글 삭제 시, 해당 게시글의 댓글, 댓글좋아요, 대댓글, 대댓글좋아요 삭제
-        return  "게시글 삭제";
     }
 
 
     public List<FreePostRes> search(Integer page, Integer size, String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
-        Slice<FreePost> result = freePostRepository.search(pageable,keyword);
+        Slice<FreePost> result = freePostRepository.search(pageable,keyword)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
         List<FreePostRes> freePostResList = new ArrayList<>();
 
         for(FreePost freePost : result.getContent()){

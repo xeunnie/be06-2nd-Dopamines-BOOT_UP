@@ -54,6 +54,8 @@ public enum BaseResponseStatus {
     USER_NOT_AUTHENTICATED_ACCOUNT(false, 3016, "인증되지 않은 계정입니다."),
     USER_TOKEN_EXPIRED(false, 3017, "토큰이 만료되었습니다."),
 
+    TEAM_NOT_FOUND(false, 3018, "해당하는 팀을 찾을 수 없습니다."),
+
     /**
      * 3500 : ADMIN 에러 - 동현
      */
@@ -84,9 +86,14 @@ public enum BaseResponseStatus {
     //delete
     COMMUNITY_BOARD_DELETE_FAILED(false, 4004, "게시글 삭제에 실패하였습니다."),
 
+    //CRUD
+    //create
+    COMMUNITY_POST_LIKE_FAILED(false, 4005, "게시글 좋아요에 실패하였습니다."),
+    COMMUNITY_COMMENT_LIKE_FAILED(false, 4006, "댓글 좋아요에 실패하였습니다."),
+
     //get
-    COMMUNITY_BOARD_EMPTY_TITLE(false, 4005, "제목을 입력해주세요."),
-    COMMUNITY_BOARD_EMPTY_CONTENT(false, 4006, "내용을 입력해주세요."),
+    COMMUNITY_BOARD_EMPTY_TITLE(false, 4007, "제목을 입력해주세요."),
+    COMMUNITY_BOARD_EMPTY_CONTENT(false, 4008, "내용을 입력해주세요."),
 
     /**
      * 4200 : MARKET_BOARD 에러 - 송연
@@ -105,11 +112,19 @@ public enum BaseResponseStatus {
     // DELETE
     MARKET_DELETE_FAILED(false, 4204, "게시글 삭제에 실패하였습니다."),
 
+    // CRUD
+    // CREATE
+    MARKED_SAVE_FAILED(false, 4205, "찜 저장에 실패하였습니다."),
+    // READ
+    MARKED_NOT_FOUND(false, 4206, "찜 목록을 찾을 수 없습니다."),
+    // DELETE
+    MARKED_DELETE_FAILED(false, 4208, "찜 삭제에 실패하였습니다."),
+
     // GET
-    MARKET_EMPTY_TITLE(false, 4205, "제목을 입력해주세요."),
-    MARKET_EMPTY_CONTENT(false, 4206, "내용을 입력해주세요."),
-    MARKET_EMPTY_PRICE(false, 4207, "가격을 입력해주세요."),
-    MARKET_EMPTY_IMAGE(false, 4208, "이미지를 등록해주세요."),
+    MARKET_EMPTY_TITLE(false, 4209, "제목을 입력해주세요."),
+    MARKET_EMPTY_CONTENT(false, 4210, "내용을 입력해주세요."),
+    MARKET_EMPTY_PRICE(false, 4211, "가격을 입력해주세요."),
+    MARKET_EMPTY_IMAGE(false, 4212, "이미지를 등록해주세요."),
 
     /**
      * 4300 : MARKET_CHAT 에러 - 송연
@@ -152,6 +167,7 @@ public enum BaseResponseStatus {
     // GET
     PROJECT_EMPTY_TITLE(false, 4405, "제목을 입력해주세요."),
     PROJECT_EMPTY_CONTENT(false, 4406, "내용을 입력해주세요."),
+
 
 
     /**
@@ -201,6 +217,10 @@ public enum BaseResponseStatus {
 
     RESERVE_NOT_OPEN_YET(false, 5010, "예약이 아직 불가능한 시간입니다."),
     RESERVE_ALREADY_CLOSED(false, 5011, "예약이 마감되었습니다."),
+
+    RESERVE_NOT_FOUND(false, 5012, "예약을 찾을 수 없습니다."),
+    RESERVE_TIME_FAILED(false, 5013, "시간 정보를 불러올 수 없습니다."),
+    RESERVE_SEAT_FAILED(false, 5014, "좌석 정보를 불러올 수 없습니다."),
 
 
     /**

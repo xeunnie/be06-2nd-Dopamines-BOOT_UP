@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SeatRepository extends JpaRepository<Seat, Long> {
-    List<Seat> findAllByFloor(Integer floor);
+    Optional<List<Seat>> findAllByFloor(Integer floor);
 
     @Query("SELECT DISTINCT s.section FROM Seat s WHERE s.floor = :floor")
-    List<String> findDistinctSectionsByFloor(Integer floor);
+    Optional<List<String>> findDistinctSectionsByFloor(Integer floor);
 
-    List<Seat> findByFloorAndSection(Integer floor, String section);
+    Optional<List<Seat>> findByFloorAndSection(Integer floor, String section);
 }

@@ -8,6 +8,10 @@ import com.example.dopamines.domain.board.project.model.response.ProjectPostRead
 import com.example.dopamines.domain.board.project.repository.ProjectPostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.repository.TeamRepository;
+import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,47 +26,24 @@ public class ProjectPostService {
     private final ProjectPostRepository projectBoardRepository;
     private final TeamRepository teamRepository;
 
-    public ProjectPostRes create(ProjectPostReq req, String savedFileName) {
+    public BaseResponse<ProjectPostRes> create(ProjectPostReq req, String savedFileName) {
+        try{
+            ProjectPost projectBoard = ProjectPost.builder()
+                    .title(req.getTitle())
+                    .contents(req.getContents())
+                    .courseNum(req.getCourseNum())
+                    .sourceUrl(savedFileName)
+                    .team(teamRepository.findById(req.getTeamIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.TEAM_NOT_FOUND)))
+                    .build();
 
-        ProjectPost projectBoard = ProjectPost.builder()
-                .title(req.getTitle())
-                .contents(req.getContents())
-                .courseNum(req.getCourseNum())
-                .sourceUrl(savedFileName)
-                .team(teamRepository.findById(req.getTeamIdx()).get())
-                .build();
-
-        projectBoard = projectBoardRepository.save(projectBoard);
-
-        List<String> students = new ArrayList<>();
-        for(User student : projectBoard.getTeam().getStudents()) {
-            students.add(student.getName());
-        }
-
-        return ProjectPostRes.builder()
-                .idx(projectBoard.getIdx())
-                .title(projectBoard.getTitle())
-                .contents(projectBoard.getContents())
-                .courseNum(projectBoard.getCourseNum())
-                .sourceUrl(projectBoard.getSourceUrl())
-                .teamName(projectBoard.getTeam().getTeamName())
-                .students(students)
-                .build();
-    }
-
-    public ProjectPostReadRes read(Long idx) {
-
-        Optional<ProjectPost> result = projectBoardRepository.findById(idx);
-
-        if(result.isPresent()) {
-            ProjectPost projectBoard = result.get();
+            projectBoard = projectBoardRepository.save(projectBoard);
 
             List<String> students = new ArrayList<>();
             for(User student : projectBoard.getTeam().getStudents()) {
                 students.add(student.getName());
             }
 
-            return ProjectPostReadRes.builder()
+            return new BaseResponse<>(ProjectPostRes.builder()
                     .idx(projectBoard.getIdx())
                     .title(projectBoard.getTitle())
                     .contents(projectBoard.getContents())
@@ -70,15 +51,35 @@ public class ProjectPostService {
                     .sourceUrl(projectBoard.getSourceUrl())
                     .teamName(projectBoard.getTeam().getTeamName())
                     .students(students)
-                    .build();
-        } else {
-            return null;
+                    .build());
+        } catch (Exception e) {
+            return new BaseResponse<>(BaseResponseStatus.PROJECT_SAVE_FAILED);
         }
+    }
+
+    public BaseResponse<ProjectPostReadRes> read(Long idx) {
+        ProjectPost result = projectBoardRepository.findById(idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.PROJECT_NOT_FOUND));
+
+        List<String> students = new ArrayList<>();
+        for(User student : result.getTeam().getStudents()) {
+            students.add(student.getName());
+        }
+        return new BaseResponse<>(ProjectPostReadRes.builder()
+                .idx(result.getIdx())
+                .title(result.getTitle())
+                .contents(result.getContents())
+                .courseNum(result.getCourseNum())
+                .sourceUrl(result.getSourceUrl())
+                .teamName(result.getTeam().getTeamName())
+                .students(students)
+                .build());
     }
 
     public List<ProjectPostReadRes> readByCourseNum(Long courseNum) {
 
-        List<ProjectPost> projectList = projectBoardRepository.findByCourseNum(courseNum);
+        List<ProjectPost> projectList = projectBoardRepository.findByCourseNum(courseNum)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.PROJECT_NOT_FOUND));
 
         List<ProjectPostReadRes> res = new ArrayList<>();
 
@@ -127,35 +128,46 @@ public class ProjectPostService {
     }
 
     public ProjectPostReadRes update(ProjectPostUpdateReq req, String savedFileName) {
-        ProjectPost projectBoard = ProjectPost.builder()
-                .idx(req.getIdx())
-                .title(req.getTitle())
-                .contents(req.getContents())
-                .courseNum(req.getCourseNum())
-                .sourceUrl(savedFileName)
-                .team(teamRepository.findById(req.getTeamIdx()).get())
-                .build();
+        try{
+            ProjectPost projectBoard = ProjectPost.builder()
+                    .idx(req.getIdx())
+                    .title(req.getTitle())
+                    .contents(req.getContents())
+                    .courseNum(req.getCourseNum())
+                    .sourceUrl(savedFileName)
+                    .team(teamRepository.findById(req.getTeamIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.TEAM_NOT_FOUND)))
+                    .build();
 
-        projectBoard = projectBoardRepository.save(projectBoard);
 
-        List<String> students = new ArrayList<>();
-        for(User student : projectBoard.getTeam().getStudents()) {
-            students.add(student.getName());
+            projectBoard = projectBoardRepository.save(projectBoard);
+
+            List<String> students = new ArrayList<>();
+            for(User student : projectBoard.getTeam().getStudents()) {
+                students.add(student.getName());
+            }
+
+            return ProjectPostReadRes.builder()
+                    .idx(projectBoard.getIdx())
+                    .title(projectBoard.getTitle())
+                    .contents(projectBoard.getContents())
+                    .courseNum(projectBoard.getCourseNum())
+                    .sourceUrl(projectBoard.getSourceUrl())
+                    .teamName(projectBoard.getTeam().getTeamName())
+                    .students(students)
+                    .build();
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.PROJECT_UPDATE_FAILED);
         }
-
-        return ProjectPostReadRes.builder()
-                .idx(projectBoard.getIdx())
-                .title(projectBoard.getTitle())
-                .contents(projectBoard.getContents())
-                .courseNum(projectBoard.getCourseNum())
-                .sourceUrl(projectBoard.getSourceUrl())
-                .teamName(projectBoard.getTeam().getTeamName())
-                .students(students)
-                .build();
     }
 
     public void delete(Long idx) {
-        projectBoardRepository.deleteById(idx);
+        try {
+            projectBoardRepository.deleteById(idx);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(BaseResponseStatus.PROJECT_NOT_FOUND);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.PROJECT_DELETE_FAILED);
+        }
     }
 
 }

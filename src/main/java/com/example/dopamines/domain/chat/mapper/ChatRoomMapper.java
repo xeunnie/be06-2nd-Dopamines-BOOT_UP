@@ -2,8 +2,8 @@ package com.example.dopamines.domain.chat.mapper;
 
 
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
-import com.example.dopamines.domain.chat.model.dto.ChatRoomDTO.Response;
 import com.example.dopamines.domain.chat.model.entity.ChatRoom;
+import com.example.dopamines.domain.chat.model.response.ChatRoomRes;
 import java.time.LocalDate;
 import java.util.UUID;
 import org.mapstruct.Mapper;
@@ -25,5 +25,5 @@ public interface ChatRoomMapper {
     ChatRoom toEntity(String name, MarketPost marketPost);
 
 
-    Response toDto(ChatRoom entity);
+    ChatRoomRes toDto(ChatRoom entity);
 }

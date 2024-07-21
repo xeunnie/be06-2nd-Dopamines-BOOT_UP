@@ -1,21 +1,20 @@
 package com.example.dopamines.domain.board.community.free.service;
 
-import com.example.dopamines.domain.board.community.free.model.entity.FreeBoard;
+import com.example.dopamines.domain.board.community.free.model.entity.FreePost;
 import com.example.dopamines.domain.board.community.free.model.entity.FreeComment;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentUpdateReq;
-import com.example.dopamines.domain.board.community.free.repository.FreeBoardRepository;
+import com.example.dopamines.domain.board.community.free.repository.FreePostRepository;
 import com.example.dopamines.domain.board.community.free.repository.FreeCommentRepository;
 import com.example.dopamines.domain.board.community.free.repository.FreeRecommentRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
@@ -23,19 +22,19 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class FreeCommentService {
     private final FreeCommentRepository freeCommentRepository;
-    private final FreeBoardRepository freeBoardRepository;
+    private final FreePostRepository freePostRepository;
     private final FreeRecommentRepository freeRecommentRepository;
 
     @Transactional
     public String create(User user, FreeCommentReq req) {
-        FreeBoard freeBoard = freeBoardRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
         if(req.getContent() == null){
-            throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
+            throw new BaseException( BaseResponseStatus.COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         freeCommentRepository.save(FreeComment.builder()
-                .freeBoard(freeBoard)
+                .freePost(freePost)
                 .content(req.getContent())
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -66,11 +65,11 @@ public class FreeCommentService {
 //    }
 
     public String update(User user, FreeCommentUpdateReq req) {
-        FreeComment freeComment = freeCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
-        FreeBoard freeBoard = freeBoardRepository.findById(freeComment.getFreeBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        FreeComment freeComment = freeCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND));
+        FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
-        if (freeComment.getUser().getIdx() != user.getIdx()){
-            throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        if (!(freeComment.getUser().getIdx()).equals(user.getIdx())){
+            throw  new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
             freeComment.setContent(req.getContent());
@@ -83,11 +82,11 @@ public class FreeCommentService {
 
 
     public String delete(User user, Long idx) {
-        FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
-        FreeBoard freeBoard = freeBoardRepository.findById(freeComment.getFreeBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND));
+        FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
-        if (freeComment.getUser().getIdx() != user.getIdx()){
-            throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        if (!(freeComment.getUser().getIdx()).equals(user.getIdx())){
+            throw  new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
             freeCommentRepository.delete(freeComment);

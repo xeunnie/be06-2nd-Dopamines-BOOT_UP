@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class FreeRecommentReadRes {
     private Long idx;
-    private Long freeBoardIdx;
+    private Long freePostIdx;
     private Long commentIdx;
     private String content;
     private String author;

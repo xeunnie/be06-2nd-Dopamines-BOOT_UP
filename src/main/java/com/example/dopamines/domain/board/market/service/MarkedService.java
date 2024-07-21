@@ -1,9 +1,9 @@
 package com.example.dopamines.domain.board.market.service;
 
-import com.example.dopamines.domain.board.market.mapper.MarketBoardMapper;
-import com.example.dopamines.domain.board.market.model.dto.MarketBoardDTO.Response;
+import com.example.dopamines.domain.board.market.mapper.MarketPostMapper;
 import com.example.dopamines.domain.board.market.model.entity.MarkedPost;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.board.market.repository.MarkedPostRepository;
 import com.example.dopamines.domain.board.market.repository.MarketPostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
@@ -27,19 +27,18 @@ public class MarkedService {
     private final MarkedPostRepository markedRepository;
     private final MarketPostRepository marketPostRepository;
 
-    private final MarketBoardMapper mapper;
+    private final MarketPostMapper mapper;
     public String create(User user, Long postIdx) {
 
-        Optional<MarkedPost> result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx);
+        MarkedPost result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx);
         MarkedPost marked = null;
 
-        if (result.isPresent()) { // 이미 찜 되어 있는 경우
-            marked = result.get();
-            markedRepository.deleteById(marked.getIdx());
+        if (result != null) { // 이미 찜 되어 있는 경우
+            markedRepository.deleteById(result.getIdx());
             return SUCCESS_MARKED_DELETE;
         }
 
-        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
+        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.MARKET_NOT_FOUND));
         marked = MarkedPost.builder()
                 .user(user)
                 .marketPost(post)
@@ -51,11 +50,11 @@ public class MarkedService {
     }
 
     public boolean checkMarked(User user, Long postIdx) {
-        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
+        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.MARKET_NOT_FOUND));
         return markedRepository.existsByUserAndMarketPost(user, post);
     }
 
-    public List<Response> findAll(User user, Integer page, Integer size) {
+    public List<MarketReadRes> findAll(User user, Integer page, Integer size) {
         List<Long> postIds = markedRepository.findPostIdsByUserId(user.getIdx());
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));

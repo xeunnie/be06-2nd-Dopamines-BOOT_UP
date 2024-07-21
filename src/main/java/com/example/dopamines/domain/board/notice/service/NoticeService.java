@@ -52,31 +52,42 @@ public class NoticeService {
     }
 
     public Page<Notice> getAllPublicNotices(Pageable pageable) {
-        return noticeRepository.findByIsPrivateFalseOrderByDateDesc(pageable);
+        return noticeRepository.findByIsPrivateFalseOrderByDateDesc(pageable)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
     }
 
     public Page<Notice> getNoticesByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return noticeRepository.findByIsPrivateFalseAndDateBetweenOrderByDateDesc(startDate, endDate, pageable);
+        return noticeRepository.findByIsPrivateFalseAndDateBetweenOrderByDateDesc(startDate, endDate, pageable)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
     }
 
     public Page<Notice> getNoticesByCategory(String category, Pageable pageable) {
-        return noticeRepository.findByIsPrivateFalseAndCategoryOrderByDateDesc(category, pageable);
+        return noticeRepository.findByIsPrivateFalseAndCategoryOrderByDateDesc(category, pageable)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
     }
 
     public Page<Notice> getAllPrivateNotices(Pageable pageable) {
-        return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable);
+        return noticeRepository.findByIsPrivateTrueOrderByDateDesc(pageable)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
     }
 
     // 공지사항 검색
     public Page<Notice> findNoticesByCriteria(Boolean isPrivate, String category, int page, int size) {
-        return noticeRepositoryImpl.findNoticesByCriteria(isPrivate, category, page, size);
+        try{
+            return noticeRepositoryImpl.findNoticesByCriteria(isPrivate, category, page, size);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND);
+        }
+
     }
 
     public Page<Notice> findNoticesByTitleAndContent(String title, String content, Pageable pageable) {
-        return noticeRepositoryImpl.findNoticesByTitleAndContent(title, content, pageable);
+        try{
+            return noticeRepositoryImpl.findNoticesByTitleAndContent(title, content, pageable);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND);
+        }
     }
-
-
 
     // 공지사항 수정
     @Transactional

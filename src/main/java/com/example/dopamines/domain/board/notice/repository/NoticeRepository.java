@@ -6,11 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
-    Page<Notice> findByIsPrivateFalseOrderByDateDesc(Pageable pageable);
-    Page<Notice> findByIsPrivateFalseAndDateBetweenOrderByDateDesc(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
-    Page<Notice> findByIsPrivateFalseAndCategoryOrderByDateDesc(String category, Pageable pageable);
-    Page<Notice> findByIsPrivateTrueOrderByDateDesc(Pageable pageable);
+    Optional<Page<Notice>> findByIsPrivateFalseOrderByDateDesc(Pageable pageable);
+    Optional<Page<Notice>> findByIsPrivateFalseAndDateBetweenOrderByDateDesc(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    Optional<Page<Notice>> findByIsPrivateFalseAndCategoryOrderByDateDesc(String category, Pageable pageable);
+    Optional<Page<Notice>> findByIsPrivateTrueOrderByDateDesc(Pageable pageable);
 
 }

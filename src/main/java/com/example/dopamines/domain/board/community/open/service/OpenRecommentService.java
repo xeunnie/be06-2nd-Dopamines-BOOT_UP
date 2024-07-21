@@ -1,15 +1,16 @@
 package com.example.dopamines.domain.board.community.open.service;
 
-import com.example.dopamines.domain.board.community.open.model.entity.OpenBoard;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenComment;
+import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenRecomment;
 import com.example.dopamines.domain.board.community.open.model.request.OpenRecommentReq;
 import com.example.dopamines.domain.board.community.open.model.request.OpenRecommentUpdateReq;
-import com.example.dopamines.domain.board.community.open.repository.OpenBoardRepository;
 import com.example.dopamines.domain.board.community.open.repository.OpenCommentRepository;
+import com.example.dopamines.domain.board.community.open.repository.OpenPostRepository;
 import com.example.dopamines.domain.board.community.open.repository.OpenRecommentRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,17 +23,17 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class OpenRecommentService {
     private final OpenCommentRepository openCommentRepository;
-    private final OpenBoardRepository openBoardRepository;
+    private final OpenPostRepository openPostRepository;
     private final OpenRecommentRepository openRecommentRepository;
 
 
     @Transactional
     public String create(User user, OpenRecommentReq req) {
-        OpenComment openComment = openCommentRepository.findById(req.getCommentIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
-        OpenBoard openBoard = openBoardRepository.findById(openComment.getOpenBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenComment openComment = openCommentRepository.findById(req.getCommentIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
         if(req.getContent() == null){
-            throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
+            throw new BaseException(BaseResponseStatus.COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         openRecommentRepository.save(OpenRecomment.builder()
@@ -47,11 +48,11 @@ public class OpenRecommentService {
     }
 
     public String update(User user, OpenRecommentUpdateReq req) {
-        OpenRecomment openRecomment = openRecommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
-        OpenComment openComment = openCommentRepository.findById(openRecomment.getOpenComment().getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
-        OpenBoard openBoard = openBoardRepository.findById(openComment.getOpenBoard().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenRecomment openRecomment = openRecommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_RECOMMENT_NOT_FOUND));
+        OpenComment openComment = openCommentRepository.findById(openRecomment.getOpenComment().getIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
-        if (openRecomment.getUser().getIdx() != user.getIdx()){
+        if (!(openRecomment.getUser().getIdx()).equals(user.getIdx())){
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
@@ -64,10 +65,10 @@ public class OpenRecommentService {
     }
 
     public String delete(User user, Long idx) {
-        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_RECOMMENT_NOT_FOUND));
 
-        if (openRecomment.getUser().getIdx() != user.getIdx()){
-            throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        if (!(openRecomment.getUser().getIdx()).equals(user.getIdx())){
+            throw  new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
             openRecommentRepository.delete(openRecomment);

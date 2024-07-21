@@ -1,8 +1,11 @@
 package com.example.dopamines.domain.reservation.controller;
 
-import com.example.dopamines.domain.reservation.model.request.ReservationReq;
-import com.example.dopamines.domain.reservation.model.response.ReservationListRes;
-import com.example.dopamines.domain.reservation.model.response.ReservationRes;
+import com.example.dopamines.domain.reservation.model.request.ReservationReserveReq;
+import com.example.dopamines.domain.reservation.model.request.SeatReadDetailReq;
+import com.example.dopamines.domain.reservation.model.response.ReservationReadByUserRes;
+import com.example.dopamines.domain.reservation.model.response.ReservationReadRes;
+import com.example.dopamines.domain.reservation.model.response.ReservationReserveRes;
+import com.example.dopamines.domain.reservation.model.response.SeatReadRes;
 import com.example.dopamines.domain.reservation.service.ReservationService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -21,34 +24,32 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping("/reserve")
-    public ResponseEntity<BaseResponse<ReservationRes>> reserve(@RequestBody ReservationReq req) {
-        try {
-            ReservationRes response = reservationService.reserve(req);
-            return ResponseEntity.ok(new BaseResponse<>(response));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.
-                    BAD_REQUEST).body(new BaseResponse<>(BaseResponseStatus.RESERVATION_CREATE_FAILED));
-        }
+    public ResponseEntity<BaseResponse<?>> reserve(@RequestBody ReservationReserveReq req) {
+        ReservationReserveRes response = reservationService.reserve(req);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
     @GetMapping("/reservation-list")
-    public ResponseEntity<BaseResponse<List<ReservationListRes>>> reservationList(Long userIdx) {
-        try {
-            List<ReservationListRes> response = reservationService.reservationList(userIdx);
-            return ResponseEntity.ok(new BaseResponse<>(response));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(BaseResponseStatus.RESERVATION_CREATE_FAILED));
-        }
+    public ResponseEntity<BaseResponse<List<?>>> reservationMyList(Long userIdx) {
+        List<ReservationReadByUserRes> response = reservationService.reservationMyList(userIdx);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
+    }
 
+    @GetMapping("/seat-list/{floor}")
+    public ResponseEntity<BaseResponse<List<?>>> seatList(@PathVariable("floor") Integer floor) {
+        List<SeatReadRes> response = reservationService.seatList(floor);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
+    }
+
+    @GetMapping("/seat-list-detail")
+    public ResponseEntity<BaseResponse<List<?>>> seatListDetail(@RequestParam Integer floor, @RequestParam String section) {
+        List<ReservationReadRes> response = reservationService.seatListDetail(floor, section);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
     @DeleteMapping("/cancel/{idx}")
-    public ResponseEntity<BaseResponse<String>> cancel(@PathVariable Long idx) {
-        try {
-            reservationService.cancel(idx);
-            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(BaseResponseStatus.RESERVATION_DELETE_FAILED));
-        }
+    public ResponseEntity<BaseResponse<?>> cancel(@PathVariable Long idx) {
+        reservationService.cancel(idx);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }
 }

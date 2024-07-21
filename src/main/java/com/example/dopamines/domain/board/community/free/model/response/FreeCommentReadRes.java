@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class FreeCommentReadRes {
     private Long idx;
-    private Long freeBoardIdx;
+    private Long freePostIdx;
     private String content;
     private String author;
     private LocalDateTime createdAt;

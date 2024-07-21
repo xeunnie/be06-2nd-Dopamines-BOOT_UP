@@ -28,8 +28,8 @@ public class FreePost {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ElementCollection
-    private List<String> imageUrlList;
+//    @ElementCollection
+//    private List<String> imageUrlList;
 
     private LocalDateTime createdAt;
 
@@ -52,4 +52,7 @@ public class FreePost {
 
     @OneToMany(mappedBy = "freePost")
     private List<FreeComment> comments;
+
+    @OneToMany(mappedBy = "freePost")
+    private List<FreePostImage> images;
 }

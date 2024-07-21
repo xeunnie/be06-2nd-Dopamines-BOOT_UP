@@ -1,16 +1,20 @@
 package com.example.dopamines.domain.chat.controller;
 
-import com.example.dopamines.domain.chat.model.dto.ChatMessageDTO;
-import com.example.dopamines.domain.chat.model.entity.ChatMessage;
+
+import com.example.dopamines.domain.chat.model.request.ChatMessageReq;
 import com.example.dopamines.domain.chat.service.MessageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 
@@ -19,24 +23,23 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class ChatController {
 
+    private final KafkaTemplate<String, ChatMessageReq> kafkaTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
     private final MessageService messageService;
+    private final ObjectMapper objectMapper;
 
     @MessageMapping("/chat.sendMessage/{roomId}")
-    @SendTo("/sub/{roomId}")
-    public ChatMessageDTO.Response sendMessage(@DestinationVariable String roomId, @Header("Authorization") String authHeader , @Payload ChatMessageDTO.Request chatMessage) {
+    public void sendMessage(@DestinationVariable String roomId, @Header("Authorization") String authHeader , @Payload ChatMessageReq chatMessage) {
         log.info("[SENDER - {}] messages : {}", chatMessage.getSender(), chatMessage.getContent());
         String bearerToken = authHeader.split(" ")[1];
-        ChatMessageDTO.Response res = messageService.sendMessage(roomId, bearerToken, chatMessage); // db에 저장하는 코드
-        //TODO: 수신자에게 알림가게 해야함
-        return res;
+        chatMessage = messageService.sendMessage(bearerToken, chatMessage); // db 저장
+        kafkaTemplate.send("chat-room", chatMessage); // 카프카에 메시지 전송
     }
 
-//    @MessageMapping("/chat.addUser/{roomId}")
-//    @SendTo("/topic/{roomId}")
-//    public ChatMessage addUser(@DestinationVariable String roomId, @Payload ChatMessage chatMessage,
-//                               SimpMessageHeaderAccessor headerAccessor) {
-//        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-//        log.info("[ADDUSER - {}] ", chatMessage.getSender());
-//        return chatMessage;
-//    }
+    @KafkaListener(topicPattern = "chat-room")
+    public void consumeMessage(ConsumerRecord<String, Object> record) throws JsonProcessingException {
+        String message = objectMapper.writeValueAsString(record.value());
+        ChatMessageReq sendMessageReq = objectMapper.readValue(message, ChatMessageReq.class);
+        messagingTemplate.convertAndSend("/sub/room/" + sendMessageReq.getRoomId(), sendMessageReq);
+    }
 }

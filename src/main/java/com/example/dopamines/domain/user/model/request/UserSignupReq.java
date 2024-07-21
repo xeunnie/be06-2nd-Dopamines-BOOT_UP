@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 
-public class UserSignupRequest {
+public class UserSignupReq {
 
     @NotBlank
     @Email(message = "이메일 형식에 맞지 않습니다.")

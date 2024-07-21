@@ -1,6 +1,6 @@
 package com.example.dopamines.global.security.filter;
 
-import com.example.dopamines.domain.user.model.request.UserLoginRequest;
+import com.example.dopamines.domain.user.model.request.UserLoginReq;
 import com.example.dopamines.global.security.CustomUserDetails;
 import com.example.dopamines.global.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,12 +30,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        UserLoginRequest dto;
+        UserLoginReq dto;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             ServletInputStream inputStream = request.getInputStream();
             String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-            dto = objectMapper.readValue(messageBody, UserLoginRequest.class);
+            dto = objectMapper.readValue(messageBody, UserLoginReq.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

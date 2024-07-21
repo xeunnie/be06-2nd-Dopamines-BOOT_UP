@@ -30,16 +30,15 @@ public class MarkedService {
     private final MarketPostMapper mapper;
     public String create(User user, Long postIdx) {
 
-        Optional<MarkedPost> result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx);
+        MarkedPost result = markedRepository.findByUserAndMarketPost(user.getIdx(), postIdx);
         MarkedPost marked = null;
 
-        if (result.isPresent()) { // 이미 찜 되어 있는 경우
-            marked = result.get();
-            markedRepository.deleteById(marked.getIdx());
+        if (result != null) { // 이미 찜 되어 있는 경우
+            markedRepository.deleteById(result.getIdx());
             return SUCCESS_MARKED_DELETE;
         }
 
-        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
+        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.MARKET_NOT_FOUND));
         marked = MarkedPost.builder()
                 .user(user)
                 .marketPost(post)
@@ -51,7 +50,7 @@ public class MarkedService {
     }
 
     public boolean checkMarked(User user, Long postIdx) {
-        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
+        MarketPost post = marketPostRepository.findById(postIdx).orElseThrow(()-> new BaseException(BaseResponseStatus.MARKET_NOT_FOUND));
         return markedRepository.existsByUserAndMarketPost(user, post);
     }
 

@@ -14,6 +14,7 @@ import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,8 @@ public class ReservationService {
     }
 
     public List<SeatReadRes> seatList(Integer floor) {
-        List<String> seatList = seatRepository.findDistinctSectionsByFloor(floor);
+        List<String> seatList = seatRepository.findDistinctSectionsByFloor(floor)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_SEAT_FAILED));
         List<SeatReadRes> seatReadResList = new ArrayList<>();
 
         for(String seat : seatList) {
@@ -74,7 +76,8 @@ public class ReservationService {
     }
 
     public List<ReservationReadRes> seatListDetail(Integer floor, String section) {
-        List<Seat> seatInfo = seatRepository.findByFloorAndSection(floor, section);
+        List<Seat> seatInfo = seatRepository.findByFloorAndSection(floor, section)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_TIME_FAILED));
 
         List<ReservationReadRes> reservationReadRes = new ArrayList<>();
 
@@ -98,7 +101,8 @@ public class ReservationService {
     }
 
     public List<ReservationReadByUserRes> reservationMyList(Long userIdx){
-        List<Reservation> reservations = reservationRepository.findByUserIdx(userIdx);
+        List<Reservation> reservations = reservationRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_NOT_FOUND));
 
         List<ReservationReadByUserRes> result = new ArrayList<>();
 
@@ -115,6 +119,12 @@ public class ReservationService {
     }
 
     public void cancel(Long idx){
-        reservationRepository.deleteById(idx);
+        try {
+            reservationRepository.deleteById(idx);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(BaseResponseStatus.RESERVE_NOT_FOUND);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.RESERVE_DELETE_FAILED);
+        }
     }
 }

@@ -10,5 +10,4 @@ import lombok.*;
 public class OpenPostReq {
     private String title;
     private String content;
-    private String image;
 }

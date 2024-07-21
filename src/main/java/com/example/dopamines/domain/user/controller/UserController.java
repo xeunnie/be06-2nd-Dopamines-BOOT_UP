@@ -1,14 +1,14 @@
 package com.example.dopamines.domain.user.controller;
 
-import com.example.dopamines.domain.user.model.request.UserSignupRequest;
-import com.example.dopamines.domain.user.model.response.UserSignupResponse;
+import com.example.dopamines.domain.user.model.request.UserSignupReq;
+import com.example.dopamines.domain.user.model.response.UserActiveOnRes;
+import com.example.dopamines.domain.user.model.response.UserSignupRes;
 import com.example.dopamines.domain.user.service.UserEmailService;
 import com.example.dopamines.domain.user.service.UserService;
-import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponse;
-import com.example.dopamines.global.common.BaseResponseStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,15 +25,15 @@ public class UserController {
     private final UserEmailService emailService;
 
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse<?>> singup(@Valid @RequestBody UserSignupRequest request){
+    public ResponseEntity<BaseResponse<?>> singup(@Valid @RequestBody UserSignupReq request){
 
-        UserSignupResponse signupResult = userService.signup(request);
+        UserSignupRes signupResult = userService.signup(request);
 
         // 인증을 할 uuid를 생성하고 일단 저장
         String getUuid = emailService.sendEmail(request);
         emailService.save(request,getUuid);
 
-        return ResponseEntity.ok(new BaseResponse<>(signupResult));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(signupResult));
     }
 
     @GetMapping("/active")
@@ -41,14 +41,9 @@ public class UserController {
         //요청 이메일 및 uuid와 서버 uuid 비교
         emailService.verifyUser(email, uuid);
 //        if(successVerifying){
-        userService.setActiveOn(email);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_ACCESS_SUCCESS));
+        UserActiveOnRes result = userService.setActiveOn(email);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(result));
 //        }
 //        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
-    }
-
-    @GetMapping("/test")
-    public void test(){
-        userService.insertUserAndTeam();
     }
 }

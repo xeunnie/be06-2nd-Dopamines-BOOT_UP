@@ -71,7 +71,7 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
 
 
     @Override
-    public Optional<MarketPost> findByIdWithImages(Long idx) {
+    public MarketPost findByIdWithImages(Long idx) {
         MarketPost post = queryFactory
                 .selectFrom(marketPost)
                 .leftJoin(marketPost.images, marketProductImage).fetchJoin()
@@ -79,7 +79,7 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
                 .where(marketPost.idx.eq(idx))
                 .fetchOne();
 
-        return Optional.ofNullable(post);
+        return post;
     }
 
     @Override

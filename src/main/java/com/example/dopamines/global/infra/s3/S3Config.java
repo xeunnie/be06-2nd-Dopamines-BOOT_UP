@@ -1,4 +1,4 @@
-package com.example.dopamines.global.infra;
+package com.example.dopamines.global.infra.s3;
 
 import org.springframework.context.annotation.Configuration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ReadProjectBoardRes {
+public class ProjectPostRes {
     private Long idx;
 
     private String title;

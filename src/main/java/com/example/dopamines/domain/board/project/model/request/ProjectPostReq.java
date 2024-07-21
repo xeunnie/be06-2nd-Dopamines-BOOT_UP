@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProjectBoardReq {
+public class ProjectPostReq {
 
     private String title;
     private String contents;

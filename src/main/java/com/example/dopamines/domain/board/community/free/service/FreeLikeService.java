@@ -4,6 +4,7 @@ import com.example.dopamines.domain.board.community.free.model.entity.*;
 import com.example.dopamines.domain.board.community.free.repository.*;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,10 @@ public class FreeLikeService {
     public String createFreePostLike(User user, Long idx) {
         FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        Optional<FreePostLike> result = freePostLikeRepository.findByUserAndFreePost(user.getIdx(),idx);
-        FreePostLike freePostLike;
+        FreePostLike freePostLike = freePostLikeRepository.findByUserAndFreePost(user.getIdx(), idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_POST_LIKE_FAILED));
 
-        if(result.isPresent()){ // 이미 좋아요한 경우
-            freePostLike = result.get();
+        if(freePostLike != null){ // 이미 좋아요한 경우
             freePostLikeRepository.delete(freePostLike);
 
             freePost.subLikesCount();
@@ -43,7 +43,6 @@ public class FreeLikeService {
 
         freePost.addLikesCount();
         freePostRepository.save(freePost);
-
 
         freePostLike = FreePostLike.builder()
                 .user(user)
@@ -57,11 +56,10 @@ public class FreeLikeService {
     public String createCommentLike(User user, Long idx) {
         FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
 
-        Optional<FreeCommentLike> result = freeCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
-        FreeCommentLike freeCommentLike;
+        FreeCommentLike freeCommentLike = freeCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_LIKE_FAILED));
 
-        if(result.isPresent()){ // 이미 좋아요한 경우
-            freeCommentLike= result.get();
+        if(freeCommentLike != null){ // 이미 좋아요한 경우
             freeCommentLikeRepository.delete(freeCommentLike);
 
             freeComment.subLikesCount();
@@ -72,6 +70,7 @@ public class FreeLikeService {
 
         freeComment.addLikesCount();
         freeCommentRepository.save(freeComment);
+
 
         freeCommentLike = FreeCommentLike.builder()
                 .user(user)
@@ -85,11 +84,10 @@ public class FreeLikeService {
     public String createRecommentLike(User user, Long idx) {
         FreeRecomment freeRecomment = freeRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
 
-        Optional<FreeRecommentLike> result = freeRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
-        FreeRecommentLike freeRecommentLike;
+        FreeRecommentLike freeRecommentLike = freeRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_LIKE_FAILED));
 
-        if(result.isPresent()){ // 이미 좋아요한 경우
-            freeRecommentLike= result.get();
+        if(freeRecommentLike != null){ // 이미 좋아요한 경우
             freeRecommentLikeRepository.delete(freeRecommentLike);
 
             freeRecomment.subLikesCount();
@@ -100,6 +98,7 @@ public class FreeLikeService {
 
         freeRecomment.addLikesCount();
         freeRecommentRepository.save(freeRecomment);
+
 
         freeRecommentLike = FreeRecommentLike.builder()
                 .user(user)

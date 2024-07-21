@@ -1,7 +1,7 @@
 package com.example.dopamines.domain.user.model.response;
 
 import com.example.dopamines.domain.user.model.entity.User;
-import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UserSignupResponse {
+public class UserSignupRes {
 
     private Long idx;
     private String email;
@@ -22,8 +22,8 @@ public class UserSignupResponse {
     private String address;
     private LocalDateTime createdAt;
 
-    public UserSignupResponse toDto(User user){
-        return UserSignupResponse.builder()
+    public UserSignupRes toDto(User user){
+        return UserSignupRes.builder()
                 .idx(user.getIdx())
                 .email(user.getEmail())
                 .name(user.getName())

@@ -1,17 +1,19 @@
 package com.example.dopamines.domain.board.community.open.service;
 
-import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenComment;
+import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenRecomment;
 import com.example.dopamines.domain.board.community.open.model.request.OpenPostReq;
 import com.example.dopamines.domain.board.community.open.model.request.OpenPostUpdateReq;
+import com.example.dopamines.domain.board.community.open.model.response.OpenCommentReadRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenPostReadRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenPostRes;
-import com.example.dopamines.domain.board.community.open.model.response.OpenCommentReadRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenRecommentReadRes;
 import com.example.dopamines.domain.board.community.open.repository.OpenPostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +34,7 @@ public class OpenPostService {
     private final OpenPostRepository openPostRepository;
 
     @Transactional
-    public String create(User user, OpenPostReq req) {
+    public String create(User user, OpenPostReq req, List<String> imageUrlList) {
 
         if(req.getTitle() == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
@@ -44,7 +46,7 @@ public class OpenPostService {
                 .title(req.getTitle())
                 .content(req.getContent())
                 .user(user)
-                .image(req.getImage())
+                .imageUrlList(imageUrlList)
                 .createdAt(LocalDateTime.now())
                 .build()
         );
@@ -53,7 +55,7 @@ public class OpenPostService {
     }
 
     public OpenPostReadRes read(Long idx) {
-        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
         List<OpenCommentReadRes> openCommentReadResList = new ArrayList<>();
         for(OpenComment openComment : openPost.getComments()){
@@ -86,7 +88,7 @@ public class OpenPostService {
                 .title(openPost.getTitle())
                 .content(openPost.getContent())
                 .author(openPost.getUser().getNickname())
-                .image(openPost.getImage())
+                .imageUrlList(openPost.getImageUrlList())
                 .created_at(LocalDateTime.now())
                 .likeCount(openPost.getLikes().size())
                 .openCommentList(openCommentReadResList)
@@ -95,7 +97,8 @@ public class OpenPostService {
 
     public List<OpenPostRes> readAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
-        Slice<OpenPost> result = openPostRepository.findAllWithPaging(pageable);
+        Slice<OpenPost> result = openPostRepository.findAllWithPaging(pageable)
+                .orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
         List<OpenPostRes> openPostResList = new ArrayList<>();
 
         for(OpenPost openPost : result.getContent()){
@@ -108,15 +111,15 @@ public class OpenPostService {
         return openPostResList;
     }
 
-    public OpenPostRes update(User user, OpenPostUpdateReq req) {
-        OpenPost openPost = openPostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public OpenPostRes update(User user, OpenPostUpdateReq req, List<String> imageUrlList) {
+        OpenPost openPost = openPostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
-        if(openPost.getUser().getIdx()!= user.getIdx()){
-            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+        if(!openPost.getUser().getIdx().equals(user.getIdx())){
+            throw new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
         openPost.setTitle(req.getTitle());
         openPost.setContent(req.getContent());
-        openPost.setImage(req.getImage());
+        openPost.setImageUrlList(imageUrlList);
         openPost.setCreatedAt(LocalDateTime.now());
 
         openPostRepository.save(openPost);
@@ -129,15 +132,37 @@ public class OpenPostService {
 
     }
 
-    public String delete(User user,Long idx) {
-        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public void delete(User user,Long idx) {
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(()->new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
         if(!openPost.getUser().getIdx().equals(user.getIdx())){
-            throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
+            throw new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
-        openPostRepository.delete(openPost);
+
+        try {
+            openPostRepository.delete(openPost);
+        } catch (EntityNotFoundException e) {
+            throw new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.COMMUNITY_BOARD_DELETE_FAILED);
+        }
+
         // TODO : 게시글 삭제 시, 해당 게시글의 댓글, 댓글좋아요, 대댓글, 대댓글좋아요 삭제
-        return  "게시글 삭제";
     }
 
 
+    public List<OpenPostRes> search(Integer page, Integer size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
+        Slice<OpenPost> result = openPostRepository.search(pageable,keyword)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
+        List<OpenPostRes> openPostResList = new ArrayList<>();
+
+        for(OpenPost openPost : result.getContent()){
+            openPostResList.add(OpenPostRes.builder()
+                    .idx(openPost.getIdx())
+                    .title(openPost.getTitle())
+                    .content(openPost.getContent())
+                    .build());
+        }
+        return openPostResList;
+    }
 }

@@ -30,15 +30,6 @@ public class FreeCommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(response));
     }
 
-//     내가 쓴 댓글 조회
-//    @RequestMapping(method = RequestMethod.GET, value = "/read")
-//    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-//        User user = customUserDetails.getUser();
-//        List<FreeCommentReadRes> response = freeCommentService.read(user);
-//
-//        return ResponseEntity.ok(new BaseResponse<>(response));
-//    }
-
     @GetMapping
     public ResponseEntity<BaseResponse<?>> findAll(Long idx, Integer page, Integer size) {
         List<FreeCommentReadRes> res = freeCommentService.findAllWithPage(idx, page, size);

@@ -94,6 +94,8 @@ public class FreeRecommentService {
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
                         .likeCount(comment.getLikesCount())
+                        .freePostIdx(comment.getFreeComment().getFreePost().getIdx())
+                        .commentIdx(comment.getIdx())
                         .build()
                 ).collect(Collectors.toList());
 

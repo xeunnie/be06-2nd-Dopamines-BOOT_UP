@@ -6,6 +6,7 @@ import com.example.dopamines.domain.user.model.response.UserSignupRes;
 import com.example.dopamines.domain.user.service.UserEmailService;
 import com.example.dopamines.domain.user.service.UserService;
 import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class UserController {
         emailService.verifyUser(email, uuid);
 //        if(successVerifying){
         UserActiveOnRes result = userService.setActiveOn(email);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(result));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
 //        }
 //        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
     }

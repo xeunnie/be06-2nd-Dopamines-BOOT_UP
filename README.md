@@ -115,7 +115,7 @@ Frontend : 🐱 **이철수**
 <br>
 
 ## 🔍 API 명세서(Swagger-ui)
-<a href="https://github.com/beyond-sw-camp/be06-2nd-Dopamines-BOOT_UP/wiki/1.-API-%EB%AA%85%EC%84%B8%EC%84%9C-(Swqgger%E2%80%90ui)">API 명세서</a>
+<a href="https://beyond-sw-camp.github.io/be06-2nd-Dopamines-BOOT_UP/">API 명세서</a>
 <br><br>
 
 ## 🔍 시퀀스 다이어그램

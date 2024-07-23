@@ -129,7 +129,7 @@ Frontend : 🐱 **이철수**
 <br><br>
 
 ## 🔍 코딩 컨벤션
-<a href="https://github.com/beyond-sw-camp/be06-2nd-Dopamines-BOOT_UP/wiki/4.-%EC%BD%94%EB%94%A9-%EC%BB%A8%EB%B2%A4%EC%85%98">코딩 컨벤션</a>
+<a href="https://github.com/beyond-sw-camp/be06-2nd-Dopamines-BOOT_UP/wiki/4.-%EC%BD%94%EB%93%9C-%EC%BB%A8%EB%B2%A4%EC%85%98">코딩 컨벤션</a>
 <br><br>
 
 ## 🔍 시스템 아키텍처

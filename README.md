@@ -43,8 +43,10 @@
 <br>
 
 ## 📚 기술 스택
-### Development <br><br><img src="https://img.shields.io/badge/springboot-6DB33F?style=flat&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=flat&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/amazons3-232F3E?style=flat&logo=amazons3&logoColor=white"/> <img src="https://img.shields.io/badge/docker-2496ED?style=flat&logo=docker&logoColor=white"/>
-### Database <br><br><img src="https://img.shields.io/badge/mariaDB-003545?style=flat&logo=mariaDB&logoColor=white"/> <br><br>
+### Backend 
+<img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=SpringBoot&logoColor=white"/>   <img src="https://img.shields.io/badge/S3-569A31?style=flat&logo=amazons3&logoColor=white"/>  <img src="https://img.shields.io/badge/EC2-FF9900?style=flat&logo=amazonec2&logoColor=white"/>  <img src="https://img.shields.io/badge/Java-F344CB7?style=flat-plastic&logo=Java&logoColor=white"/></a>  <img src="https://img.shields.io/badge/JPA-F37143?style=flat-plastic&logo=JPA&logoColor=white"/></a>  <img src="https://img.shields.io/badge/GRADLE-02303A?style=flat-plastic&logo=gradle&logoColor=white"/></a>  <img src="https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka?style=flat-plastic&logo=gradle&logoColor=white"/></a>
+
+### Database <br><br><img src="https://img.shields.io/badge/mariaDB-003545?style=flat&logo=mariaDB&logoColor=white"/>  <img src="https://img.shields.io/badge/RDS-527FFF?style=flat&logo=RDS&logoColor=white"/>
 
 
 

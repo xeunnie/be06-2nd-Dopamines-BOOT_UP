@@ -31,7 +31,7 @@ public class UserEmailService {
 
         String uuid = UUID.randomUUID().toString();
         message.setText("가입을 완료하시려면 아래 링크를 클릭해주세요."
-                + "http://localhost:8080/user/active?email=" + request.getEmail()+"&uuid="+uuid);
+                + "http://3.36.99.28:8080/user/active?email=" + request.getEmail()+"&uuid="+uuid);
 
         emailSender.send(message);
 

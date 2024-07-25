@@ -44,10 +44,39 @@
 
 ## 📚 기술 스택
 ### Backend 
-<img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=SpringBoot&logoColor=white"/>   <img src="https://img.shields.io/badge/S3-569A31?style=flat&logo=amazons3&logoColor=white"/>  <img src="https://img.shields.io/badge/EC2-FF9900?style=flat&logo=amazonec2&logoColor=white"/>  <img src="https://img.shields.io/badge/Java-F344CB7?style=flat-plastic&logo=Java&logoColor=white"/></a>  <img src="https://img.shields.io/badge/JPA-F37143?style=flat-plastic&logo=JPA&logoColor=white"/></a>  <img src="https://img.shields.io/badge/GRADLE-02303A?style=flat-plastic&logo=gradle&logoColor=white"/></a>  <img src="https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka?style=flat-plastic&logo=gradle&logoColor=white"/></a>
+<div>   
+<!--   <img src="https://img.shields.io/badge/java-F7DF1E?style=for-the-badge&logo=java&logoColor=white">   -->
+  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=green"> 
+  <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=yellow"> 
+  <img src="https://img.shields.io/badge/Spring data jpa-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white">
+  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=green">    <br>
+  <img src="https://img.shields.io/badge/Json Web Tokens-000000?style=for-the-badge&logo=Json Web Tokens&logoColor=purple">
+  <img src="https://img.shields.io/badge/Web Socket-black?style=for-the-badge&logo=websocket&logoColor=white">
+  <img src="https://img.shields.io/badge/Kafka-231F20?style=for-the-badge&logo=Kafka&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=skyblue"> 
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=green">
+  <br>
+  <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>  
+  <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white">  
+  <img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"> 
+  <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"/>
+  <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white" style="border-radius: 5px;"> 
 
-### Database <br><br><img src="https://img.shields.io/badge/mariaDB-003545?style=flat&logo=mariaDB&logoColor=white"/>  <img src="https://img.shields.io/badge/RDS-527FFF?style=flat&logo=RDS&logoColor=white"/>
+</div>
 
+
+### Database 
+<div>
+  <img src="https://img.shields.io/badge/mariadb-003545?style=for-the-badge&logo=mariadb&logoColor=white">
+  <img src="https://img.shields.io/badge/AWS%20RDS-blue?style=for-the-badge&logo=amazonaws&logoColor=white">
+</div>
+
+### 협업 
+<div>
+  <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white" style="border-radius: 5px;">
+</div>
 
 
 ## 🤼‍♂️팀원

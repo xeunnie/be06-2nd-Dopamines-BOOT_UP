@@ -5,6 +5,7 @@ import com.example.dopamines.global.security.CustomUserDetails;
 import com.example.dopamines.global.security.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,10 +23,18 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
-
+//        String authorization = request.getHeader("Authorization");
+        //        String authorization = request.getHeader("Authorization");
+        String authorization = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("ATOKEN")) {
+                    authorization = cookie.getValue();
+                }
+            }
+        }
         // 토큰이 없거나, "Bearer "로 시작하지 않으면 다음 필터로 넘기기
-        if(authorization == null || !authorization.startsWith("Bearer ")){
+        if(authorization == null){
             System.out.println("Bearer 토큰이 없음");
             //다음 필터로 넘어가기
             filterChain.doFilter(request,response);
@@ -33,8 +42,8 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // 토큰 만료 검증 
-        String token = authorization.split(" ")[1];
-
+//        String token = authorization.split(" ")[1];
+        String token = authorization;
         if(jwtUtil.isExpired(token)){
             System.out.println("토큰 만료됨");
             filterChain.doFilter(request,response);

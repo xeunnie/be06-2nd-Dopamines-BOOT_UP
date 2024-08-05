@@ -69,9 +69,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createToken(idx, username,role,nickname);
         System.out.println(token);
 
-        response.addHeader("Authorization","Bearer " + token);
-
-        Cookie jwtToken = new Cookie("JwtToken", token);
-        response.addCookie(jwtToken);
+//        response.addHeader("Authorization","Bearer " + token);
+//
+//        Cookie jwtToken = new Cookie("JwtToken", token);
+//        response.addCookie(jwtToken);
+        // JWT Token
+        Cookie cookie = new Cookie("ATOKEN", token);
+//        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 }

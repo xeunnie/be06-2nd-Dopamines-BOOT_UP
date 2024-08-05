@@ -40,6 +40,8 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://127.0.0.1:5500"); // 허용할 출처
         config.addAllowedOrigin("http://3.36.99.28:3000"); // 허용할 출처
         config.addAllowedOrigin("http://3.36.99.28:8080"); // 허용할 출처
+        config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
+        config.addAllowedOrigin("http://localhost:8082"); // 허용할 출처
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)
         config.addAllowedHeader("*"); // 허용할 헤더
         config.setAllowCredentials(true); // 자격 증명 허용

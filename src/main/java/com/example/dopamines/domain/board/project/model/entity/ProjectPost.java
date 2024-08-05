@@ -21,6 +21,7 @@ public class ProjectPost {
     private String title;
     private String contents;
     private Integer courseNum;
+    private String gitUrl;
     private String sourceUrl;
 
     @OneToOne

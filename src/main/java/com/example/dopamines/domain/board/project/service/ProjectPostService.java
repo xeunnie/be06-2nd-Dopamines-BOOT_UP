@@ -32,6 +32,7 @@ public class ProjectPostService {
                     .title(req.getTitle())
                     .contents(req.getContents())
                     .courseNum(req.getCourseNum())
+                    .gitUrl(req.getGitUrl())
                     .sourceUrl(savedFileName)
                     .team(teamRepository.findById(req.getTeamIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.TEAM_NOT_FOUND)))
                     .build();
@@ -48,6 +49,7 @@ public class ProjectPostService {
                     .title(projectBoard.getTitle())
                     .contents(projectBoard.getContents())
                     .courseNum(projectBoard.getCourseNum())
+                    .gitUrl(projectBoard.getGitUrl())
                     .sourceUrl(projectBoard.getSourceUrl())
                     .teamName(projectBoard.getTeam().getTeamName())
                     .students(students)
@@ -69,6 +71,7 @@ public class ProjectPostService {
                 .idx(result.getIdx())
                 .title(result.getTitle())
                 .contents(result.getContents())
+                .gitUrl(result.getGitUrl())
                 .courseNum(result.getCourseNum())
                 .sourceUrl(result.getSourceUrl())
                 .teamName(result.getTeam().getTeamName())
@@ -129,10 +132,12 @@ public class ProjectPostService {
 
     public ProjectPostReadRes update(ProjectPostUpdateReq req, String savedFileName) {
         try{
+            System.out.println(req.getGitUrl());
             ProjectPost projectBoard = ProjectPost.builder()
                     .idx(req.getIdx())
                     .title(req.getTitle())
                     .contents(req.getContents())
+                    .gitUrl(req.getGitUrl())
                     .courseNum(req.getCourseNum())
                     .sourceUrl(savedFileName)
                     .team(teamRepository.findById(req.getTeamIdx()).orElseThrow(()-> new BaseException(BaseResponseStatus.TEAM_NOT_FOUND)))
@@ -151,6 +156,7 @@ public class ProjectPostService {
                     .title(projectBoard.getTitle())
                     .contents(projectBoard.getContents())
                     .courseNum(projectBoard.getCourseNum())
+                    .gitUrl(projectBoard.getGitUrl())
                     .sourceUrl(projectBoard.getSourceUrl())
                     .teamName(projectBoard.getTeam().getTeamName())
                     .students(students)

@@ -10,5 +10,6 @@ public class ProjectPostReq {
     private String title;
     private String contents;
     private Integer courseNum;
+    private String gitUrl;
     private Long teamIdx;
 }

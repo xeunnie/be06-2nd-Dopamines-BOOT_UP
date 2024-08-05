@@ -32,6 +32,8 @@ public class ProjectPostController {
 
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<ProjectPostRes>> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
+        System.out.println(req);
+        System.out.println(files);
         List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
         BaseResponse<ProjectPostRes> response = projectBoardService.create(req, savedFileName.get(0));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -43,11 +45,11 @@ public class ProjectPostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/read-by-course-num")
-    public ResponseEntity<BaseResponse<List<ProjectPostReadRes>>> readByCourseNum(Integer courseNum) {
-        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readByCourseNum(courseNum);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+//    @GetMapping("/read-by-course-num")
+//    public ResponseEntity<BaseResponse<List<ProjectPostReadRes>>> readByCourseNum(Integer courseNum) {
+//        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readByCourseNum(courseNum);
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
 
 //    @CheckAuthentication
     @GetMapping("/read-all")
@@ -57,8 +59,8 @@ public class ProjectPostController {
     }
 
 
-    @PatchMapping("/update")
-    public ResponseEntity<BaseResponse<ProjectPostReadRes>> update(@RequestPart ProjectPostUpdateReq req, @RequestPart MultipartFile[] files) {
+    @PutMapping("/update")
+    public ResponseEntity<BaseResponse<ProjectPostReadRes>> update(@RequestPart ProjectPostUpdateReq req, @RequestPart(required = false) MultipartFile[] files) {
         ProjectPostReadRes response = null;
         if(!req.getSourceUrl().isEmpty()) {
             response = projectBoardService.update(req, req.getSourceUrl());

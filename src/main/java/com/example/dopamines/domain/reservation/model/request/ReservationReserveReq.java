@@ -2,12 +2,13 @@ package com.example.dopamines.domain.reservation.model.request;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReservationReserveReq {
-    private Long userIdx;
-    private Long seatIdx;
+    private List<Long> selectedSeats;
 }

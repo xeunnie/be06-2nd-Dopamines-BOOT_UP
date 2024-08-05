@@ -4,10 +4,7 @@ import com.example.dopamines.domain.reservation.model.entity.Reservation;
 import com.example.dopamines.domain.reservation.model.entity.Seat;
 import com.example.dopamines.domain.reservation.model.request.ReservationReserveReq;
 import com.example.dopamines.domain.reservation.model.request.SeatReadDetailReq;
-import com.example.dopamines.domain.reservation.model.response.ReservationReadByUserRes;
-import com.example.dopamines.domain.reservation.model.response.ReservationReadRes;
-import com.example.dopamines.domain.reservation.model.response.ReservationReserveRes;
-import com.example.dopamines.domain.reservation.model.response.SeatReadRes;
+import com.example.dopamines.domain.reservation.model.response.*;
 import com.example.dopamines.domain.reservation.repository.ReservationRepository;
 import com.example.dopamines.domain.reservation.repository.SeatRepository;
 import com.example.dopamines.domain.user.model.entity.User;
@@ -17,8 +14,11 @@ import com.example.dopamines.global.common.BaseResponseStatus;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,75 +33,82 @@ public class ReservationService {
     public void create() {
 
     }
-
-    public ReservationReserveRes reserve(ReservationReserveReq req) {
+    @Transactional
+    public List<ReservationReserveRes> reserve(ReservationReserveReq req, User user) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        User user = userRepository.findById(req.getUserIdx())
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = localDateTime.format(formatter);
+
+        User reqUser = userRepository.findById(user.getIdx())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
-        Seat seat = seatRepository.findById(req.getSeatIdx())
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.SEAT_NOT_FOUND));
 
-        Reservation reservation = Reservation.builder()
-                .createdAt(localDateTime)
-                .status(true)
-                .user(user)
-                .seat(seat)
-                .build();
+        List<ReservationReserveRes> reservationList = new ArrayList<>();
+        for(Long seatIdx : req.getSelectedSeats()) {
+            Seat seat = seatRepository.findById(seatIdx)
+                    .orElseThrow(() -> new BaseException(BaseResponseStatus.SEAT_NOT_FOUND));
 
-        reservation = reservationRepository.save(reservation);
+            Reservation reservation = Reservation.builder()
+                    .createdAt(LocalDateTime.parse(formattedDateTime, formatter))
+                    .status(true)
+                    .user(reqUser)
+                    .seat(seat)
+                    .build();
 
-        return ReservationReserveRes.builder()
-                .idx(reservation.getIdx())
-                .createdAt(reservation.getCreatedAt())
-                .userIdx(user.getIdx())
-                .userEmail(user.getEmail())
-                .section(seat.getSection())
-                .seatIdx(seat.getIdx())
-                .time(seat.getTime())
-                .build();
-    }
+            reservation = reservationRepository.save(reservation);
 
-    public List<SeatReadRes> seatList(Integer floor) {
-        List<String> seatList = seatRepository.findDistinctSectionsByFloor(floor)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_SEAT_FAILED));
-        List<SeatReadRes> seatReadResList = new ArrayList<>();
-
-        for(String seat : seatList) {
-            seatReadResList.add(SeatReadRes.builder()
-                            .section(seat)
-                            .build());
+            reservationList.add(ReservationReserveRes.builder()
+                    .idx(reservation.getIdx())
+                    .createdAt(reservation.getCreatedAt())
+                    .userIdx(user.getIdx())
+                    .userEmail(user.getEmail())
+                    .section(seat.getSection())
+                    .seatIdx(seat.getIdx())
+                    .time(seat.getTime())
+                    .build());
         }
 
-        return seatReadResList;
+        return reservationList;
     }
 
-    public List<ReservationReadRes> seatListDetail(Integer floor, String section) {
+//    public List<SeatReadRes> seatList(Integer floor) {
+//        List<String> seatList = seatRepository.findDistinctSectionsByFloor(floor)
+//                .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_SEAT_FAILED));
+//        List<SeatReadRes> seatReadResList = new ArrayList<>();
+//
+//        for(String seat : seatList) {
+//            seatReadResList.add(SeatReadRes.builder()
+//                            .section(seat)
+//                            .build());
+//        }
+//
+//        return seatReadResList;
+//    }
+
+    public ReservationTimeRes timeList(Integer floor, String section) {
         List<Seat> seatInfo = seatRepository.findByFloorAndSection(floor, section)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_TIME_FAILED));
 
-        List<ReservationReadRes> reservationReadRes = new ArrayList<>();
-
+        List<Long> seatIdxs = new ArrayList<>();
         for(Seat seat : seatInfo) {
-            if(reservationRepository.findBySeatIdx(seat.getIdx()).isPresent()) {
-                reservationReadRes.add(ReservationReadRes.builder()
-                        .idx(seat.getIdx())
-                        .time(seat.getTime())
-                        .status(reservationRepository.findBySeatIdx(seat.getIdx()).get().getStatus())
-                        .build());
-            } else {
-                reservationReadRes.add(ReservationReadRes.builder()
-                        .idx(seat.getIdx())
-                        .time(seat.getTime())
-                        .status(false)
-                        .build());
-            }
+            seatIdxs.add(seat.getIdx());
         }
 
-        return reservationReadRes;
+        LocalDate today = LocalDate.now();
+
+        List<Reservation> reservationSeatList = reservationRepository.findBySeatIdxInAndToday(seatInfo, today);
+        List<Long> reservationIdxs = new ArrayList<>();
+        for(Reservation reservation : reservationSeatList) {
+            reservationIdxs.add(reservation.getSeat().getIdx());
+        }
+
+        return ReservationTimeRes.builder()
+                .seatIdx(seatIdxs)
+                .reserveSeatIdx(reservationIdxs)
+                .build();
     }
 
-    public List<ReservationReadByUserRes> reservationMyList(Long userIdx){
-        List<Reservation> reservations = reservationRepository.findByUserIdx(userIdx)
+    public List<ReservationReadByUserRes> reservationMyList(User user){
+        List<Reservation> reservations = reservationRepository.findByUserIdx(user.getIdx())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_NOT_FOUND));
 
         List<ReservationReadByUserRes> result = new ArrayList<>();
@@ -111,6 +118,7 @@ public class ReservationService {
                     .createdAt(reservation.getCreatedAt())
                     .time(reservation.getSeat().getTime())
                     .section(reservation.getSeat().getSection())
+                    .floor(reservation.getSeat().getFloor())
                     .build());
         }
 

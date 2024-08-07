@@ -12,5 +12,6 @@ public class ProjectPostUpdateReq {
     private String contents;
     private Integer courseNum;
     private Long teamIdx;
+    private String gitUrl;
     private String sourceUrl;
 }

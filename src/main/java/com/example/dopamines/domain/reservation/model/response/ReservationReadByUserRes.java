@@ -15,4 +15,5 @@ import java.time.LocalDateTime;
     private LocalDateTime createdAt;
     private String time;
     private String section;
+    private Integer floor;
 }

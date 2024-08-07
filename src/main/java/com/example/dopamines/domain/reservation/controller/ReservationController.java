@@ -2,16 +2,16 @@ package com.example.dopamines.domain.reservation.controller;
 
 import com.example.dopamines.domain.reservation.model.request.ReservationReserveReq;
 import com.example.dopamines.domain.reservation.model.request.SeatReadDetailReq;
-import com.example.dopamines.domain.reservation.model.response.ReservationReadByUserRes;
-import com.example.dopamines.domain.reservation.model.response.ReservationReadRes;
-import com.example.dopamines.domain.reservation.model.response.ReservationReserveRes;
-import com.example.dopamines.domain.reservation.model.response.SeatReadRes;
+import com.example.dopamines.domain.reservation.model.response.*;
 import com.example.dopamines.domain.reservation.service.ReservationService;
+import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
+import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,26 +24,29 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping("/reserve")
-    public ResponseEntity<BaseResponse<?>> reserve(@RequestBody ReservationReserveReq req) {
-        ReservationReserveRes response = reservationService.reserve(req);
+    public ResponseEntity<BaseResponse<?>> reserve(@RequestBody ReservationReserveReq req, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+        List<ReservationReserveRes> response = reservationService.reserve(req, user);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
     @GetMapping("/reservation-list")
-    public ResponseEntity<BaseResponse<List<?>>> reservationMyList(Long userIdx) {
-        List<ReservationReadByUserRes> response = reservationService.reservationMyList(userIdx);
+    public ResponseEntity<BaseResponse<?>> reservationMyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+        System.out.println(user);
+        List<ReservationReadByUserRes> response = reservationService.reservationMyList(user);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
-    @GetMapping("/seat-list/{floor}")
-    public ResponseEntity<BaseResponse<List<?>>> seatList(@PathVariable("floor") Integer floor) {
-        List<SeatReadRes> response = reservationService.seatList(floor);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
-    }
+//    @GetMapping("/seat-list/{floor}")
+//    public ResponseEntity<BaseResponse<?>> seatList(@PathVariable("floor") Integer floor) {
+//        List<SeatReadRes> response = reservationService.seatList(floor);
+//        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
+//    }
 
-    @GetMapping("/seat-list-detail")
-    public ResponseEntity<BaseResponse<List<?>>> seatListDetail(@RequestParam Integer floor, @RequestParam String section) {
-        List<ReservationReadRes> response = reservationService.seatListDetail(floor, section);
+    @GetMapping("/time-list")
+    public ResponseEntity<BaseResponse<?>> seatListDetail(@RequestParam Integer floor, @RequestParam String section) {
+        ReservationTimeRes response = reservationService.timeList(floor, section);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 

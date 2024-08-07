@@ -1,5 +1,6 @@
 package com.example.dopamines.domain.user.controller;
 
+import com.example.dopamines.domain.user.model.request.UserEmailVerifyReq;
 import com.example.dopamines.domain.user.model.request.UserSignupReq;
 import com.example.dopamines.domain.user.model.response.UserActiveOnRes;
 import com.example.dopamines.domain.user.model.response.UserSignupRes;
@@ -31,20 +32,33 @@ public class UserController {
         UserSignupRes signupResult = userService.signup(request);
 
         // 인증을 할 uuid를 생성하고 일단 저장
-        String getUuid = emailService.sendEmail(request);
-        emailService.save(request,getUuid);
+//        String getUuid = emailService.sendEmail(request);
+//        emailService.save(request,getUuid);
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(signupResult));
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<BaseResponse<?>> setActiveUser(String email, String uuid){
-        //요청 이메일 및 uuid와 서버 uuid 비교
-        emailService.verifyUser(email, uuid);
-//        if(successVerifying){
-        UserActiveOnRes result = userService.setActiveOn(email);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
-//        }
-//        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
+    @PostMapping("/email-send")
+    public void emailReqeust(@RequestBody UserEmailVerifyReq request){
+        System.out.println(request.getEmail());
+        emailService.sendEmailAndSave(request.getEmail());
     }
+
+    @PostMapping("/email-verify")
+    public ResponseEntity<BaseResponse<?>> emailUuidVerify(@RequestBody UserEmailVerifyReq request){
+        boolean result = emailService.verifyUuid(request);
+        System.out.println(result);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(result));
+    }
+
+//    @GetMapping("/active")
+//    public ResponseEntity<BaseResponse<?>> setActiveUser(String email, String uuid){
+//        //요청 이메일 및 uuid와 서버 uuid 비교
+//        emailService.verifyUser(email, uuid);
+////        if(successVerifying){
+//        UserActiveOnRes result = userService.setActiveOn(email);
+//        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.USER_ACCESS_SUCCESS));
+////        }
+////        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.USER_UNABLE_USER_ACCESS));
+//    }
 }

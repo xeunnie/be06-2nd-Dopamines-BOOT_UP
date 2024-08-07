@@ -7,6 +7,7 @@ import com.example.dopamines.domain.board.project.model.request.ProjectPostUpdat
 import com.example.dopamines.domain.board.project.model.response.ProjectPostRes;
 import com.example.dopamines.domain.board.project.model.response.ProjectPostReadRes;
 import com.example.dopamines.domain.board.project.service.ProjectPostService;
+import com.example.dopamines.domain.user.service.UserService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
 import com.example.dopamines.global.common.annotation.CheckAuthentication;
@@ -26,17 +27,37 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectPostController {
 
+    private final UserService userService;
     private String rootType = "PROJECT";
     private final ProjectPostService projectBoardService;
     private final CloudFileUploadService cloudFileUploadService;
 
-    @PostMapping("/create")
-    public ResponseEntity<BaseResponse<ProjectPostRes>> create(@RequestPart ProjectPostReq req, @RequestPart MultipartFile[] files) {
-        System.out.println(req);
-        System.out.println(files);
+    @PostMapping("/upload-image")
+    public ResponseEntity<BaseResponse<?>> uploadImage(@RequestPart MultipartFile[] files) {
         List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
-        BaseResponse<ProjectPostRes> response = projectBoardService.create(req, savedFileName.get(0));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(savedFileName));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<BaseResponse<ProjectPostRes>> create(@RequestPart ProjectPostReq req) {
+        System.out.println(req);
+        BaseResponse<ProjectPostRes> response = projectBoardService.create(req, req.getImages().get(0));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+//    @GetMapping("/team-list")
+//    public ResponseEntity<BaseResponse<?>> getTeamList(Long idx) {
+//        System.out.println("기수: " + idx);
+////        BaseResponse<ProjectPostTeamListRes> response = userService.getTeamList(idx);
+//        userService.getTeamList();
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
+
+    @GetMapping("/team-list")
+    public void getTeamList(Long idx) {
+        System.out.println("기수: " + idx);
+//        BaseResponse<ProjectPostTeamListRes> response = userService.getTeamList(idx);
+        userService.getTeamList();
     }
 
     @GetMapping("/read")

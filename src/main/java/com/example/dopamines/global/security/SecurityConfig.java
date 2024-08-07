@@ -38,10 +38,13 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://127.0.0.1:5500"); // 허용할 출처
-        config.addAllowedOrigin("http://3.36.99.28:3000"); // 허용할 출처
-        config.addAllowedOrigin("http://3.36.99.28:8080"); // 허용할 출처
+        config.addAllowedOrigin("http://127.0.0.1:5501"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
-        config.addAllowedOrigin("http://localhost:8082"); // 허용할 출처
+        config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처   //Todo
+        config.addAllowedOrigin("http://localhost:3001"); // 허용할 출처   //Todo
+
+        config.addAllowedOrigin("http://3.36.126.48:3000"); // 허용할 출처   //Todo
+        config.addAllowedOrigin("http://3.36.126.48:8080"); // 허용할 출처   //Todo
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)
         config.addAllowedHeader("*"); // 허용할 헤더
         config.setAllowCredentials(true); // 자격 증명 허용
@@ -63,11 +66,11 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((auth) ->
                 auth
-                        .requestMatchers("/test/role-user").hasRole("USER")
-                        .requestMatchers("/test/role-temporary").hasRole("TEMPORARY_USER")
-                        .requestMatchers("/test/role-admin").hasRole("ADMIN")
-                        .requestMatchers("/admin/assign","/admin/user/black").hasRole("ADMIN")
-                        .requestMatchers("/admin/signup").permitAll()
+//                        .requestMatchers("/test/role-user").hasRole("USER")
+//                        .requestMatchers("/test/role-temporary").hasRole("TEMPORARY_USER")
+//                        .requestMatchers("/test/role-admin").hasRole("ADMIN")
+//                        .requestMatchers("/admin/assign","/admin/user/black").hasRole("ADMIN")
+//                        .requestMatchers("/admin/signup").permitAll()
                         .anyRequest().permitAll()
         );
 

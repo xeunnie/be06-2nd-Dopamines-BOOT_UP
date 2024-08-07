@@ -21,14 +21,17 @@ public class Team {
 
     private String teamName;
 
+    private Integer courseNum;
+
     @OneToMany(mappedBy = "team")
     private List<User> students = new ArrayList<User>();
 
     @Builder
-    public Team(Long idx, String teamName, List<User> students) {
+    public Team(Long idx, String teamName, List<User> students, Integer courseNum) {
         this.idx = idx;
         this.teamName = teamName;
         this.students = students;
+        this.courseNum = courseNum;
     }
 
     public void setStudents(List<User> students) {

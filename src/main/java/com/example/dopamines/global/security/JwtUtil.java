@@ -39,6 +39,16 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String createTokenAllowTranslate(Long idx,String nickname) {
+        return Jwts.builder()
+                .claim("idx",idx)
+                .claim("nickname",nickname)
+                .issuedAt(new Date(System.currentTimeMillis())) //생성시간
+                .expiration(new Date(System.currentTimeMillis()+ 200 * 60 * 1000))   //만료시간
+                .signWith(secretKey) //제일 중요 -> 우리만 알 수 있는 secretKey
+                .compact();
+    }
+
     public Long getIdx(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("idx", Long.class);
     }

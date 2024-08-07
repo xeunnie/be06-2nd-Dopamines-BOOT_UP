@@ -14,6 +14,7 @@ Content-Type: application/json
 ### 유저 로그인 테스트 ( JWT 토큰 받아오기 )
 POST http://localhost:8080/login
 Content-Type: application/json
+Cookie: ""
 
 {
   "email": "유송연@test.com",
@@ -24,6 +25,7 @@ Content-Type: application/json
 POST http://localhost:7218/user/role-user
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZHgiOjEsImVtYWlsIjoiZWhkZ3VzamRic3dsQG5hdmVyLmNvbSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjEwNDMzMTksImV4cCI6MTcyMTA0MzkxOX0.NAhr_OgNWuS3EkesOi6oNoCnM49TBkAdq1Pk04R6YBo
+
 
 {
   "email": "test@test.com",

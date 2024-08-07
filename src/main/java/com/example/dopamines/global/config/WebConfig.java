@@ -13,7 +13,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://127.0.0.1:5500") // 프론트엔드가 호스팅되는 도메인
-                        .allowedOrigins("http://3.36.99.28:3000")
+                        .allowedOrigins("http://3.36.126.48:3000")   //Todo
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
             }
         };

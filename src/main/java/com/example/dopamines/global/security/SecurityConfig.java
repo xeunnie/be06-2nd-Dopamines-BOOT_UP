@@ -42,6 +42,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처   //Todo
         config.addAllowedOrigin("http://localhost:3001"); // 허용할 출처   //Todo
+        config.addAllowedOrigin("http://localhost:3002"); // 허용할 출처   //Todo
 
         config.addAllowedOrigin("http://3.36.126.48:3000"); // 허용할 출처   //Todo
         config.addAllowedOrigin("http://3.36.126.48:8080"); // 허용할 출처   //Todo

@@ -6,6 +6,7 @@ import com.example.dopamines.domain.board.project.model.request.ProjectPostReq;
 import com.example.dopamines.domain.board.project.model.request.ProjectPostUpdateReq;
 import com.example.dopamines.domain.board.project.model.response.ProjectPostRes;
 import com.example.dopamines.domain.board.project.model.response.ProjectPostReadRes;
+import com.example.dopamines.domain.board.project.model.response.ProjectPostTeamListRes;
 import com.example.dopamines.domain.board.project.service.ProjectPostService;
 import com.example.dopamines.domain.user.service.UserService;
 import com.example.dopamines.global.common.BaseResponse;
@@ -33,31 +34,26 @@ public class ProjectPostController {
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/upload-image")
-    public ResponseEntity<BaseResponse<?>> uploadImage(@RequestPart MultipartFile[] files) {
-        List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
+    public ResponseEntity<BaseResponse<?>> uploadImage(@RequestPart MultipartFile file) {
+        String savedFileName = cloudFileUploadService.upload(file, rootType);
+        System.out.println("savedFileName: " + savedFileName);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(savedFileName));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<ProjectPostRes>> create(@RequestPart ProjectPostReq req) {
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ProjectPostReq req) {
         System.out.println(req);
-        BaseResponse<ProjectPostRes> response = projectBoardService.create(req, req.getImages().get(0));
+        System.out.println(req.getImage());
+        System.out.println(userDetails.getUser().getName());
+        BaseResponse<ProjectPostRes> response = projectBoardService.create(req, req.getImage());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-//    @GetMapping("/team-list")
-//    public ResponseEntity<BaseResponse<?>> getTeamList(Long idx) {
-//        System.out.println("기수: " + idx);
-////        BaseResponse<ProjectPostTeamListRes> response = userService.getTeamList(idx);
-//        userService.getTeamList();
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
-
     @GetMapping("/team-list")
-    public void getTeamList(Long idx) {
-        System.out.println("기수: " + idx);
-//        BaseResponse<ProjectPostTeamListRes> response = userService.getTeamList(idx);
-        //userService.getTeamList();
+    public ResponseEntity<BaseResponse<?>> getTeamList(@RequestParam Integer courseNum) {
+        System.out.println("기수: " + courseNum);
+        List<ProjectPostTeamListRes> response = userService.getTeamList(courseNum);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
     @GetMapping("/read")
@@ -72,7 +68,7 @@ public class ProjectPostController {
 //        return ResponseEntity.status(HttpStatus.OK).body(response);
 //    }
 
-//    @CheckAuthentication
+    //    @CheckAuthentication
     @GetMapping("/read-all")
     public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
         BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readAll();

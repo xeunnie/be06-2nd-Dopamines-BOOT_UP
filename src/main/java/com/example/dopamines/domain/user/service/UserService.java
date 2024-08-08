@@ -1,5 +1,6 @@
 package com.example.dopamines.domain.user.service;
 
+import com.example.dopamines.domain.board.project.model.response.ProjectPostTeamListRes;
 import com.example.dopamines.domain.user.model.entity.Team;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.model.request.UserSignupReq;
@@ -8,6 +9,7 @@ import com.example.dopamines.domain.user.model.response.UserSignupRes;
 import com.example.dopamines.domain.user.repository.TeamRepository;
 import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
 
 import java.time.LocalDateTime;
@@ -65,5 +67,19 @@ public class UserService {
         }
 
         return null;
+    }
+
+    public List<ProjectPostTeamListRes> getTeamList(Integer courseNum) {
+        Optional<List<Team>> result = teamRepository.findByCourseNum(courseNum);
+
+        List<ProjectPostTeamListRes> teamList = new ArrayList<>();
+        for(Team team : result.get()) {
+            teamList.add(ProjectPostTeamListRes.builder()
+                    .idx(team.getIdx())
+                    .teamName(team.getTeamName())
+                    .build());
+        }
+
+        return teamList;
     }
 }

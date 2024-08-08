@@ -30,7 +30,7 @@ public class ProjectPostService {
         try{
             ProjectPost projectBoard = ProjectPost.builder()
                     .title(req.getTitle())
-                    .contents(req.getContents())
+                    .contents(req.getContent())
                     .courseNum(req.getCourseNum())
                     .gitUrl(req.getGitUrl())
                     .sourceUrl(savedFileName)

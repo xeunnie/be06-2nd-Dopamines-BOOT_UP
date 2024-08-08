@@ -29,8 +29,9 @@ public class FreePostController {
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostReq req){
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreePostReq req){
         User user = customUserDetails.getUser();
+//        System.out.println(user);
 //        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
         String result = freePostService.create(user, req, req.getImages());
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(result));

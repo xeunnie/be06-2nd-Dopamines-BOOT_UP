@@ -10,9 +10,9 @@ import java.util.List;
 public class ProjectPostReq {
 
     private String title;
-    private String contents;
+    private String content;
     private Integer courseNum;
     private String gitUrl;
     private Long teamIdx;
-    private List<String> images;
+    private String image;
 }

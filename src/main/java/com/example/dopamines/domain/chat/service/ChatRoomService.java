@@ -1,9 +1,11 @@
   package com.example.dopamines.domain.chat.service;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_ERROR_CONVENTION;
+import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_NOT_FOUND;
 
 import com.example.dopamines.domain.board.market.mapper.MarketPostMapper;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.board.market.repository.MarketPostRepository;
 import com.example.dopamines.domain.chat.mapper.ChatMessageMapper;
 import com.example.dopamines.domain.chat.mapper.ChatRoomMapper;
@@ -20,6 +22,8 @@ import com.example.dopamines.domain.chat.repository.ParticipatedChatRoomReposito
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -40,17 +44,18 @@ public class ChatRoomService {
     private final ChatMessageMapper chatMessageMapper;
     private final MarketPostMapper marketPostMapper;
 
-    public List<ChatRoomRes> findAll(User user) {
+    public List<ChatRoomRes> findAll(User user) { // 구매자
         List<ParticipatedChatRoom> chatRooms = participatedChatRoomRepository.findAllByUser(user);
         List<ChatRoomRes> dto = chatRooms.stream().map((room) ->{
-            Long postIdx = room.getChatRoom().getMarketPost().getIdx();
-            MarketPost post = marketPostRepository.findByIdWithImages(postIdx);
-            String author = post.getUser().getName();
+            Long postIdx = room.getChatRoom().getMarketPost().getIdx(); // 게시글 idx
+            MarketPost post = marketPostRepository.findByIdWithImages(postIdx); // 포스트
+            String author = post.getUser().getName(); // 판매자
 
             return ChatRoomRes.builder()
                     .idx(room.getChatRoom().getIdx())
-                    .name(room.getChatRoom().getName())
-                    .product(marketPostMapper.toDto(post, author))
+                    .product(marketPostMapper.toDto(post,author)) //author
+                    .buyer(room.getChatRoom().getBuyer())
+                    .updatedAt(room.getChatRoom().getUpdatedAt())
                     .build();
 
         }
@@ -60,41 +65,41 @@ public class ChatRoomService {
         return dto;
     }
 
-
-    public ChatRoomRes create(ChatRoomReq req, User sender) {
+    public ChatRoomRes create(ChatRoomReq req, User buyer) {
         // chat room 생성 -> uuid
-        User receiver = User.builder()
+        User seller = User.builder()
                 .idx(req.getReceiverIdx())
                 .build();
 
-        MarketPost marketPost = MarketPost.builder()
-                .idx(req.getMarketPostIdx())
-                .build();
+        MarketPost marketPost = marketPostRepository.findById(req.getMarketPostIdx())
+                .orElseThrow(() -> new BaseException(MARKET_NOT_FOUND));
 
-        ChatRoom chatRoom = chatRoomMapper.toEntity(req.getName(), marketPost);
+
+        ChatRoom chatRoom = chatRoomMapper.toEntity(buyer.getName(), marketPost);
         chatRoomRepository.save(chatRoom);
 
         // participate repository에 추가 - sender, receiver 모두
         ParticipatedChatRoom senderRoom = ParticipatedChatRoom.builder()
                 .chatRoom(chatRoom)
-                .user(sender)
+                .user(buyer)
                 .build();
 
         ParticipatedChatRoom receiverRoom = ParticipatedChatRoom.builder()
                 .chatRoom(chatRoom)
-                .user(receiver)
+                .user(seller)
                 .build();
 
         participatedChatRoomRepository.save(senderRoom);
         participatedChatRoomRepository.save(receiverRoom);
 
-        return chatRoomMapper.toDto(chatRoom);
+        MarketReadRes res = marketPostMapper.toDto(marketPost, marketPost.getUser().getName());
+        return chatRoomMapper.toDto(chatRoom, res);
     }
 
     public List<ChatMessageRes> getAllMessage(String roomId) {
         List<ChatMessage> messages = chatMessageRepository.findAllById(roomId);
         List<ChatMessageRes> responses = messages.stream().map(
-                (message) -> chatMessageMapper.toDto(message, message.getSender().getName())
+                (message) -> chatMessageMapper.toDto(message, message.getSender().getName(), message.getSender().getIdx())
         ).collect(Collectors.toList());
         return responses;
     }

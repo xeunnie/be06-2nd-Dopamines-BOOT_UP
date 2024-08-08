@@ -45,6 +45,7 @@ public class SecurityConfig {
 
         config.addAllowedOrigin("http://3.36.126.48:3000"); // 허용할 출처   //Todo
         config.addAllowedOrigin("http://3.36.126.48:8080"); // 허용할 출처   //Todo
+
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)
         config.addAllowedHeader("*"); // 허용할 헤더
         config.setAllowCredentials(true); // 자격 증명 허용

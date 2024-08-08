@@ -14,10 +14,11 @@ public class ChatMessageReq {
     public enum MessageType {
         CHAT, JOIN, LEAVE
     }
+    private MessageType type;
 
     private String roomId;
     private String content;
-    private String sender;
-    private MessageType type;
+    private String sender; // 보내는 사람
+    private Long senderIdx; // 보내는 사람 idx
     private LocalDate createdAt;
 }

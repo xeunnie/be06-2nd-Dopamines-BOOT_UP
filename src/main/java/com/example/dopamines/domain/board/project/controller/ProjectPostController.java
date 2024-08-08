@@ -57,7 +57,7 @@ public class ProjectPostController {
     public void getTeamList(Long idx) {
         System.out.println("기수: " + idx);
 //        BaseResponse<ProjectPostTeamListRes> response = userService.getTeamList(idx);
-        userService.getTeamList();
+        //userService.getTeamList();
     }
 
     @GetMapping("/read")

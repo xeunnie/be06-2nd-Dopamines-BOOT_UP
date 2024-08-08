@@ -25,5 +25,5 @@ public interface ChatMessageMapper {
 
 
     @Mapping(target="sender", source="senderName")
-    ChatMessageRes toDto(ChatMessage entity, String senderName);
+    ChatMessageRes toDto(ChatMessage entity, String senderName, Long senderIdx);
 }

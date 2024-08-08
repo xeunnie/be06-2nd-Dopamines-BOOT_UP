@@ -24,16 +24,16 @@ public class MessageService {
 
     private final UserRepository userRepository;
 
-    public ChatMessageReq sendMessage(String bearerToken, ChatMessageReq chatMessage) {
+    public ChatMessageReq sendMessage(/*String bearerToken,*/ ChatMessageReq chatMessage) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getRoomId()).orElseThrow(()->new BaseException(BaseResponseStatus.MARKET_ERROR_CHATROOM_NOT_FOUND));
 
-        Long senderIdx = jwtUtil.getIdx(bearerToken);
-        User sender = userRepository.findById(senderIdx).orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+        User sender = userRepository.findById(chatMessage.getSenderIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
 
         ChatMessage message = chatMessageMapper.toEntity(chatMessage, sender, chatRoom);
         chatMessageRepository.save(message);
 
         chatMessage.setSender(message.getSender().getName());
+        chatMessage.setSenderIdx(sender.getIdx());
         chatMessage.setCreatedAt(message.getCreatedAt());
 
         return chatMessage;

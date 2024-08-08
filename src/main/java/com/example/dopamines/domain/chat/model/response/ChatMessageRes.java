@@ -14,10 +14,10 @@ public class ChatMessageRes {
     public enum MessageType {
         CHAT, JOIN, LEAVE
     }
-
+    private MessageType type;
     private String roomId;
     private String content;
     private String sender;
-    private MessageType type;
+    private String senderIdx;
     private LocalDate createdAt;
 }

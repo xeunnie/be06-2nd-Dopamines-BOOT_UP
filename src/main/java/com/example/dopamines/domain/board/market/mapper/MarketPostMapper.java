@@ -29,7 +29,7 @@ public interface MarketPostMapper {
 
     MarketReadRes toDto(MarketPost entity, String author);
     @Mapping(source = "entity.images", target = "images")
-    MarketDetailRes toDetailDto(MarketPost entity, String author);
+    MarketDetailRes toDetailDto(MarketPost entity, String author, Long authorIdx);
     default List<String> map(List<MarketProductImage> images) {
         return images.stream()
                 .map(MarketProductImage::getUrl)

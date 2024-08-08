@@ -18,7 +18,9 @@ import lombok.Setter;
 public class ChatRoom {
     @Id
     private String idx;
-    private String name;
+
+    private String buyer;
+
     private boolean status;
     private LocalDate createdAt;
     private LocalDate updatedAt;

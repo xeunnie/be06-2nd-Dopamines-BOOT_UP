@@ -15,5 +15,6 @@ public class MarketDetailRes {
     private LocalDate createdAt;
     private Boolean status; // 판매 상태
     private String author;
+    private Long authorIdx;
     private Boolean marked; // 유저에 따른 찜 상태
 }

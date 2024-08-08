@@ -52,7 +52,7 @@ public class MarketService {
     public MarketDetailRes findById(Long idx) {
         MarketPost post = postRepository.findByIdWithImages(idx);
 
-        return marketPostMapper.toDetailDto(post, post.getUser().getNickname());
+        return marketPostMapper.toDetailDto(post, post.getUser().getNickname(), post.getUser().getIdx());
     }
 
     public List<MarketReadRes> findAll(Integer page, Integer size) {

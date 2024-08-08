@@ -2,6 +2,7 @@ package com.example.dopamines.domain.chat.mapper;
 
 
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
+import com.example.dopamines.domain.board.market.model.response.MarketReadRes;
 import com.example.dopamines.domain.chat.model.entity.ChatRoom;
 import com.example.dopamines.domain.chat.model.response.ChatRoomRes;
 import java.time.LocalDate;
@@ -22,8 +23,9 @@ public interface ChatRoomMapper {
             @Mapping(target = "updatedAt", expression = "java(LocalDate.now())"),
             @Mapping(target = "status", constant = "true")
     })
-    ChatRoom toEntity(String name, MarketPost marketPost);
+    ChatRoom toEntity(String buyer, MarketPost marketPost);
 
 
-    ChatRoomRes toDto(ChatRoom entity);
+    @Mapping(target="idx", source = "entity.idx")
+    ChatRoomRes toDto(ChatRoom entity, MarketReadRes product);
 }

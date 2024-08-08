@@ -74,11 +74,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Cookie cookie = new Cookie("JwtToken", token);
         cookie.setHttpOnly(true);   //Javascript 로 접근 불가능
         cookie.setSecure(true); //세션 하이재킹 등의 해킹을 방지 ( 인증된 https 에 보낼때만 쿠키를 보내게 해준다. -> http에 보내려면, proxy 사용 (같은 주소))
+
         cookie.setPath("/");
         response.addCookie(cookie);
 
         String allowTranslateToken = jwtUtil.createTokenAllowTranslate(idx,nickname);
         Cookie cookieA = new Cookie("Atoken",allowTranslateToken);
+        cookieA.setPath("/");
+
         response.addCookie(cookieA);
     }
 }

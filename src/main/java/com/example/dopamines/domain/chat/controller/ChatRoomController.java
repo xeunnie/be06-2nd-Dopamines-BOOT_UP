@@ -28,7 +28,7 @@ public class ChatRoomController {
     // 채팅방을 만들어서 반환하는 기능
     @PostMapping(value = "/room")
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<ChatRoomRes>> createRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomReq req) {
+    public ResponseEntity<BaseResponse<?>> createRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomReq req) {
         User sender = customUserDetails.getUser();
         ChatRoomRes res = chatRoomService.create(req, sender);
         return ResponseEntity.ok(new BaseResponse<>(res));

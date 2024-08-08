@@ -2,6 +2,7 @@
 
 import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_ERROR_CONVENTION;
 import static com.example.dopamines.global.common.BaseResponseStatus.MARKET_NOT_FOUND;
+import static com.example.dopamines.global.common.BaseResponseStatus.USER_NOT_FOUND;
 
 import com.example.dopamines.domain.board.market.mapper.MarketPostMapper;
 import com.example.dopamines.domain.board.market.model.entity.MarketPost;
@@ -65,18 +66,28 @@ public class ChatRoomService {
         return dto;
     }
 
-    public ChatRoomRes create(ChatRoomReq req, User buyer) {
-        // chat room 생성 -> uuid
-        User seller = User.builder()
-                .idx(req.getReceiverIdx())
-                .build();
+    public ChatRoomRes create(ChatRoomReq req, User sender) {
+        User buyer = userRepository.findById(sender.getIdx()).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
         MarketPost marketPost = marketPostRepository.findById(req.getMarketPostIdx())
                 .orElseThrow(() -> new BaseException(MARKET_NOT_FOUND));
 
+        System.out.println("buyer nickname: " + buyer.getName());
+        System.out.println("market post idx: " + marketPost.getIdx());
+
+        if (chatRoomRepository.existsAllByBuyerAndMarketPost(buyer.getNickname(), marketPost)) {
+            System.out.println("chat room 존재");
+            return null;
+        }
+
+        System.out.println("chat room 존재 안함");
 
         ChatRoom chatRoom = chatRoomMapper.toEntity(buyer.getName(), marketPost);
         chatRoomRepository.save(chatRoom);
+
+        User seller = User.builder()
+                .idx(req.getReceiverIdx())
+                .build();
 
         // participate repository에 추가 - sender, receiver 모두
         ParticipatedChatRoom senderRoom = ParticipatedChatRoom.builder()

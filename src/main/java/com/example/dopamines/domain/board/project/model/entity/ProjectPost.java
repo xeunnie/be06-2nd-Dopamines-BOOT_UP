@@ -19,6 +19,7 @@ public class ProjectPost {
     private Long idx;
 
     private String title;
+    @Column(name = "content", length = 65535) // length 속성을 사용하여 길이를 늘림
     private String contents;
     private Integer courseNum;
     private String gitUrl;

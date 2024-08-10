@@ -70,20 +70,6 @@ public class ReservationService {
         return reservationList;
     }
 
-//    public List<SeatReadRes> seatList(Integer floor) {
-//        List<String> seatList = seatRepository.findDistinctSectionsByFloor(floor)
-//                .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_SEAT_FAILED));
-//        List<SeatReadRes> seatReadResList = new ArrayList<>();
-//
-//        for(String seat : seatList) {
-//            seatReadResList.add(SeatReadRes.builder()
-//                            .section(seat)
-//                            .build());
-//        }
-//
-//        return seatReadResList;
-//    }
-
     public ReservationTimeRes timeList(Integer floor, String section) {
         List<Seat> seatInfo = seatRepository.findByFloorAndSection(floor, section)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.RESERVE_TIME_FAILED));
@@ -115,6 +101,7 @@ public class ReservationService {
 
         for(Reservation reservation : reservations){
             result.add(ReservationReadByUserRes.builder()
+                    .idx(reservation.getIdx())
                     .createdAt(reservation.getCreatedAt())
                     .time(reservation.getSeat().getTime())
                     .section(reservation.getSeat().getSection())

@@ -66,13 +66,6 @@ public class ProjectPostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-//    @GetMapping("/read-by-course-num")
-//    public ResponseEntity<BaseResponse<List<ProjectPostReadRes>>> readByCourseNum(Integer courseNum) {
-//        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readByCourseNum(courseNum);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
-
-    //    @CheckAuthentication
     @GetMapping("/read-all")
     public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails != null) {

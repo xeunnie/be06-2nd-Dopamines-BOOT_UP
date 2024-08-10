@@ -1,18 +1,18 @@
 package com.example.dopamines.domain.board.community.open.service;
 
-import com.example.dopamines.domain.board.community.open.model.entity.OpenComment;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
-import com.example.dopamines.domain.board.community.open.model.entity.OpenRecomment;
-import com.example.dopamines.domain.board.community.open.model.request.OpenPostReq;
+import com.example.dopamines.domain.board.community.open.model.entity.OpenPostImage;
 import com.example.dopamines.domain.board.community.open.model.request.OpenPostUpdateReq;
 import com.example.dopamines.domain.board.community.open.model.response.OpenCommentReadRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenPostReadRes;
 import com.example.dopamines.domain.board.community.open.model.response.OpenPostRes;
-import com.example.dopamines.domain.board.community.open.model.response.OpenRecommentReadRes;
+import com.example.dopamines.domain.board.community.open.model.request.OpenPostReq;
+import com.example.dopamines.domain.board.community.open.repository.OpenPostImageRepository;
 import com.example.dopamines.domain.board.community.open.repository.OpenPostRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
+import com.example.dopamines.global.common.annotation.Timer;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
@@ -32,6 +33,8 @@ import static com.example.dopamines.global.common.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class OpenPostService {
     private final OpenPostRepository openPostRepository;
+    private final OpenCommentService openCommentService;
+    private final OpenPostImageRepository openPostImageRepository;
 
     @Transactional
     public String create(User user, OpenPostReq req, List<String> imageUrlList) {
@@ -46,52 +49,41 @@ public class OpenPostService {
                 .title(req.getTitle())
                 .content(req.getContent())
                 .user(user)
-                .imageUrlList(imageUrlList)
+//                .images(imageList)
                 .createdAt(LocalDateTime.now())
                 .build()
         );
 
-        return "자유 게시판 게시글 등록";
+        for (String url : imageUrlList) {
+            openPostImageRepository.save(OpenPostImage.builder()
+                    .url(url)
+                    .openPost(openPost)
+                    .build()
+            );
+        }
+
+        return "공개 게시판 게시글 등록";
     }
 
+
+    @Timer
     public OpenPostReadRes read(Long idx) {
-        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
+        OpenPost openPost = openPostRepository.findByIdWithAuthor(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
+        List<OpenCommentReadRes> openComments = openCommentService.findAllWithPage(idx, 0, 10);
 
-        List<OpenCommentReadRes> openCommentReadResList = new ArrayList<>();
-        for(OpenComment openComment : openPost.getComments()){
-            List<OpenRecommentReadRes> openRecommentReadResList = new ArrayList<>();
-            for(OpenRecomment openRecomment : openComment.getOpenRecomments()){
-                openRecommentReadResList.add(OpenRecommentReadRes.builder()
-                        .idx(openRecomment.getIdx())
-                        .openPostIdx(openPost.getIdx())
-                        .commentIdx(openRecomment.getOpenComment().getIdx())
-                        .content(openRecomment.getContent())
-                        .author(openRecomment.getUser().getNickname())
-                        .createdAt(openRecomment.getCreatedAt())
-                        .likeCount(openRecomment.getLikes().size())
-                        .build());
-            }
-            openCommentReadResList.add(OpenCommentReadRes.builder()
-                    .idx(openComment.getIdx())
-                    .openPostIdx(openPost.getIdx())
-                    .content(openComment.getContent())
-                    .author(openComment.getUser().getNickname())
-                    .createdAt(openComment.getCreatedAt())
-                    .likeCount(openComment.getLikes().size())
-                    .recommentList(openRecommentReadResList)
-                    .build());
-
-        }
+        List<String> imageUrls = openPost.getImages().stream()
+                .map((url) -> url.getUrl())
+                .collect(Collectors.toList());
 
         return OpenPostReadRes.builder()
                 .idx(openPost.getIdx())
                 .title(openPost.getTitle())
                 .content(openPost.getContent())
                 .author(openPost.getUser().getNickname())
-                .imageUrlList(openPost.getImageUrlList())
+                .imageUrlList(imageUrls)
                 .created_at(LocalDateTime.now())
-                .likeCount(openPost.getLikes().size())
-                .openCommentList(openCommentReadResList)
+                .likeCount(openPost.getLikesCount())
+                .openCommentList(openComments)
                 .build();
     }
 
@@ -99,13 +91,16 @@ public class OpenPostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
         Slice<OpenPost> result = openPostRepository.findAllWithPaging(pageable)
                 .orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
+
         List<OpenPostRes> openPostResList = new ArrayList<>();
 
         for(OpenPost openPost : result.getContent()){
             openPostResList.add(OpenPostRes.builder()
+                    .nickName(openPost.getUser().getNickname())
                     .idx(openPost.getIdx())
                     .title(openPost.getTitle())
                     .content(openPost.getContent())
+                    .createdAt(openPost.getCreatedAt())
                     .build());
         }
         return openPostResList;
@@ -117,9 +112,19 @@ public class OpenPostService {
         if(!openPost.getUser().getIdx().equals(user.getIdx())){
             throw new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
+        List<OpenPostImage> imageList= new ArrayList<>();
+        for (String url : imageUrlList) {
+            OpenPostImage img = openPostImageRepository.save(OpenPostImage.builder()
+                    .url(url)
+                    .openPost(openPost)
+                    .build()
+            );
+            imageList.add(img);
+        }
+
         openPost.setTitle(req.getTitle());
         openPost.setContent(req.getContent());
-        openPost.setImageUrlList(imageUrlList);
+        openPost.setImages(imageList);
         openPost.setCreatedAt(LocalDateTime.now());
 
         openPostRepository.save(openPost);

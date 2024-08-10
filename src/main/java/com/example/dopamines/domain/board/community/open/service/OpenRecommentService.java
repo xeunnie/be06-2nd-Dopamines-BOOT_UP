@@ -5,6 +5,7 @@ import com.example.dopamines.domain.board.community.open.model.entity.OpenPost;
 import com.example.dopamines.domain.board.community.open.model.entity.OpenRecomment;
 import com.example.dopamines.domain.board.community.open.model.request.OpenRecommentReq;
 import com.example.dopamines.domain.board.community.open.model.request.OpenRecommentUpdateReq;
+import com.example.dopamines.domain.board.community.open.model.response.OpenRecommentReadRes;
 import com.example.dopamines.domain.board.community.open.repository.OpenCommentRepository;
 import com.example.dopamines.domain.board.community.open.repository.OpenPostRepository;
 import com.example.dopamines.domain.board.community.open.repository.OpenRecommentRepository;
@@ -12,10 +13,16 @@ import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
@@ -74,5 +81,24 @@ public class OpenRecommentService {
             openRecommentRepository.delete(openRecomment);
             return "대댓글 삭제 완료";
         }
+    }
+
+    public List<OpenRecommentReadRes> findAllWithPage(Long commentIdx, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
+        Slice<OpenRecomment> comments = openRecommentRepository.findAllWithPaging(pageable, commentIdx);
+
+        List<OpenRecommentReadRes> res = comments.stream()
+                .map((comment) -> OpenRecommentReadRes.builder()
+                        .idx(comment.getIdx())
+                        .author(comment.getUser().getNickname())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .likeCount(comment.getLikesCount())
+                        .openPostIdx(comment.getOpenComment().getOpenPost().getIdx())
+                        .commentIdx(comment.getIdx())
+                        .build()
+                ).collect(Collectors.toList());
+
+        return res;
     }
 }

@@ -4,9 +4,13 @@ import com.example.dopamines.domain.board.community.open.model.entity.*;
 import com.example.dopamines.domain.board.community.open.repository.*;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
-import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +23,28 @@ public class OpenLikeService {
     private final OpenRecommentLikeRepository openRecommentLikeRepository;
 
 
+    @Transactional
     public String createOpenPostLike(User user, Long idx) {
-        OpenPostLike result = openPostLikeRepository.findByUserAndOpenPost(user.getIdx(), idx)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_POST_LIKE_FAILED));
-        OpenPostLike openPostLike;
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(result != null){ // 이미 좋아요한 경우
-            openPostLikeRepository.delete(result);
+        Optional<OpenPostLike> result = openPostLikeRepository.findByUserAndOpenPost(user.getIdx(), idx);
+        // .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_POST_LIKE_FAILED));
+        OpenPostLike openPostLike = null;
+
+        if(result.isPresent()){ // 이미 좋아요한 경우
+            openPostLike = result.get();
+            openPostLikeRepository.delete(openPostLike);
+
+            openPost.subLikesCount();
+            openPostRepository.save(openPost);
+
             return "자유 게시글 좋아요 취소";
         }
 
-        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
+
+        openPost.addLikesCount();
+        openPostRepository.save(openPost);
+
         openPostLike = OpenPostLike.builder()
                 .user(user)
                 .openPost(openPost)
@@ -38,17 +53,27 @@ public class OpenLikeService {
         return "자유 게시글 좋아요 등록";
     }
 
+    @Transactional
     public String createCommentLike(User user, Long idx) {
-        OpenCommentLike result = openCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_LIKE_FAILED));
-        OpenCommentLike openCommentLike;
+        OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
 
-        if(result != null){ // 이미 좋아요한 경우
-            openCommentLikeRepository.delete(result);
+        Optional<OpenCommentLike> result = openCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
+        OpenCommentLike openCommentLike = null;
+
+        if(result.isPresent()){ // 이미 좋아요한 경우
+            openCommentLike = result.get();
+            openCommentLikeRepository.delete(openCommentLike);
+
+            openComment.subLikesCount();
+            openCommentRepository.save(openComment);
+
             return "자유 게시글 댓글 좋아요 취소";
         }
 
-        OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_NOT_FOUND));
+        openComment.addLikesCount();
+        openCommentRepository.save(openComment);
+
+
         openCommentLike = OpenCommentLike.builder()
                 .user(user)
                 .openComment(openComment)
@@ -57,17 +82,27 @@ public class OpenLikeService {
         return "자유 게시글 댓글 좋아요 등록";
     }
 
+    @Transactional
     public String createRecommentLike(User user, Long idx) {
-        OpenRecommentLike result = openRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_COMMENT_LIKE_FAILED));
-        OpenRecommentLike openRecommentLike;
+        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
 
-        if(result != null){ // 이미 좋아요한 경우
-            openRecommentLikeRepository.delete(result);
+        Optional<OpenRecommentLike> result = openRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
+        OpenRecommentLike openRecommentLike = null;
+
+        if(result.isPresent()){ // 이미 좋아요한 경우
+            openRecommentLike = result.get();
+            openRecommentLikeRepository.delete(openRecommentLike);
+
+            openRecomment.subLikesCount();
+            openRecommentRepository.save(openRecomment);
+
             return "자유 게시글 대댓글 좋아요 취소";
         }
 
-        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_RECOMMENT_NOT_FOUND));
+        openRecomment.addLikesCount();
+        openRecommentRepository.save(openRecomment);
+
+
         openRecommentLike = OpenRecommentLike.builder()
                 .user(user)
                 .openRecomment(openRecomment)

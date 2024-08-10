@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
     public class ReservationReadByUserRes {
+    private Long idx;
     private LocalDateTime createdAt;
     private String time;
     private String section;

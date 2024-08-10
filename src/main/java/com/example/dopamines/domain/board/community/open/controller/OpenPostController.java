@@ -23,20 +23,26 @@ import java.util.List;
 @RequestMapping("/open/post")
 @RequiredArgsConstructor
 public class OpenPostController {
-    private String rootType ="FREEBOARD";
+    private String rootType ="OPENBOARD";
     private final OpenPostService openPostService;
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart OpenPostReq req, @RequestPart MultipartFile[] files){
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenPostReq req){
         User user = customUserDetails.getUser();
-        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
-        String result = openPostService.create(user, req, urlLists);
+
+        String result = openPostService.create(user, req, req.getImages());
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(result));
     }
 
+    @PostMapping("/upload-image")
+    public ResponseEntity<BaseResponse<?>> uploadImage(@RequestPart MultipartFile[] files) {
+        List<String> savedFileName = cloudFileUploadService.uploadImages(files, rootType);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(savedFileName));
+    }
+
     @GetMapping("/read")
-    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam Long idx){
         User user = customUserDetails.getUser();
         OpenPostReadRes response = openPostService.read(idx);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
@@ -50,10 +56,9 @@ public class OpenPostController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart OpenPostUpdateReq req, @RequestPart MultipartFile[] files){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenPostUpdateReq req){
         User user = customUserDetails.getUser();
-        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
-        OpenPostRes response = openPostService.update(user,req,urlLists);
+        OpenPostRes response = openPostService.update(user,req, req.getImages());
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 

@@ -38,12 +38,6 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }
 
-//    @GetMapping("/seat-list/{floor}")
-//    public ResponseEntity<BaseResponse<?>> seatList(@PathVariable("floor") Integer floor) {
-//        List<SeatReadRes> response = reservationService.seatList(floor);
-//        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
-//    }
-
     @GetMapping("/time-list")
     public ResponseEntity<BaseResponse<?>> seatListDetail(@RequestParam Integer floor, @RequestParam String section) {
         ReservationTimeRes response = reservationService.timeList(floor, section);

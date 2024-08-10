@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -12,4 +14,6 @@ public class FreePostRes {
     private String title;
     private String content;
 
+    private String nickName;
+    private LocalDateTime createdAt;
 }

@@ -15,6 +15,7 @@ import com.example.dopamines.domain.board.community.free.repository.FreePostImag
 import com.example.dopamines.domain.board.community.free.repository.FreePostRepository;
 import com.example.dopamines.domain.board.market.model.entity.MarketProductImage;
 import com.example.dopamines.domain.user.model.entity.User;
+import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
 import com.example.dopamines.global.common.annotation.Timer;
@@ -99,13 +100,16 @@ public class FreePostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "idx"));
         Slice<FreePost> result = freePostRepository.findAllWithPaging(pageable)
                 .orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
+
         List<FreePostRes> freePostResList = new ArrayList<>();
 
         for(FreePost freePost : result.getContent()){
             freePostResList.add(FreePostRes.builder()
+                    .nickName(freePost.getUser().getNickname())
                     .idx(freePost.getIdx())
                     .title(freePost.getTitle())
                     .content(freePost.getContent())
+                    .createdAt(freePost.getCreatedAt())
                     .build());
         }
         return freePostResList;

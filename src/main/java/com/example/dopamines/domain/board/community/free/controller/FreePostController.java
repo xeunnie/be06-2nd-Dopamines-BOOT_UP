@@ -44,7 +44,7 @@ public class FreePostController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam Long idx){
         User user = customUserDetails.getUser();
         FreePostReadRes response = freePostService.read(idx);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
@@ -58,7 +58,7 @@ public class FreePostController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostUpdateReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreePostUpdateReq req){
         User user = customUserDetails.getUser();
         FreePostRes response = freePostService.update(user,req, req.getImages());
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));

@@ -105,7 +105,7 @@ public class ProjectPostService {
         return new BaseResponse<>(res);
     }
 
-    public BaseResponse<List<ProjectPostReadRes>> readAll() {
+    public BaseResponse<List<ProjectPostReadRes>> readAll(String userAuth) {
 
         List<ProjectPost> projectList = projectBoardRepository.findAll();
 
@@ -124,6 +124,7 @@ public class ProjectPostService {
                     .courseNum(projectBoard.getCourseNum())
                     .teamName(projectBoard.getTeam().getTeamName())
                     .students(students)
+                    .role(userAuth)
                     .build());
         }
 

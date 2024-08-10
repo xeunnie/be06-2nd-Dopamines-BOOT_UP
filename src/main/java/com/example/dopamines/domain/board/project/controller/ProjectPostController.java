@@ -8,6 +8,7 @@ import com.example.dopamines.domain.board.project.model.response.ProjectPostRes;
 import com.example.dopamines.domain.board.project.model.response.ProjectPostReadRes;
 import com.example.dopamines.domain.board.project.model.response.ProjectPostTeamListRes;
 import com.example.dopamines.domain.board.project.service.ProjectPostService;
+import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.service.UserService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -17,10 +18,12 @@ import com.example.dopamines.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -30,6 +33,7 @@ public class ProjectPostController {
 
     private final UserService userService;
     private String rootType = "PROJECT";
+    private String userAuth = "";
     private final ProjectPostService projectBoardService;
     private final CloudFileUploadService cloudFileUploadService;
 
@@ -57,7 +61,7 @@ public class ProjectPostController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<BaseResponse<ProjectPostReadRes>> read(Long idx) {
+    public ResponseEntity<BaseResponse<ProjectPostReadRes>> read(@RequestParam Long idx) {
         BaseResponse<ProjectPostReadRes> response = projectBoardService.read(idx);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -71,7 +75,13 @@ public class ProjectPostController {
     //    @CheckAuthentication
     @GetMapping("/read-all")
     public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readAll();
+        if (userDetails != null) {
+            userAuth = userDetails.getUser().getRole();
+        } else {
+            userAuth = "ROLE_TEMPORARY_USER";
+        }
+
+        BaseResponse<List<ProjectPostReadRes>> response = projectBoardService.readAll(userAuth);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

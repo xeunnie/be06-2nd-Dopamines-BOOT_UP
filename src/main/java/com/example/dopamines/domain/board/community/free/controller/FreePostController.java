@@ -51,8 +51,8 @@ public class FreePostController {
     }
 
     @GetMapping("/read-all")
-    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
-        User user = customUserDetails.getUser();
+    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam Integer page, @RequestParam Integer size){
+//        User user = customUserDetails.getUser();
         List<FreePostRes> response = freePostService.readAll(page,size);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }

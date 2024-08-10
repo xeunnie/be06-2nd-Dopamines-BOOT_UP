@@ -18,4 +18,6 @@ public class ProjectPostReadRes {
 
     private String teamName;
     private List<String> students;
+
+    private String role;
 }

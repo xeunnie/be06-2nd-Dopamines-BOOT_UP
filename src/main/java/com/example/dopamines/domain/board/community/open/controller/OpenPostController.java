@@ -43,8 +43,8 @@ public class OpenPostController {
     }
 
     @GetMapping("/read-all")
-    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
-        User user = customUserDetails.getUser();
+    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam Integer page, @RequestParam Integer size){
+//        User user = customUserDetails.getUser();
         List<OpenPostRes> response = openPostService.readAll(page,size);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }

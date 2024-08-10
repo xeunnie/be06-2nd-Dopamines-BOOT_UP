@@ -29,8 +29,9 @@ public class FreePostController {
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostReq req){
+    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreePostReq req){
         User user = customUserDetails.getUser();
+//        System.out.println(user);
 //        List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
         String result = freePostService.create(user, req, req.getImages());
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(result));
@@ -50,8 +51,8 @@ public class FreePostController {
     }
 
     @GetMapping("/read-all")
-    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
-        User user = customUserDetails.getUser();
+    public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam Integer page, @RequestParam Integer size){
+//        User user = customUserDetails.getUser();
         List<FreePostRes> response = freePostService.readAll(page,size);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));
     }

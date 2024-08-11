@@ -5,7 +5,9 @@ import com.example.dopamines.domain.chat.model.response.ChatMessageRes;
 import com.example.dopamines.domain.chat.model.response.ChatRoomRes;
 import com.example.dopamines.domain.chat.service.ChatRoomService;
 import com.example.dopamines.domain.user.model.entity.User;
+import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import com.example.dopamines.global.security.CustomUserDetails;
 import java.util.List;
@@ -30,6 +32,10 @@ public class ChatRoomController {
     @CheckAuthentication
     public ResponseEntity<BaseResponse<?>> createRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomReq req) {
         User sender = customUserDetails.getUser();
+        if (sender.getIdx() == req.getReceiverIdx()) {
+            throw new BaseException(BaseResponseStatus.CHATROOM_CREATION_NOT_ALLOWED);
+        }
+
         ChatRoomRes res = chatRoomService.create(req, sender);
         return ResponseEntity.ok(new BaseResponse<>(res));
     }

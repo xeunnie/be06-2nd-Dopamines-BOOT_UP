@@ -132,6 +132,7 @@ public enum BaseResponseStatus {
     //CRUD
     //create
     CHAT_NOT_SEND(false, 4300, "메시지 전송에 실패하였습니다."),
+
     //read
     CHAT_LOAD_FAILED(false, 4301, "메시지 불러오기에 실패하였습니다."),
     CHAT_FILE_LOAD_FAILED(false, 4302, "파일 불러오기에 실패하였습니다."),
@@ -147,6 +148,7 @@ public enum BaseResponseStatus {
     CHATROOM_EXPIRED(false, 4306, "채팅방이 만료되었습니다."),
     CHATROOM_LOAD_FAILED(false, 4307, "채팅방 불러오기에 실패하였습니다."),
     CHATROOM_NOT_FOUND(false, 4308, "해당하는 채팅방을 찾을 수 없습니다."),
+    CHATROOM_CREATION_NOT_ALLOWED(false, 4309, "채팅방을 만들 수 없습니다."),
 
     /**
      * 4400 : PROJECT 에러 - 시현

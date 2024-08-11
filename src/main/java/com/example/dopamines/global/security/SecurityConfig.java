@@ -76,7 +76,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
         );
 
-
+        http.logout((auth) -> auth.deleteCookies("JwtToken", "AToken", "jwt").logoutSuccessUrl("http://localhost:3000/"));
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(jwtUtil, authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
 

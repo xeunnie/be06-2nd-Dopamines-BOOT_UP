@@ -79,7 +79,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addCookie(cookie);
 
         String allowTranslateToken = jwtUtil.createTokenAllowTranslate(idx,nickname);
-        Cookie cookieA = new Cookie("Atoken",allowTranslateToken);
+        Cookie cookieA = new Cookie("AToken",allowTranslateToken);
         cookieA.setPath("/");
 
         response.addCookie(cookieA);

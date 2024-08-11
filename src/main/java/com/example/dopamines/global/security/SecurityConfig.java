@@ -41,7 +41,9 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처
 
+        config.addAllowedMethod("http://13.124.239.157:80");
         config.addAllowedOrigin("http://43.201.50.222:8080"); // 허용할 출처
+        config.addAllowedOrigin("https://www.dopamines-bootup.kro.kr");
 
 
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)

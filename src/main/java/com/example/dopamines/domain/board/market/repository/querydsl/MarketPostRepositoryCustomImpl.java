@@ -37,6 +37,7 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
         List<MarketPost> result = queryFactory
                 .selectFrom(marketPost)
                 .leftJoin(marketPost.user, user).fetchJoin()
+                .orderBy(marketPost.idx.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1)
                 .fetch();
@@ -56,6 +57,7 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
                 .selectFrom(marketPost)
                 .leftJoin(marketPost.user, user).fetchJoin()
                 .where(marketPost.idx.in(postIds))
+                .orderBy(marketPost.idx.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1)
                 .fetch();
@@ -88,6 +90,7 @@ public class MarketPostRepositoryCustomImpl implements MarketPostRepositoryCusto
                 .selectFrom(marketPost)
                 .leftJoin(marketPost.user, user).fetchJoin()
                 .where(titleOrContentContains(keyword),greaterThanMinPrice(minPrice),lowerThanMaxPrice(maxPrice))
+                .orderBy(marketPost.idx.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1)
                 .fetch();

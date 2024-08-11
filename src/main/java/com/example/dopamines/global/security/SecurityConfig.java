@@ -38,14 +38,11 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://127.0.0.1:5500"); // 허용할 출처
-        config.addAllowedOrigin("http://127.0.0.1:5501"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
-        config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처   //Todo
-        config.addAllowedOrigin("http://localhost:3001"); // 허용할 출처   //Todo
-        config.addAllowedOrigin("http://localhost:3002"); // 허용할 출처   //Todo
+        config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처
 
-        config.addAllowedOrigin("http://3.36.126.48:3000"); // 허용할 출처   //Todo
-        config.addAllowedOrigin("http://3.36.126.48:8080"); // 허용할 출처   //Todo
+        config.addAllowedOrigin("http://43.201.50.222:8080"); // 허용할 출처
+
 
         config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)
         config.addAllowedHeader("*"); // 허용할 헤더

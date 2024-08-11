@@ -8,10 +8,12 @@ import com.example.dopamines.domain.user.service.UserEmailService;
 import com.example.dopamines.domain.user.service.UserService;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
+import com.example.dopamines.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
+    private String userAuth;
     private final UserService userService;
     private final UserEmailService emailService;
 
@@ -49,6 +52,16 @@ public class UserController {
         boolean result = emailService.verifyUuid(request);
         System.out.println(result);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(result));
+    }
+
+    @GetMapping("/auth")
+    public ResponseEntity<BaseResponse<?>> getState(@AuthenticationPrincipal CustomUserDetails userDetails){
+        if (userDetails != null) {
+            userAuth = userDetails.getUser().getRole();
+        } else {
+            userAuth = null;
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(userAuth));
     }
 
 //    @GetMapping("/active")

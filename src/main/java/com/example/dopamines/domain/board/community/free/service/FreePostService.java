@@ -102,6 +102,14 @@ public class FreePostService {
                 .orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
 
         List<FreePostRes> freePostResList = new ArrayList<>();
+        for(FreePost freePost : result){
+            System.out.println("===============================");
+            System.out.println(freePost.getUser().getNickname());
+            System.out.println(freePost.getIdx());
+            System.out.println(freePost.getTitle());
+            System.out.println(freePost.getContent());
+            System.out.println(freePost.getCreatedAt());
+        }
 
         for(FreePost freePost : result.getContent()){
             freePostResList.add(FreePostRes.builder()

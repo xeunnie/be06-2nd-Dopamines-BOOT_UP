@@ -1,5 +1,6 @@
 package com.example.dopamines.domain.board.community.free.model.response;
 
+import com.example.dopamines.domain.board.community.free.model.entity.FreeRecomment;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,5 +16,5 @@ public class FreeCommentReadRes {
     private String author;
     private LocalDateTime createdAt;
     private Integer likeCount;
-    private List<FreeRecommentReadRes> recommentList;
+    private List<FreeRecomment> recommentList;
 }

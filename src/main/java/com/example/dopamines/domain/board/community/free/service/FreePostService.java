@@ -44,7 +44,7 @@ public class FreePostService {
     private final FreePostImageRepository freePostImageRepository;
 
     @Transactional
-    public String create(User user, FreePostReq req, List<String> imageUrlList) {
+    public FreePostRes create(User user, FreePostReq req, List<String> imageUrlList) {
 
         if(req.getTitle() == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
@@ -72,7 +72,13 @@ public class FreePostService {
             );
         }
 
-        return "자유 게시판 게시글 등록";
+        return FreePostRes.builder()
+                .idx(freePost.getIdx())
+                .title(freePost.getTitle())
+                .content(freePost.getContent())
+                .nickName(freePost.getUser().getNickname())
+                .createdAt(freePost.getCreatedAt())
+                .build();
     }
 
     @Timer
@@ -102,6 +108,14 @@ public class FreePostService {
                 .orElseThrow(()-> new BaseException(BaseResponseStatus.POST_NOT_FOUND));
 
         List<FreePostRes> freePostResList = new ArrayList<>();
+        for(FreePost freePost : result){
+            System.out.println("===============================");
+            System.out.println(freePost.getUser().getNickname());
+            System.out.println(freePost.getIdx());
+            System.out.println(freePost.getTitle());
+            System.out.println(freePost.getContent());
+            System.out.println(freePost.getCreatedAt());
+        }
 
         for(FreePost freePost : result.getContent()){
             freePostResList.add(FreePostRes.builder()
@@ -178,5 +192,11 @@ public class FreePostService {
                     .build());
         }
         return freePostResList;
+    }
+
+    public Integer getCount() {
+        Integer cnt = freePostRepository.countAllPosts();
+
+        return cnt;
     }
 }

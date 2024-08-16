@@ -41,7 +41,10 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처
 
-        config.addAllowedMethod("http://13.124.239.157:80");
+        config.addAllowedOrigin("http://13.124.239.157");   //web-socket 직속으로 날라오는 url
+//        config.addAllowedOrigin("http://13.124.239.157:80");
+//        config.addAllowedOrigin("http://13.124.239.157:8080");
+
         config.addAllowedOrigin("http://43.201.50.222:8080"); // 허용할 출처
         config.addAllowedOrigin("https://www.dopamines-bootup.kro.kr");
 

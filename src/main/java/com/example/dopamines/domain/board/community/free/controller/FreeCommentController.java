@@ -25,8 +25,10 @@ public class FreeCommentController {
 
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeCommentReq req){
+        System.out.println(req.getFreePostIdx());
+        System.out.println(req.getContent());
         User user = customUserDetails.getUser();
-        String response = freeCommentService.create(user,req);
+        FreeCommentReadRes response = freeCommentService.create(user,req);
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(response));
     }
 
@@ -46,6 +48,9 @@ public class FreeCommentController {
     @DeleteMapping("/delete")
     public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails,Long idx){
         User user = customUserDetails.getUser();
+        System.out.println("=====");
+        System.out.println(idx);
+        System.out.println("=====");
         String response = freeCommentService.delete(user,idx);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }

@@ -23,4 +23,6 @@ public interface FreePostRepository extends JpaRepository<FreePost, Long> {
     @Query("SELECT f FROM FreePost f WHERE LOCATE(:keyword, f.title) > 0 OR LOCATE(:keyword, f.content) > 0")
     Optional<Slice<FreePost>> search(Pageable pageable, String keyword);
 
+    @Query("SELECT COUNT(f) FROM FreePost f")
+    Integer countAllPosts();
 }

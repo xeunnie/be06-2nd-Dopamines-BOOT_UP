@@ -5,6 +5,7 @@ import com.example.dopamines.domain.board.community.free.model.entity.FreeCommen
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentReq;
 import com.example.dopamines.domain.board.community.free.model.request.FreeCommentUpdateReq;
 import com.example.dopamines.domain.board.community.free.model.response.FreeCommentReadRes;
+import com.example.dopamines.domain.board.community.free.model.response.FreeRecommentReadRes;
 import com.example.dopamines.domain.board.community.free.repository.FreePostRepository;
 
 import com.example.dopamines.domain.board.community.free.repository.FreeCommentRepository;
@@ -35,14 +36,14 @@ public class FreeCommentService {
     private final FreeRecommentRepository freeRecommentRepository;
 
     @Transactional
-    public String create(User user, FreeCommentReq req) {
-        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
+    public FreeCommentReadRes create(User user, FreeCommentReq req) {
+        FreePost freePost = freePostRepository.findById(req.getFreePostIdx()).orElseThrow(()->new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
         if(req.getContent() == null){
             throw new BaseException( BaseResponseStatus.COMMUNITY_CONTENT_NOT_FOUND);
         }
 
-        freeCommentRepository.save(FreeComment.builder()
+        FreeComment freeComment = freeCommentRepository.save(FreeComment.builder()
                 .freePost(freePost)
                 .content(req.getContent())
                 .user(user)
@@ -50,7 +51,22 @@ public class FreeCommentService {
                 .build()
         );
 
-        return "자유 게시판 댓글 등록";
+//        private Long idx;
+//        private Long freePostIdx;
+//        private String content;
+//        private String author;
+//        private LocalDateTime createdAt;
+//        private Integer likeCount;
+//        private List<FreeRecommentReadRes> recommentList;
+        return FreeCommentReadRes.builder()
+                .idx(freeComment.getIdx())
+                .freePostIdx(freeComment.getFreePost().getIdx())
+                .content(freeComment.getContent())
+                .author(freeComment.getUser().getNickname())
+                .createdAt(freeComment.getCreatedAt())
+                .likeCount(freeComment.getLikesCount())
+                .recommentList(freeComment.getFreeRecomments())
+                .build();
     }
 
     // TODO : 내가 쓴 댓글, 대댓글 조회
@@ -95,7 +111,7 @@ public class FreeCommentService {
         FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_BOARD_NOT_FOUND));
 
         if (!(freeComment.getUser().getIdx()).equals(user.getIdx())){
-            throw  new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
+            throw new BaseException(BaseResponseStatus.COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
             freeCommentRepository.delete(freeComment);

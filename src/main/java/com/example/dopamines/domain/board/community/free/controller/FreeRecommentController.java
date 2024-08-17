@@ -41,7 +41,7 @@ public class FreeRecommentController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody FreeRecommentUpdateReq req){
+    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody FreeRecommentUpdateReq req){
         User user = customUserDetails.getUser();
         String response = freeRecommentService.update(user,req);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(response));

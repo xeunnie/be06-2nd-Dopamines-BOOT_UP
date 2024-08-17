@@ -16,5 +16,5 @@ public class FreeCommentReadRes {
     private String author;
     private LocalDateTime createdAt;
     private Integer likeCount;
-    private List<FreeRecomment> recommentList;
+    private List<FreeRecommentReadRes> recommentList;
 }

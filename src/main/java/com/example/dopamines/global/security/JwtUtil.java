@@ -1,8 +1,10 @@
 package com.example.dopamines.global.security;
 
 import com.example.dopamines.domain.user.repository.UserRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
+import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
@@ -18,6 +20,7 @@ public class JwtUtil {
 
     private SecretKey secretKey;
     private CustomUserDetailService customUserDetailService;
+    private final Long REFRESH_EXPIRE = 1000L * 60 * 60 * 24 * 14; // 14일
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secretKey, UserRepository userRepository) {
         this.secretKey = new SecretKeySpec(
@@ -34,7 +37,19 @@ public class JwtUtil {
                 .claim("role",role)
                 .claim("nickname",nickname)
                 .issuedAt(new Date(System.currentTimeMillis())) //생성시간
-                .expiration(new Date(System.currentTimeMillis()+ 200 * 60 * 1000))   //만료시간
+                .expiration(new Date(System.currentTimeMillis()+ 20 * 1000))   //만료시간
+                .signWith(secretKey) //제일 중요 -> 우리만 알 수 있는 secretKey
+                .compact();
+    }
+
+    public String createRefreshToken(Long idx, String email, String role,String nickname) {
+        return Jwts.builder()
+                .claim("idx",idx)
+                .claim("email",email)
+                .claim("role",role)
+                .claim("nickname",nickname)
+                .issuedAt(new Date(System.currentTimeMillis())) //생성시간
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRE))   //만료시간
                 .signWith(secretKey) //제일 중요 -> 우리만 알 수 있는 secretKey
                 .compact();
     }
@@ -61,8 +76,24 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
 
+    public String getNickname(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
+    }
+
     public Boolean isExpired(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        try {
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    public Boolean isValid(String token) {
+        try{
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().after(new Date());
+        } catch (ExpiredJwtException | SignatureException jwtException){ // 토큰 만료, 서명 검증 실패
+            return false;
+        }
     }
 
     public Authentication getAuthentication(String jwtToken) {

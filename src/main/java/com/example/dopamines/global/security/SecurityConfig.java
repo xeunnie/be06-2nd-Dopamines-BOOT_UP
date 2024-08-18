@@ -5,6 +5,8 @@ import com.example.dopamines.domain.user.service.OAuth2Service;
 import com.example.dopamines.global.auth.OAuth2AuthenticaitonSuccessHandler;
 import com.example.dopamines.global.security.filter.JwtFilter;
 import com.example.dopamines.global.security.filter.LoginFilter;
+import com.example.dopamines.global.security.jwt.service.RefreshTokenService;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,9 +27,9 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
     private final OAuth2AuthenticaitonSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2Service oAuth2Service;
-
     private final JwtUtil jwtUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshTokenService refreshTokenService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -40,7 +42,6 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://127.0.0.1:5500"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:8081"); // 허용할 출처
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 출처
-
         config.addAllowedOrigin("http://13.124.239.157");   //web-socket 직속으로 날라오는 url
 //        config.addAllowedOrigin("http://13.124.239.157:80");
 //        config.addAllowedOrigin("http://13.124.239.157:8080");
@@ -78,14 +79,26 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
         );
 
-        http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
-        http.addFilterAt(new LoginFilter(jwtUtil, authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtUtil, refreshTokenService), LoginFilter.class);
+        http.addFilterAt(new LoginFilter(jwtUtil, authenticationManager(authenticationConfiguration), refreshTokenService), UsernamePasswordAuthenticationFilter.class);
 
         http.logout((auth) ->
                 auth
                         .logoutUrl("/logout")   // 요청 url
-                        .deleteCookies("JwtToken", "AToken")    // 삭제 시킬 쿠키 이름
+                        .deleteCookies("JwtToken", "AToken", "RefreshToken")    // 삭제 시킬 쿠키 이름
                         .logoutSuccessHandler((request,response,authentication) -> {
+                            String refreshToken = null;
+                            for (Cookie cookie : request.getCookies()) {
+                                if (cookie.getName().equals("RefreshToken")) {
+                                    refreshToken = cookie.getValue();
+                                    break;
+                                }
+                            }
+
+                            if (refreshToken != null) {
+                                refreshTokenService.delete(refreshToken); // db에서 refresh token 삭제
+                            }
+
                             response.sendRedirect("https://www.dopamines-bootup.kro.kr/"); // 로그아웃 성공시, 메인페이지로 리다이렉트
                         }));
 

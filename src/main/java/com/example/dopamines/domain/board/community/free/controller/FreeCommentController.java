@@ -48,9 +48,6 @@ public class FreeCommentController {
     @DeleteMapping("/delete")
     public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails,Long idx){
         User user = customUserDetails.getUser();
-        System.out.println("=====");
-        System.out.println(idx);
-        System.out.println("=====");
         String response = freeCommentService.delete(user,idx);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.SUCCESS_NO_CONTENT));
     }

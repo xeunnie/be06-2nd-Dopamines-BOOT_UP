@@ -12,6 +12,8 @@ import com.example.dopamines.domain.board.community.free.repository.FreeCommentR
 import com.example.dopamines.domain.board.community.free.repository.FreeRecommentRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.example.dopamines.global.common.BaseResponseStatus;
@@ -65,7 +67,6 @@ public class FreeCommentService {
                 .author(freeComment.getUser().getNickname())
                 .createdAt(freeComment.getCreatedAt())
                 .likeCount(freeComment.getLikesCount())
-                .recommentList(freeComment.getFreeRecomments())
                 .build();
     }
 
@@ -124,14 +125,30 @@ public class FreeCommentService {
         Slice<FreeComment> comments = freeCommentRepository.findAllWithPaging(pageable, postIdx);
 
         List<FreeCommentReadRes> res = comments.stream()
-                .map((comment) -> FreeCommentReadRes.builder()
-                        .idx(comment.getIdx())
-                        .author(comment.getUser().getNickname())
-                        .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt())
-                        .likeCount(comment.getLikesCount())
-                        .build()
-        ).collect(Collectors.toList());
+                .map((comment) -> {
+                    // FreeRecomment를 FreeRecommentReadRes로 변환
+                    List<FreeRecommentReadRes> recommentList = comment.getFreeRecomments().stream()
+                            .map(recomment -> FreeRecommentReadRes.builder()
+                                    .idx(recomment.getIdx())
+                                    .content(recomment.getContent())
+                                    .author(recomment.getUser().getNickname())
+                                    .createdAt(recomment.getCreatedAt())
+                                    .commentIdx(recomment.getFreeComment().getIdx())
+                                    .likeCount(recomment.getLikesCount())
+                                    .build())
+                            .collect(Collectors.toList());
+
+                    // FreeCommentReadRes 빌더에 변환된 recommentList를 사용
+                    return FreeCommentReadRes.builder()
+                            .idx(comment.getIdx())
+                            .author(comment.getUser().getNickname())
+                            .content(comment.getContent())
+                            .createdAt(comment.getCreatedAt())
+                            .likeCount(comment.getLikesCount())
+                            .recommentList(recommentList)
+                            .build();
+                })
+                .collect(Collectors.toList());
 
         return res;
     }

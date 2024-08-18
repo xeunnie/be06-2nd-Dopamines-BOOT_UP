@@ -3,6 +3,9 @@ package com.example.dopamines.global.security.filter;
 import com.example.dopamines.domain.user.model.request.UserLoginReq;
 import com.example.dopamines.global.security.CustomUserDetails;
 import com.example.dopamines.global.security.JwtUtil;
+import com.example.dopamines.global.security.jwt.model.RefreshToken;
+import com.example.dopamines.global.security.jwt.repository.RefreshTokenRepository;
+import com.example.dopamines.global.security.jwt.service.RefreshTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +29,8 @@ import org.springframework.util.StreamUtils;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -67,7 +72,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String nickname = user.getUser().getNickname();
 
         String token = jwtUtil.createToken(idx, username,role,nickname);
-        System.out.println(token);
+        String refreshToken = jwtUtil.createRefreshToken(idx, username, role, nickname);
+        synchronized(this) {
+            refreshTokenService.save(username, refreshToken);
+        }
+
 
         response.addHeader("Authorization","Bearer " + token);
 
@@ -77,6 +86,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         cookie.setSecure(true); //세션 하이재킹 등의 해킹을 방지 ( 인증된 https 에 보낼때만 쿠키를 보내게 해준다. -> http에 보내려면, proxy 사용 (같은 주소))
 
         response.addCookie(cookie);
+
+        Cookie refreshCookie = new Cookie("RefreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+
+        response.addCookie(refreshCookie);
 
         String allowTranslateToken = jwtUtil.createTokenAllowTranslate(idx,nickname);
         Cookie cookieA = new Cookie("AToken",allowTranslateToken);

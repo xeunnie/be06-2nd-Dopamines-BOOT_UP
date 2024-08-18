@@ -52,13 +52,11 @@ public class FreePostService {
         if(req.getContent() == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
-        //FreePost freePost = new FreePost();
 
         FreePost freePost = freePostRepository.save(FreePost.builder()
                 .title(req.getTitle())
                 .content(req.getContent())
                 .user(user)
-//                .images(imageList)
                 .createdAt(LocalDateTime.now())
                 .build()
         );

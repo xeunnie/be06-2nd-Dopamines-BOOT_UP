@@ -40,4 +40,11 @@ public class FreeLikeController {
         String result = freeLikeService.createRecommentLike(user,idx);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(result));
     }
+
+    @GetMapping("/check")
+    public ResponseEntity<BaseResponse<?>> checkLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx, String table){
+        User user = customUserDetails.getUser();
+        boolean result = freeLikeService.checkLike(user, idx, table);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(result));
+    }
 }

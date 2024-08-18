@@ -111,4 +111,21 @@ public class FreeLikeService {
         freeRecommentLikeRepository.save(freeRecommentLike);
         return "자유 게시글 대댓글 좋아요 등록";
     }
+
+    @Transactional
+    public boolean checkLike(User user, Long idx, String table) {
+        if(table.equals("post")) {
+            boolean result = freePostLikeRepository.existsByUserIdxAndFreePostIdx(user.getIdx(), idx);
+            return result;
+        } else if (table.equals("comment")) {
+            boolean result = freeCommentLikeRepository.existsByUserIdxAndFreeCommentIdx(user.getIdx(), idx);
+            return result;
+        } else if (table.equals("recomment")) {
+            boolean result = freeRecommentLikeRepository.existsByUserIdxAndFreeRecommentIdx(user.getIdx(), idx);
+            return result;
+        }
+
+        return false;
+    }
+
 }

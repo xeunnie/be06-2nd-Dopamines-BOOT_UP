@@ -78,10 +78,16 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
         );
 
-        http.logout((auth) -> auth.deleteCookies("JwtToken", "AToken", "jwt").logoutSuccessUrl("http://localhost:3000/"));
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(jwtUtil, authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
 
+        http.logout((auth) ->
+                auth
+                        .logoutUrl("/logout")   // 요청 url
+                        .deleteCookies("JwtToken", "AToken")    // 삭제 시킬 쿠키 이름
+                        .logoutSuccessHandler((request,response,authentication) -> {
+                            response.sendRedirect("https://www.dopamines-bootup.kro.kr/"); // 로그아웃 성공시, 메인페이지로 리다이렉트
+                        }));
 
 //        http.sessionManagement((session) -> {
 //            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
